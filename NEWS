@@ -1,0 +1,6 @@
+V 0.99.9
+
+1. import vcfs, gffs, phenos
+2. generate haps from vcfs
+3. visualization haps
+4. haps corr with phenos
