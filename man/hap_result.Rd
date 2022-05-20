@@ -4,7 +4,7 @@
 \alias{hap_result}
 \title{generate hap results}
 \usage{
-hap_result(hap, out = TRUE, file = "hapResult.txt")
+hap_result(hap, hap_prefix = "H", out = FALSE, file = "hapResult.txt")
 }
 \arguments{
 \item{hap}{hap}

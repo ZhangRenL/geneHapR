@@ -1,7 +1,8 @@
 ---
 Title:  quickHapR
 Author: ZhangRenL
-Date:   2022.05.14
+Date:   2022.05.20
+lastUpdate:   2022.05.14
 ---
 
 # quickHapR
@@ -100,6 +101,14 @@ vcf = import_vcf("Seita.1G001600_136756_144094_-_3k_final.vcf.gz")
 gff = import_gff("Yugu1.gff3")
 phenos = import_pheno("allPheno.txt")
 
+vcf <- filter_vcf(vcf,                # import_vcf() 导入的vcfR
+                  mode = "type",      # 筛选模式：POS/type/both之一
+                  Chr = "scaffold_1", # 筛选模式为POS或both时必须，染色体名称
+                  start = 136756,     # 筛选模式为POS或both时必须，开始位置
+                  end = 144094,       # 筛选模式为POS或both时必须，结束位置
+                  gff = gff,          # 筛选模式为type或both时必须，gff
+                  type = "CDS") # 筛选模式为type或both时必须，CDS/exon/gene/genome之一
+                  
 # 计算并输出单倍型结果
 # hap,data.frame:第一列与最后一列分别固定为HAP和Accession，中间列为位置及对应的基因型
 # 前四行为注释信息分别是：CHR，POS，ALLELE,INFO
@@ -113,6 +122,7 @@ hap = get_hap(vcf,                 # import_vcf() 导入的vcfR
 # hapResult, data.frame: 第一列固定为HAP，最后两列分别固定为Accession和freq，中间列为位置及对应的基因型
 # 前四行为注释信息分别是：CHR，POS，ALLELE,INFO
 hapResult = hap_result(hap,        # hap 结果
+                       hap_prefix = "H",  # 单倍型前缀
                        out = FALSE,# 是否输出文件，如果为TRUE， 必须指定输出路径file
                        file = "results/Seita.1G001600_hapResult.txt")  # 输出文件路径（tab分隔的表格）
 

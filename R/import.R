@@ -71,15 +71,28 @@ import_gff <- function(gffFile, format = "GFF"){
 
 
 
-#### Import the pipe operator from magrittr ####
-#' Pipe operator
-#'
-#' @name %>%
-#' @rdname pipe
-#' @keywords internal
-#' @importFrom IRanges %over%
+#' @name import_hapResult
+#' @title  import_hapResult
+#' @usage import_hapResult(file)
+#' @examples
+#' \dontrun{
+#'     hapResult <- import_hapResult("your_hapResult_file.txt")
+#' }
+#' @importFrom rtracklayer import
+#' @param file hapResult file path
 #' @export
-#' @importFrom magrittr %>%
-#' @usage lhs \%>\% rhs
-NULL
+#' @return data.frame
+import_hapResult <- function(file){
+    hapResult <- read.delim(file, header = F)
+    colnames(hapResult) <- hapResult[2,]
+    return(hapResult)
+}
+
+
+
+
+
+
+`%>%` <- magrittr::`%>%`
+`%over%` <- IRanges::`%over%`
 

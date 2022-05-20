@@ -9,7 +9,8 @@ pheno,
 phenoName,hapPrefix = "H",
 geneID = "test1G0387",
 mergeFigs = TRUE,
-minAcc = 5)
+minAcc = 5,
+...)
 }
 \arguments{
 \item{hap}{hap}
@@ -26,6 +27,8 @@ minAcc = 5)
 
 \item{minAcc}{If observations numberof a Hap less than this number will
 not be compared with others or ploted}
+
+\item{...}{options will pass to ggpubr}
 }
 \value{
 list. A list contains a character vector with Haps were applied
@@ -51,12 +54,15 @@ results <- hapVsPheno(hap = hap,
                       mergeFigs = FALSE)
 plot(results$fig_pvalue)
 plot(results$fig_Violin)
-# plot multi figs in a `for` work folw
+
+\dontrun{
+# plot multi figs in a 'for' work folw
 pheno$GrainWeight.2022 = pheno$GrainWeight.2021 + c(1:nrow(pheno))
 for(i in colnames(pheno)){
     results <- hapVsPheno(hap = hap,pheno = pheno,phenoName = i,minAcc = 3)
     png(paste0(i,".png"))
     plot(results$figs)
 dev.off()
+}
 }
 }

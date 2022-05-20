@@ -92,7 +92,15 @@ vcf = import_vcf("YourVcfFile")
 gff = import_gff("YourGffFile")
 phenos = import_pheno("YourPhenoFile")
 
-# Calculate and output haplotype results
+vcf <- filter_vcf(vcf,                # vcfR imported by import_vcf() 
+                  mode = "type",      # filter mode: one of POS/type/both
+                  Chr = "scaffold_1", # Chrom name, needed if mode set as "POS" or "both"
+                  start = 136756,     # start position, needed if mode set as "POS" or "both"
+                  end = 144094,       # end position, needed if mode set as "POS" or "both"
+                  gff = gff,          # gff imported by import_gff(), needed if mode set as "type" or "both"
+                  type = "CDS") # needed if mode set as "type" or "both"， one of CDS/exon/gene/genome
+                  
+                  # Calculate and output haplotype results
 # hap, data.frame: The first column and the last column are fixed as HAP and Accession respectively, and the middle column is the position and the corresponding genotype
 # The first four lines of comment information are: CHR, POS, ALLELE, INFO
 hap = get_hap(vcf,                 # import_vcf()imported vcfR
@@ -105,6 +113,7 @@ hap = get_hap(vcf,                 # import_vcf()imported vcfR
 # hapResult, data.frame: The first column is fixed as HAP, the last two columns are fixed as Accession and freq respectively, the middle column is the position and the corresponding genotype
 # The first four lines of comment information are: CHR, POS, ALLELE, INFO
 hapResult = hap_result(hap,          # hap result
+                       hap_prefix = "H",  # prefix of hap names
                        out  = FALSE, # Whether to output the file, if TRUE, the output path file must be specified
                        file = "results/Seita.1G001600_hapResult.txt")  # output file path(tab separated table)
 
