@@ -239,6 +239,7 @@ remove_redundancy_col <- function(hap){
 #' @import tidyr
 #' @importFrom utils write.table
 #' @param hap hap
+#' @param hap_prefix prefix of hap names
 #' @param out write hap results to a txt file
 #' @param file file path
 #' @export

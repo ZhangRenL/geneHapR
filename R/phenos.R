@@ -224,15 +224,16 @@ hapVsPheno <- function(
 
 #' @name hapVsPhenos
 #' @title hapVsPhenoS
-#' @usage hapVsPhenos(hap,
-#' phenos,
-#' outPutSingleFile = TRUE,
-#' hapPrefix = "H",
-#' geneID = "Seita.0G000000",
-#' mergeFigs = TRUE,
-#' file = file,
-#' width = 12,
-#' height = 8, ...)
+#' @usage
+#' hapVsPhenos(hap,
+#'             phenos,
+#'             outPutSingleFile = TRUE,
+#'             hapPrefix = "H",
+#'             geneID = "Seita.0G000000",
+#'             mergeFigs = TRUE,
+#'             file = file,
+#'             width = 12,
+#'             height = 8, ...)
 #' @param hap hap
 #' @param phenos phenos
 #' @param outPutSingleFile only worked while file type is pdf.

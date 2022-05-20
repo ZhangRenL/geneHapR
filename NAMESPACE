@@ -3,6 +3,8 @@
 export(filter_hap)
 export(filter_vcf)
 export(get_hap)
+export(gffSetATGas0)
+export(hapSetATGas0)
 export(hapVsPheno)
 export(hapVsPhenos)
 export(hap_result)

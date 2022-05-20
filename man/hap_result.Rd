@@ -9,6 +9,8 @@ hap_result(hap, hap_prefix = "H", out = FALSE, file = "hapResult.txt")
 \arguments{
 \item{hap}{hap}
 
+\item{hap_prefix}{prefix of hap names}
+
 \item{out}{write hap results to a txt file}
 
 \item{file}{file path}

@@ -5,14 +5,14 @@
 \title{hapVsPhenoS}
 \usage{
 hapVsPhenos(hap,
-phenos,
-outPutSingleFile = TRUE,
-hapPrefix = "H",
-geneID = "Seita.0G000000",
-mergeFigs = TRUE,
-file = file,
-width = 12,
-height = 8, ...)
+            phenos,
+            outPutSingleFile = TRUE,
+            hapPrefix = "H",
+            geneID = "Seita.0G000000",
+            mergeFigs = TRUE,
+            file = file,
+            width = 12,
+            height = 8, ...)
 }
 \arguments{
 \item{hap}{hap}
