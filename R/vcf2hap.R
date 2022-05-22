@@ -82,11 +82,11 @@ get_hap <- function(
     INFO <- vcfR::getINFO(vcf)
 
     hap <- vcf2hap_data(vcf, REF = REF, ALT= ALT, ALLELE = ALLELE, POS = POS)
-    hap <- reduce_hap(hap)
+    hap <- reduce_gt(hap)
 
     # Drop hyb or N
     if(hyb_remove) {
-        hap[hap == "H"] <- NA
+        hap[!hap %in% c("A","T","C","G","+","-")] <- NA
         hap <- na.omit(hap)
     }
     if(na.drop) {
@@ -163,7 +163,8 @@ vcf2hap_data <- function(vcf, REF = REF, ALT= ALT, ALLELE = ALLELE, POS = POS){
 }
 
 
-reduce_hap <- function(hap){
+
+reduce_gt <- function(hap){
     # reform the genotypes
     # +/-,-/+ ->H
     # A/G,A/T,A/C -> H
@@ -173,11 +174,8 @@ reduce_hap <- function(hap){
     # ++ -> +; -- -> -
     # A/A -> A; T/T ->T; C/C -> C; G/G ->G
     # N/N -> N
-    probe_hyb <- c("AA","CC","GG","TT","++","--","NN")
-    hap[!(hap %in% probe_hyb)] <- "H"
-
-    for(i in probe_hyb) {
-        hap[hap == i] <- stringr::str_sub(i,1,1)
+    for(i in seq_len(ncol(hap))) {
+        hap[,i] <- allS[hap[,i]]
     }
     return(hap)
 }
