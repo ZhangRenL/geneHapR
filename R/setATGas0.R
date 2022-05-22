@@ -1,7 +1,6 @@
 setATGas0 <- function(gff = gff, hap = hap,
                       geneID = geneID,
                       Chr = Chr, POS = c(start, end)){
-    require(IRanges)
     # filter gff by postion
     if(missing(Chr)) {
         warning("Chr is missing, using CHROM in hap")
@@ -40,9 +39,9 @@ setATGas0 <- function(gff = gff, hap = hap,
     if("-" %in% strd & "+" %in% strd)
         stop("Can't decide Gene strand, please check your input")
     if(strd == "+"){
-        POSatg <- min(IRanges::start(gffOver))
+        POSatg <- min(IRanges::start(gffCDS))
     } else if(strd == "-"){
-        POSatg <- max(IRanges::end(gffOver))
+        POSatg <- max(IRanges::end(gffCDS))
     } else {
         stop("Can't decide Gene strand, please check your input")
     }
@@ -56,20 +55,26 @@ setATGas0 <- function(gff = gff, hap = hap,
     if(strd == "-") {
         hap[2, -1] <- -newPOS[-1]
         # rename colnames of hap
-        probe <- intersect(c("Accession","freq"), colnames(hap))
+        probe <- base::intersect(c("Accession","freq"), colnames(hap))
         newColNam <- hap[2,c(2:(ncol(hap)-length(probe)))]
         colnames(hap)[c(2:(ncol(hap)-length(probe)))] <- newColNam
         # reorder cols of hap
         newOrd <- order(as.numeric(newColNam))
         newOrd <- newColNam[newOrd]
+        names(newOrd) <- newOrd[1,]
         firColNam <- colnames(hap)[1]
         lastColNam <- colnames(hap)[(ncol(hap) - length(probe)+1):ncol(hap)]
+        # message(paste(c(firColNam, names(newOrd), lastColNam),sep = "\t",collapse = " "))
         hap <- hap[,c(firColNam, names(newOrd), lastColNam)]
 
         IRanges::start(gffOver) <- -ends
         IRanges::end(gffOver) <- -starts
     } else {
         hap[2, -1] <- newPOS[-1]
+        # rename colnames of hap
+        probe <- base::intersect(c("Accession","freq"), colnames(hap))
+        newColNam <- hap[2,c(2:(ncol(hap)-length(probe)))]
+        colnames(hap)[c(2:(ncol(hap)-length(probe)))] <- newColNam
         IRanges::start(gffOver) <- starts
         IRanges::end(gffOver) <- ends
     }
