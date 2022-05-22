@@ -1,6 +1,7 @@
 setATGas0 <- function(gff = gff, hap = hap,
                       geneID = geneID,
                       Chr = Chr, POS = c(start, end)){
+    require(IRanges)
     # filter gff by postion
     if(missing(Chr)) {
         warning("Chr is missing, using CHROM in hap")
@@ -33,13 +34,14 @@ setATGas0 <- function(gff = gff, hap = hap,
     # get position of ATG
     # filter gff by type: CDS
     gffCDS <- gffOver[gffOver$type == "CDS"]
+
     strd = GenomicRanges::strand(gffCDS)
     strd = unique(strd)
     if("-" %in% strd & "+" %in% strd)
         stop("Can't decide Gene strand, please check your input")
     if(strd == "+"){
         POSatg <- min(IRanges::start(gffOver))
-    } else if(strd == "+"){
+    } else if(strd == "-"){
         POSatg <- max(IRanges::end(gffOver))
     } else {
         stop("Can't decide Gene strand, please check your input")
@@ -53,6 +55,18 @@ setATGas0 <- function(gff = gff, hap = hap,
     # substitute postions in hap and gff
     if(strd == "-") {
         hap[2, -1] <- -newPOS[-1]
+        # rename colnames of hap
+        probe <- intersect(c("Accession","freq"), colnames(hap))
+        newColNam <- hap[2,c(2:(ncol(hap)-length(probe)))]
+        colnames(hap)[c(2:(ncol(hap)-length(probe)))] <- newColNam
+        # reorder cols of hap
+        newOrd <- order(as.numeric(newColNam))
+        newOrd <- newColNam[newOrd]
+        firColNam <- colnames(hap)[1]
+        message(names(newOrd))
+        lastColNam <- colnames(hap)[(ncol(hap) - length(probe)+1):ncol(hap)]
+        hap <- hap[,c(firColNam, names(newOrd), lastColNam)]
+
         IRanges::start(gffOver) <- -ends
         IRanges::end(gffOver) <- -starts
     } else {
@@ -122,5 +136,6 @@ hapSetATGas0 <- function(gff = gff, hap = hap,
     tmp <- setATGas0(gff = gff, hap = hap,
                      geneID = geneID,
                      Chr = Chr, POS = POS)
-    return(tmp$hap)
+    hap <- tmp$hap
+    return(hap)
 }
