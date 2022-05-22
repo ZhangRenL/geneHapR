@@ -63,7 +63,6 @@ setATGas0 <- function(gff = gff, hap = hap,
         newOrd <- order(as.numeric(newColNam))
         newOrd <- newColNam[newOrd]
         firColNam <- colnames(hap)[1]
-        message(names(newOrd))
         lastColNam <- colnames(hap)[(ncol(hap) - length(probe)+1):ncol(hap)]
         hap <- hap[,c(firColNam, names(newOrd), lastColNam)]
 
