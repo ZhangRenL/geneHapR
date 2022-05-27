@@ -3,8 +3,9 @@ Zhangrenl   2022.5.27
 add new functions
 1. as.haplotype
 2. get_hapNet
-3. hapSetATGas0
-4. hap2DNAstring
+3. plotHapNet
+4. hapSetATGas0
+5. hap2DNAstring
 
 optimize
 1. Indel processing logic

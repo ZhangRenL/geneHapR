@@ -4,10 +4,16 @@
 \alias{get_hapNet}
 \title{get_hapNet}
 \usage{
-get_hapNet(hapResult)
+get_hapNet(hapResult, accGroup = accGroup, groupName = groupName)
 }
 \arguments{
 \item{hapResult}{hapResult}
+
+\item{accGroup}{data.frame specified groups of each accessions,
+used for pie plot. If missing, pie will not draw in plotHapNet.
+Or you can supplied a hap.group mattrix with plot(hapNet, pie = hap.group).}
+
+\item{groupName}{one colname of accGroup}
 }
 \value{
 haplonet class

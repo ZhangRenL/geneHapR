@@ -6,6 +6,7 @@
 \alias{gff}
 \alias{phenos}
 \alias{vcf}
+\alias{accGroup}
 \title{Datasets
 gff contains a sample of gff file used for test and samples}
 \description{
@@ -17,5 +18,8 @@ phenos contains a simulated test pheno data used for test and samples
 
 Datasets
 vcf contains a vcf dataset used for test and samples
+
+Datasets
+data.frame defined the group of each accessions
 }
 \keyword{datasets}

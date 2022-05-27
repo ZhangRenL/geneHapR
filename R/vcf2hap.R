@@ -47,7 +47,9 @@ you should generate haps with function 'get_hap' first")
             col.names = FALSE)
     }
     class(hapResults) <- c("data.frame", "hapSummary")
-    attr(hapResults, "options") <- options
+    attr(hapResults, "options") <- attr(hap, "options")
+    attr(hapResults, "hap2acc") <- attr(hap, "hap2acc")
+
     return(hapResults)
 }
 
@@ -171,6 +173,10 @@ get_hap <- function(
     hap <- remove_redundancy_col(hap)
     class(hap) <- unique(c(class(hap), "haptypes"))
     attr(hap, "options") <- options
+    hap2acc <- hap$Accession[-c(1:4)]
+    names(hap2acc) <- hap$Hap[-c(1:4)]
+    attr(hap, "hap2acc") <- hap2acc
+    attr(hap, "freq") <- table(hap$Hap[-c(1:4)])
     return(hap)
 }
 

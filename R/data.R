@@ -30,3 +30,16 @@ NULL
 #' @docType data
 #' @keywords datasets
 NULL
+
+
+
+
+#' Datasets
+#' data.frame defined the group of each accessions
+#'
+#'
+#' @name DataSet
+#' @aliases accGroup
+#' @docType data
+#' @keywords datasets
+NULL
