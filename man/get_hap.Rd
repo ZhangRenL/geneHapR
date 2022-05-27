@@ -5,7 +5,7 @@
 \title{generat haps from vcf}
 \usage{
 get_hap(vcf,
-hap_prefix = "H",
+hapPrefix = "H",
 filter_Chr = FALSE,
 Chr = "scaffold_1",
 filter_POS = FALSE,
@@ -17,7 +17,7 @@ na.drop = TRUE)
 \arguments{
 \item{vcf}{vcf}
 
-\item{hap_prefix}{hap_prefix, defalt is "H"}
+\item{hapPrefix}{hapPrefix, defalt is "H"}
 
 \item{filter_Chr}{filter vcf by Chrome or not, defalt is FALSE.
 If TRUE, the Chr is needed.}

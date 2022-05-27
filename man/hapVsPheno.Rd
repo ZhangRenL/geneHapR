@@ -44,11 +44,11 @@ hapVsPheno
 data("quickHap_test")
 hap <- get_hap(vcf,hyb_remove = TRUE, na.drop = TRUE)
 # plot the figs direactively
-hapVsPheno(hap = hap,pheno = pheno,phenoName = "GrainWeight.2021",minAcc = 3)
+hapVsPheno(hap = hap,pheno = phenos,phenoName = "GrainWeight.2021",minAcc = 3)
 
 #do not merge the files
 results <- hapVsPheno(hap = hap,
-                      pheno = pheno,
+                      pheno = phenos,
                       phenoName = "GrainWeight.2021",
                       minAcc = 3,
                       mergeFigs = FALSE)
@@ -59,7 +59,7 @@ plot(results$fig_Violin)
 # plot multi figs in a 'for' work folw
 pheno$GrainWeight.2022 = pheno$GrainWeight.2021 + c(1:nrow(pheno))
 for(i in colnames(pheno)){
-    results <- hapVsPheno(hap = hap,pheno = pheno,phenoName = i,minAcc = 3)
+    results <- hapVsPheno(hap = hap,pheno = phenos,phenoName = i,minAcc = 3)
     png(paste0(i,".png"))
     plot(results$figs)
 dev.off()

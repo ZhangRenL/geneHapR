@@ -1,5 +1,20 @@
-V 0.99.9
+V 0.99.10
+Zhangrenl   2022.5.27
+add new functions
+1. as.haplotype
+2. get_hapNet
+3. hapSetATGas0
+4. hap2DNAstring
 
+optimize
+1. Indel processing logic
+2. multiallele processing logic
+3. display hapTable with multiallele
+
+
+
+V 0.99.9
+Zhangrenl   2022.5.14
 1. import vcfs, gffs, phenos
 2. generate haps from vcfs
 3. visualization haps

@@ -10,11 +10,11 @@
 NULL
 
 #' Datasets
-#' pheno contains a simulated test pheno data used for test and samples
+#' phenos contains a simulated test pheno data used for test and samples
 #'
 #'
 #' @name DataSet
-#' @aliases pheno
+#' @aliases phenos
 #' @docType data
 #' @keywords datasets
 NULL

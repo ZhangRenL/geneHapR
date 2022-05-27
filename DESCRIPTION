@@ -11,6 +11,10 @@ Version: 0.99.01
 RoxygenNote: 7.1.2
 LazyData: True
 Imports: 
+  ape,
+  pegas,
+  Biostrings,
+  stringdist,
   tidyr,
   dplyr,
   reshape2, 

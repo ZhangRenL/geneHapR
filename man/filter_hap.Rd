@@ -6,7 +6,7 @@
 \usage{
 filter_hap(gff = gff,
            hap = hap,
-           hap_prefix_new = "C_H",
+           hapPrefix_new = "C_H",
            type = c("CDS", "exon", "gene","genome", "custom"),
            custom_type = c("CDS", "exon", "gene"))
 }
@@ -15,7 +15,7 @@ filter_hap(gff = gff,
 
 \item{hap}{hap或hapResult}
 
-\item{hap_prefix_new}{new prefix for filtered haps}
+\item{hapPrefix_new}{new prefix for filtered haps}
 
 \item{type}{筛选模式，CDS/exon/gene/genome/custom之一，
 如果是custom则必须设定custom_type}

@@ -5,21 +5,31 @@
 \title{plotHapTable}
 \usage{
 plotHapTable(hapResult,
-hapPrefix = "H",
-geneID = "",
-title.color = "grey90")
+             hapPrefix = "H",
+             geneID = "",
+             displayIndelSize = 0, angle = c(0,45,90),
+             replaceMultiAllele = TRUE,
+             title.color = "grey90")
 }
 \arguments{
 \item{hapResult}{hapResult}
 
 \item{hapPrefix}{hapPrefix}
 
-\item{geneID}{geneID}
+\item{geneID}{geneID used as mainTitle}
 
-\item{title.color}{title.color}
+\item{displayIndelSize}{display indels with max size of displayIndelSize,
+If set as 0, all indels will convert into 'i*'.}
+
+\item{angle}{angle of coordinate, should be one of 0, 45 and 90}
+
+\item{replaceMultiAllele}{Whether to replace MultiAllele with T*,
+defalt as TRUE}
+
+\item{title.color}{title.color, defalt is grey90}
 }
 \value{
-ggplot2 object.
+ggplot2 object
 }
 \description{
 plot you hap result as a table

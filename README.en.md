@@ -101,7 +101,7 @@ vcf <- filter_vcf(vcf,                # vcfR imported by import_vcf()
                   type = "CDS") # needed if mode set as "type" or "both"， one of CDS/exon/gene/genome
                   
                   # Calculate and output haplotype results
-# hap, data.frame: The first column and the last column are fixed as HAP and Accession respectively, and the middle column is the position and the corresponding genotype
+# hap, data.frame: The first column and the last column are fixed as Hap and Accession respectively, and the middle column is the position and the corresponding genotype
 # The first four lines of comment information are: CHR, POS, ALLELE, INFO
 hap = get_hap(vcf,                 # import_vcf()imported vcfR
               filter_Chr = FALSE,  # filter chromosome options
@@ -110,10 +110,10 @@ hap = get_hap(vcf,                 # import_vcf()imported vcfR
               startPOS = 136756,   # Numeric, starting position, filter vcf information by position
               endPOS = 144094)     # Numeric, end position, filter vcf information by position
 
-# hapResult, data.frame: The first column is fixed as HAP, the last two columns are fixed as Accession and freq respectively, the middle column is the position and the corresponding genotype
+# hapResult, data.frame: The first column is fixed as Hap, the last two columns are fixed as Accession and freq respectively, the middle column is the position and the corresponding genotype
 # The first four lines of comment information are: CHR, POS, ALLELE, INFO
 hapResult = hap_result(hap,          # hap result
-                       hap_prefix = "H",  # prefix of hap names
+                       hapPrefix = "H",  # prefix of hap names
                        out  = FALSE, # Whether to output the file, if TRUE, the output path file must be specified
                        file = "results/Seita.1G001600_hapResult.txt")  # output file path(tab separated table)
 
@@ -135,7 +135,7 @@ plotHapTable(hapResult,               # haplotype result
              title.color = "grey90")  # header background color
 
 # Association analysis of haplotype and phenotype
-phenoResult = hapVsPheno(hap,        # data.frame: The first column and the last column are fixed as HAP and Accession respectively, and the middle column is the position and the corresponding genotype
+phenoResult = hapVsPheno(hap,        # data.frame: The first column and the last column are fixed as Hap and Accession respectively, and the middle column is the position and the corresponding genotype
                  phenos,     # data.frame: The first column is fixed as Accession, then each column is phenotype data, phenoName is used as colnames
                  phenoName = "yourPhenoName", # phenotype name used in this analysis
                  hapPrefix = "H",             # prefix of haplotype number

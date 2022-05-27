@@ -13,12 +13,12 @@ POS2GRanges <- function(Chr, POS){
 #' @usage
 #' filter_hap(gff = gff,
 #'            hap = hap,
-#'            hap_prefix_new = "C_H",
+#'            hapPrefix_new = "C_H",
 #'            type = c("CDS", "exon", "gene","genome", "custom"),
 #'            custom_type = c("CDS", "exon", "gene"))
 #' @param gff gff文件
 #' @param hap hap或hapResult
-#' @param hap_prefix_new new prefix for filtered haps
+#' @param hapPrefix_new new prefix for filtered haps
 #' @param type 筛选模式，CDS/exon/gene/genome/custom之一，
 #' 如果是custom则必须设定custom_type
 #' @param custom_type 自定义筛选模式
@@ -33,7 +33,7 @@ POS2GRanges <- function(Chr, POS){
 #' @export
 filter_hap <- function(gff = gff,
                        hap = hap,
-                       hap_prefix_new = "C_H",
+                       hapPrefix_new = "C_H",
                        type = c("CDS", "exon", "gene", "genome", "custom"),
                        custom_type = c("CDS", "exon", "gene")){
     if(!type %in% c("CDS", "exon", "gene","genome", "custom"))
@@ -56,7 +56,7 @@ filter_hap <- function(gff = gff,
     hap <- hap[,probe]
     meta <- hap[1:4,]
     hap <- hap[5:nrow(hap), -1]
-    hap <- assign_hapID(hap, hap_prefix = hap_prefix_new)
+    hap <- assign_hapID(hap, hapPrefix = hapPrefix_new)
     hap <- rbind(meta, hap)
     return(hap)
 }

@@ -1,8 +1,62 @@
+#' @name hap_result
+#' @title generate hap results
+#' @description summarize hap result and output a txt file
+#' @usage hap_result(hap, hapPrefix = "H", out = FALSE, file = "hapResult.txt")
+#' @examples
+#'
+#' data("quickHap_test")
+#' # You can import your vcf data by `import_vcf()` here
+#' hap <- get_hap(vcf, hyb_remove = TRUE, na.drop =TRUE)
+#' hapResult <- hap_result(hap)
+#' plotHapTable(hapResult)
+#' @import tidyr
+#' @importFrom utils write.table
+#' @param hap hap
+#' @param hapPrefix prefix of hap names
+#' @param out write hap results to a txt file
+#' @param file file path
+#' @export
+#' @return data.frame, first four rows are fixed to meta information: CHR, POS, INFO, ALLELE
+#' Hap names were placed in col1, Accessions and freqs were placed at the last two cols.
+hap_result <- function(hap, hapPrefix = "H", out = FALSE, file = "hapResult.txt"){
+    if(!inherits(hap,"haptypes"))
+        stop("
+'hap' must be of class 'haptypes',
+you should generate haps with function 'get_hap' first")
+    requireNamespace('tidyr')
+    hapResults <- hap %>% data.frame(check.names = FALSE)
+    hapfre <- table(hapResults[,1])
+    hapfre <- hapfre[stringr::str_starts(names(hapfre), hapPrefix)]
+    hapResults <- hapResults %>% tidyr::chop(cols = "Accession")
+    prob = hapResults[5:nrow(hapResults),1]
+    hapResults$freq[5:nrow(hapResults)] <- hapfre[prob]
+    Acc <- c()
+    nAcc = length(hapResults$Accession)
+    for(i in seq_len(nAcc)) {
+        Acc[i] <- paste(hapResults$Accession[[i]],collapse = ";")
+    }
+    hapResults$Accession <- Acc
+
+    if(out)  {
+        utils::write.table(
+            hapResults,
+            file = file,
+            sep = "\t",
+            quote = FALSE,
+            row.names = FALSE,
+            col.names = FALSE)
+    }
+    class(hapResults) <- c("data.frame", "hapSummary")
+    attr(hapResults, "options") <- options
+    return(hapResults)
+}
+
+
 #' @name get_hap
 #' @title generat haps from vcf
 #' @description  generate hap format from vcf.
 #' @usage get_hap(vcf,
-#' hap_prefix = "H",
+#' hapPrefix = "H",
 #' filter_Chr = FALSE,
 #' Chr = "scaffold_1",
 #' filter_POS = FALSE,
@@ -28,7 +82,7 @@
 #'  If TRUE, the Chr is needed.
 #' @param filter_POS filter vcf by Position or not, defalt is FALSE.
 #'  If TRUE, startPOS and endPOS are needed.
-#' @param hap_prefix hap_prefix, defalt is "H"
+#' @param hapPrefix hapPrefix, defalt is "H"
 #' @param hyb_remove Remove accessions contains hybrid site or not.
 #' Defalt is TRUE.
 #' @param na.drop Drop Accessions contains unknown allele site or note.
@@ -40,19 +94,22 @@
 #' @return data.frame, first four rows are fixed to meta information: CHR, POS, INFO, ALLELE
 #' Hap names were placed in col1, Accessions were placed at the last col.
 get_hap <- function(
-    vcf, hap_prefix = "H",
+    vcf, hapPrefix = "H",
     filter_Chr = FALSE, Chr = "scaffold_1",
     filter_POS = FALSE, startPOS = 104, endPOS = 9889,
     hyb_remove = TRUE,
     na.drop = TRUE) {
     requireNamespace('tidyr')
     requireNamespace('dplyr')
+    allS_new <- allS
+    options <- c(hapPrefix = hapPrefix)
     if(filter_Chr){
         if(missing(Chr)) stop("Chr must be character")
         vcfChr <- vcf@fix[,1]
         probe <- vcfChr %in% Chr
         vcf@fix <- vcf@fix[probe,]
         vcf@gt <- vcf@gt[probe,]
+        options <- c(options, CHROMFiltered = Chr)
     }
 
     # filter Postion according given range
@@ -71,6 +128,7 @@ get_hap <- function(
         }
         vcf@fix <- vcf@fix[probe,]
         vcf@gt <- vcf@gt[probe,]
+        options <- c(options, POSFiltered = paste0(startPOS,"-",endPOS))
     }
 
     vcf <- order_vcf(vcf)
@@ -81,20 +139,24 @@ get_hap <- function(
     ALLELE <- paste0(REF,"/",ALT)
     INFO <- vcfR::getINFO(vcf)
 
-    hap <- vcf2hap_data(vcf, REF = REF, ALT= ALT, ALLELE = ALLELE, POS = POS)
-    hap <- reduce_gt(hap)
-
+    hapData <- vcf2hap_data(vcf, allS_new = allS_new,
+                        REF = REF, ALT= ALT, ALLELE = ALLELE, POS = POS)
+    allS_new <- hapData$allS_new
+    hap <- hapData$hap
     # Drop hyb or N
     if(hyb_remove) {
-        hap[!hap %in% c("A","T","C","G","+","-")] <- NA
+        hap[!hap %in% allS_new$homo] <- NA
         hap <- na.omit(hap)
-    }
+        options <- c(options, hyb_remove = "YES")
+    } else options <- c(options, hyb_remove = "NO")
+
     if(na.drop) {
         hap[hap == "N"] <- NA
         hap <- na.omit(hap)
-    }
+        options <- c(options, NA_remove = "YES")
+    } else options <- c(options, NA_remove = "NO")
 
-    hap <- assign_hapID(hap, hap_prefix)
+    hap <- assign_hapID(hap, hapPrefix)
 
     # add infos
     meta <- rbind(
@@ -107,6 +169,8 @@ get_hap <- function(
     rownames(hap) <- seq_len(nrow(hap))
 
     hap <- remove_redundancy_col(hap)
+    class(hap) <- unique(c(class(hap), "haptypes"))
+    attr(hap, "options") <- options
     return(hap)
 }
 
@@ -121,7 +185,8 @@ order_vcf <- function(vcf){
 
 
 #' @importFrom rlang .data
-vcf2hap_data <- function(vcf, REF = REF, ALT= ALT, ALLELE = ALLELE, POS = POS){
+vcf2hap_data <- function(vcf, allS_new = allS_new,
+                         REF = REF, ALT= ALT, ALLELE = ALLELE, POS = POS){
     # vcf2data.frame for analysis
     gt <- vcfR::extract_gt_tidy(vcf)
     hap <- tidyr::pivot_wider(
@@ -132,56 +197,41 @@ vcf2hap_data <- function(vcf, REF = REF, ALT= ALT, ALLELE = ALLELE, POS = POS){
     hap <- dplyr::select(hap, -c(.data$Key))
     hap <- as.matrix(hap)
     rownames(hap) <- POS
+
     # convert "." into "N/N"
     hap[hap == "."] <- "N/N"
 
-    # convert Indel into +/-
+    # convert Indel(biallelic site) into +/-
     nr = nrow(hap)
+    indel_probe <- vcfR::is.indel(vcf)
+    biallelic_probe <- vcfR::is.biallelic(vcf)
     for(l in seq_len(nr)){
-        if(stringr::str_length(ALLELE[l]) > 3){
-            if(stringr::str_length(REF[l]) > stringr::str_length(ALT[l])){
-                gety <- c("++", "+-", "-+", "--", "NN")
-            } else {
-                gety <- c("--", "-+", "+-", "++", "NN")
-            }
-            REFl <- REF[l]
-            ALTl <- ALT[l]
-            names(gety) <- paste(
-                c(REFl,REFl,ALTl,ALTl,"N"),
-                c(REFl,ALTl,REFl,ALTl,"N"),
-                sep = "/")
-            probe <- hap[l,]
-            hap[l,] <- gety[probe]
-        } else {
-            hap[l,] <- stringr::str_remove_all(hap[l,], "[/]")
-        }
+        if(biallelic_probe[l]){
+            if(indel_probe[l])
+                allS_new <- update_allS(allS_new, REF = REF[l], ALT = ALT[l])
+        } else
+            allS_new <- update_allS(allS_new, REF = REF[l], ALT = ALT[l])
     }
 
     hap <- t(hap)
 
-    return(hap)
-}
-
-
-
-reduce_gt <- function(hap){
     # reform the genotypes
-    # +/-,-/+ ->H
-    # A/G,A/T,A/C -> H
-    # C/A,C/G,C/T -> H
-    # G/A,G/T,G/A -> H
-    # T/A,T/G,T/C -> H
+    # homo site convert into single
     # ++ -> +; -- -> -
     # A/A -> A; T/T ->T; C/C -> C; G/G ->G
     # N/N -> N
+    # hetero convert "/" to "|"
     for(i in seq_len(ncol(hap))) {
-        hap[,i] <- allS[hap[,i]]
+        hap[,i] <- allS_new$all[hap[,i]]
     }
-    return(hap)
+    return(list(hap = hap, allS_new = allS_new))
 }
 
 
-assign_hapID <- function(hap, hap_prefix){
+
+
+
+assign_hapID <- function(hap, hapPrefix){
     # name haps
     hap <- data.frame(hap, check.rows = FALSE, check.names = FALSE)
 
@@ -198,7 +248,7 @@ assign_hapID <- function(hap, hap_prefix){
     haps <- haps[order(haps,decreasing = TRUE)]
     n_hs <- length(haps)
     hapnms <- stringr::str_pad(seq_len(n_hs),3,"left","0")
-    hapnms <- paste0(hap_prefix, hapnms)
+    hapnms <- paste0(hapPrefix, hapnms)
     names(hapnms) <- names(haps)
     hap$Hap <- hapnms[hap$Hap]
     hap <- hap[order(hap$Hap),]
@@ -223,49 +273,4 @@ remove_redundancy_col <- function(hap){
     return(hap)
 }
 
-#' @name hap_result
-#' @title generate hap results
-#' @description summarize hap result and output a txt file
-#' @usage hap_result(hap, hap_prefix = "H", out = FALSE, file = "hapResult.txt")
-#' @examples
-#'
-#' data("quickHap_test")
-#' # You can import your vcf data by `import_vcf()` here
-#' hap <- get_hap(vcf, hyb_remove = TRUE, na.drop =TRUE)
-#' hapResult <- hap_result(hap)
-#' plotHapTable(hapResult)
-#' @import tidyr
-#' @importFrom utils write.table
-#' @param hap hap
-#' @param hap_prefix prefix of hap names
-#' @param out write hap results to a txt file
-#' @param file file path
-#' @export
-#' @return data.frame, first four rows are fixed to meta information: CHR, POS, INFO, ALLELE
-#' Hap names were placed in col1, Accessions and freqs were placed at the last two cols.
-hap_result <- function(hap, hap_prefix = "H", out = FALSE, file = "hapResult.txt"){
-    requireNamespace('tidyr')
-    hapResults <- hap %>% data.frame(check.names = FALSE)
-    hapfre <- table(hapResults[,1])
-    hapfre <- hapfre[stringr::str_starts(names(hapfre), hap_prefix)]
-    hapResults <- hapResults %>% tidyr::chop(cols = "Accession")
-    prob = hapResults[5:nrow(hapResults),1]
-    hapResults$freq[5:nrow(hapResults)] <- hapfre[prob]
-    Acc <- c()
-    nAcc = length(hapResults$Accession)
-    for(i in seq_len(nAcc)) {
-        Acc[i] <- paste(hapResults$Accession[[i]],collapse = ";")
-    }
-    hapResults$Accession <- Acc
 
-    if(out)  {
-        utils::write.table(
-            hapResults,
-            file = file,
-            sep = "\t",
-            quote = FALSE,
-            row.names = FALSE,
-            col.names = FALSE)
-        }
-    return(hapResults)
-}

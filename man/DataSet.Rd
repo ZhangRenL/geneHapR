@@ -4,7 +4,7 @@
 \name{DataSet}
 \alias{DataSet}
 \alias{gff}
-\alias{pheno}
+\alias{phenos}
 \alias{vcf}
 \title{Datasets
 gff contains a sample of gff file used for test and samples}
@@ -13,7 +13,7 @@ Datasets
 gff contains a sample of gff file used for test and samples
 
 Datasets
-pheno contains a simulated test pheno data used for test and samples
+phenos contains a simulated test pheno data used for test and samples
 
 Datasets
 vcf contains a vcf dataset used for test and samples

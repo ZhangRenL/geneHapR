@@ -4,12 +4,12 @@
 \alias{hap_result}
 \title{generate hap results}
 \usage{
-hap_result(hap, hap_prefix = "H", out = FALSE, file = "hapResult.txt")
+hap_result(hap, hapPrefix = "H", out = FALSE, file = "hapResult.txt")
 }
 \arguments{
 \item{hap}{hap}
 
-\item{hap_prefix}{prefix of hap names}
+\item{hapPrefix}{prefix of hap names}
 
 \item{out}{write hap results to a txt file}
 
