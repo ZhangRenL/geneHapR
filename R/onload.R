@@ -1,4 +1,5 @@
 .onLoad <- function(libname, pkgname) {
+    message("lastupdate: 2022.5.28")
     options(stringsAsFactors = FALSE)
 }
 
