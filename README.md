@@ -153,15 +153,38 @@ plotHapNet(hapNet)
 
 ### 5.2 软件使用
 
+#### 5.2.1 数据导入
+
+**1. 直接导入数据**
 ``` r
 # 加载quickHapR
 library(quickHapR)
-data("quickHap_test") # 加载测试数据,处理自己的数据时不必执行该行
-
 # 设定工作目录
 setwd("/your/working/directory")
 
+# 导入数据
+vcf = import_vcf("Seita.1G001600_136756_144094_-_3k.vcf.gz")
+gff = import_gff("Sitalica.gff3")
+phenos = import_pheno("phenos.txt")
+accGroup <- read.table("accgroup.txt", header = TRUE, check.names = FALSE, row.names = 1)
 
+```
+
+**2. 大vcf文件的预处理**
+
+``` r
+# 大vcf文件的筛选
+bigVcfFilter(VCFin = "",               # 待处理vcf文件路径
+             VCFout = "",              # 输出文件路径
+             Chr = "scaffold_1",       # 染色体名称
+             POS = c(start, end),      # 长度为2的数值型向量
+             overWrite = TRUE)         # 如果输出文件已存在，是否覆盖
+
+```
+
+
+#### 5.2.2 
+``` r
 # 基本数据设定
 geneID <- "Seita.1G001600"
 Chr <- "scaffold_1"
@@ -170,11 +193,6 @@ start <- 136756
 end <- 144094
 hapPreFix <- "H"
 
-# 导入数据
-vcf = import_vcf("vcf/rawvcf/Seita.1G001600_136756_144094_-_3k.vcf.gz")
-gff = import_gff("gff/Sitalica.gff3")
-phenos = import_pheno("phenos.txt")
-accGroup <- read.table("accgroup.txt", header = TRUE, check.names = FALSE, row.names = 1)
 
 
 # 根据GFF注释信息对外显子上的变异位点进行筛选

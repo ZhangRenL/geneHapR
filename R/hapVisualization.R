@@ -52,7 +52,7 @@ plotHapTable <- function(
     probe_indel <- is.indel.allele(ALLELE)
     probe_mula <- is.multiallelic.allele(ALLELE)
 
-    footi <- c()
+    footi <- ""
     if(TRUE %in% probe_indel){
         # set notes
         displayIndelSize <- displayIndelSize + 1
@@ -83,7 +83,7 @@ plotHapTable <- function(
     }
 
     # replace multiallele title
-    footT <- c()
+    footT <- ""
     if(replaceMultiAllele & TRUE %in% probe_mula){
         rept <- ALLELE[probe_mula]
         noteT <- paste0("T",seq_len(length(rept)))

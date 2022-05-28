@@ -3,9 +3,8 @@
 #' @description summarize hap result and output a txt file
 #' @usage hap_result(hap, hapPrefix = "H", out = FALSE, file = "hapResult.txt")
 #' @examples
-#'
 #' data("quickHap_test")
-#' # You can import your vcf data by `import_vcf()` here
+#' # Your vcf data should imported by `import_vcf()` here
 #' hap <- get_hap(vcf, hyb_remove = TRUE, na.drop =TRUE)
 #' hapResult <- hap_result(hap)
 #' plotHapTable(hapResult)

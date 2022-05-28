@@ -134,6 +134,7 @@ filter_vcf <- function(vcf, gff = gff,
         POS <- as.numeric(POS)
         POSRange <- POS2GRanges(Chr = Chr, POS = POS)
         POSRange_rm <- POSRange[!(POSRange %over% gff)]
+
         POS_rm <- IRanges::start(POSRange_rm)
         probe <- !(POS %in% POS_rm)
         vcf@fix <- vcf@fix[probe,]

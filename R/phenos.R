@@ -182,15 +182,23 @@ hapVsPheno <- function(
     data <- data[order(data$Hap,decreasing = FALSE),]
 
     data$Hap <- hps[data$Hap]
-
-    fig2 <- ggpubr::ggviolin(
+    capt <- stringr::str_split(phenoName,"[.]")[[1]][2]
+    if(is.na(capt)) fig2 <- ggpubr::ggviolin(
         data,
         x = "Hap",
         y = phenoName,
         color = "Hap",
-        caption = stringr::str_split(phenoName,"[.]")[[1]][2],
         legend = "right", legend.title = "",
-        add = "boxplot", ...)  +  # 不要动
+        add = "boxplot", ...) else
+            fig2 <- ggpubr::ggviolin(
+                data,
+                x = "Hap",
+                y = phenoName,
+                color = "Hap",
+                caption = capt,
+                legend = "right", legend.title = "",
+                add = "boxplot", ...)
+     fig2 <- fig2 +  # 不要动
         #    stat_compare_means(label.y = max(data[,2]))+
         # 去掉这行就没有比较了(Kruskal-Wallis test)
         ggplot2::ggtitle(label = geneID) +
@@ -284,6 +292,7 @@ hapVsPhenos <- function(hap,
     if(ncol(phenos) == 1)
         warning("There is only one col detected in phenos, 'hapVsPheno' is prefered")
     phenoNames <- colnames(phenos)
+    steps <- 0
     for (phenoName in phenoNames){
         if(!probe){
             switch(
@@ -302,6 +311,8 @@ hapVsPhenos <- function(hap,
                 "tiff" = tiff(filename = file,
                               width = width, height = height, units = "in", res = 300))
         }
+        steps <- steps + 1
+        message("Total: ", ncol(phenos),"; current: ", steps,";\t", phenoName)
         resulti <- hapVsPheno(hap,
                               pheno = phenos,
                               phenoName = phenoName,

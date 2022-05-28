@@ -23,9 +23,8 @@ Hap names were placed in col1, Accessions and freqs were placed at the last two 
 summarize hap result and output a txt file
 }
 \examples{
-
 data("quickHap_test")
-# You can import your vcf data by `import_vcf()` here
+# Your vcf data should imported by `import_vcf()` here
 hap <- get_hap(vcf, hyb_remove = TRUE, na.drop =TRUE)
 hapResult <- hap_result(hap)
 plotHapTable(hapResult)

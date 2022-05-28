@@ -1,7 +1,11 @@
 .onLoad <- function(libname, pkgname) {
-    message("lastupdate: 2022.5.28")
     options(stringsAsFactors = FALSE)
 }
+
+packageStartupMessage("
+lastupdate: 2022.5.30
+Author: Zhang Ren Liang\n(Mail: zhang_renliang@163.com)
+")
 
 homo <- c("A", "C", "G", "T")
 names(homo) <- paste(homo, homo, sep = "/")

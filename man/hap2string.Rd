@@ -8,6 +8,8 @@ hap2string(hapResult, type = "DNA")
 }
 \arguments{
 \item{hapResult}{hapResult}
+
+\item{type}{return a charactot vector or a DNAbin object}
 }
 \description{
 convert hapsummary to BioStringsset class

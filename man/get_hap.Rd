@@ -5,14 +5,14 @@
 \title{generat haps from vcf}
 \usage{
 get_hap(vcf,
-hapPrefix = "H",
-filter_Chr = FALSE,
-Chr = "scaffold_1",
-filter_POS = FALSE,
-startPOS = 104,
-endPOS = 9889,
-hyb_remove = TRUE,
-na.drop = TRUE)
+        hapPrefix = "H",
+        filter_Chr = FALSE,
+        Chr = "scaffold_1",
+        filter_POS = FALSE,
+        startPOS = 104,
+        endPOS = 9889,
+        hyb_remove = TRUE,
+        na.drop = TRUE)
 }
 \arguments{
 \item{vcf}{vcf}

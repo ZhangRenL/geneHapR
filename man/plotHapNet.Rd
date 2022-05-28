@@ -4,33 +4,38 @@
 \alias{plotHapNet}
 \title{plotHapNet}
 \usage{
-plotHapNet(
-  hapNet,
-  size = "freq",
-  scale.ratio = 1,
-  cex = 0.8,
-  col.link = 1,
-  link.width = link.width,
-  show.mutation = 1,
-  lwd = 1,
-  pieCol = pieCol,
-  pie = hapGroup,
-  legendPOS = "left",
-  ...
-)
+plotHapNet(hapNet,
+           size = "freq", scale.ratio = 1, cex = 0.8,
+           col.link = 1, link.width = link.width,
+           show.mutation = 1, lwd = 1,
+           pieCol = pieCol, pieData = hapGroup,
+           addLegend = FALSE, ...)
 }
 \arguments{
-\item{size}{circle size}
+\item{hapNet}{an object of class "haploNet".}
+
+\item{size}{a numeric vector giving the diameter of the circles representing the haplotypes: this is in the same unit than the links and eventually recycled.}
+
+\item{scale.ratio}{the ratio of the scale of the links representing the number of steps on the scale of the circles representing the haplotypes. It may be needed to give a value greater than one to avoid overlapping circles.}
 
 \item{cex}{character expansion factor relative to current par("cex").
 Used for text, and provides the default for pt.cex.}
 
+\item{col.link}{a character vector specifying the colours of the links; eventually recycled.}
+
+\item{link.width}{a numeric vector giving the width of the links; eventually recycled.}
+
+\item{show.mutation}{an integer value: if 0, nothing is drawn on the links; if 1, the mutations are shown with small segments on the links; if 2, they are shown with small dots; if 3, the number of mutations are printed on the links.}
+
+\item{lwd}{a numeric vector giving the width of the links; eventually recycled.}
+
 \item{pieCol}{colors}
 
-\item{...}{pass to plot function}
+\item{pieData}{a matrix used to draw pie charts for each haplotype; its number of rows must be equal to the number of haplotypes.}
 
-\item{lenendPOS}{one of "bottomright", "bottom", "bottomleft", "left",
-"topleft", "top", "topright", "right" and "center".}
+\item{addLegend}{a logical specifying whether to draw the legend, or a vector of length two giving the coordinates where to draw the legend; FALSE by default. If TRUE, the user is asked to click where to draw the legend.}
+
+\item{...}{pass to plot function}
 }
 \description{
 plotHapNet

@@ -33,11 +33,18 @@ get_hapNet <- function(hapResult, accGroup = accGroup, groupName = groupName){
 #'            size = "freq", scale.ratio = 1, cex = 0.8,
 #'            col.link = 1, link.width = link.width,
 #'            show.mutation = 1, lwd = 1,
-#'            pieCol = pieCol, pie = hapGroup,
-#'            legendPOS = "left", addLegend, ...)
-#' @param lenendPOS one of "bottomright", "bottom", "bottomleft", "left",
-#' "topleft", "top", "topright", "right" and "center".
-#' @param size circle size
+#'            pieCol = pieCol, pieData = hapGroup,
+#'            addLegend = FALSE, ...)
+#' @param hapNet an object of class "haploNet".
+#' @param size a numeric vector giving the diameter of the circles representing the haplotypes: this is in the same unit than the links and eventually recycled.
+#' @param scale.ratio the ratio of the scale of the links representing the number of steps on the scale of the circles representing the haplotypes. It may be needed to give a value greater than one to avoid overlapping circles.
+#' @param col.link a character vector specifying the colours of the links; eventually recycled.
+#' @param link.width a numeric vector giving the width of the links; eventually recycled.
+#' @param show.mutation an integer value: if 0, nothing is drawn on the links; if 1, the mutations are shown with small segments on the links; if 2, they are shown with small dots; if 3, the number of mutations are printed on the links.
+#' @param lwd a numeric vector giving the width of the links; eventually recycled.
+#' @param pieCol color vector
+#' @param pieData a matrix used to draw pie charts for each haplotype; its number of rows must be equal to the number of haplotypes.
+#' @param addLegend a logical specifying whether to draw the legend, or a vector of length two giving the coordinates where to draw the legend; FALSE by default. If TRUE, the user is asked to click where to draw the legend.
 #' @param cex character expansion factor relative to current par("cex").
 #' Used for text, and provides the default for pt.cex.
 #' @param pieCol colors
@@ -47,11 +54,15 @@ plotHapNet <- function(hapNet,
                        size = "freq", scale.ratio = 1, cex = 0.8,
                        col.link = 1, link.width = link.width,
                        show.mutation = 1, lwd = 1,
-                       pieCol = pieCol, pie = hapGroup,
-                       legendPOS = "left", addLegend, ...){
+                       pieCol = pieCol, pieData = hapGroup,
+                       addLegend = FALSE, ...){
     if(!inherits(hapNet, "haploNet"))
         stop("'hapNet' must be of 'haploNet' class")
-    hapGroup <- attr(hapNet, "hapGroup")
+    if(missing(pieData)){
+        hapGroup <- attr(hapNet, "hapGroup")
+    } else {
+        hapGroup <- pieData
+    }
     if(size == "freq") size <- attr(hapNet, "freq") else
         if(!is.numeric(size))
             stop("'size' should be 'freq' or a given vector")
@@ -76,61 +87,6 @@ plotHapNet <- function(hapNet,
              ...)
     }
 }
-
-# plotHapNet(hapNet,legendPOS = "left")
-#
-# if (legend[1]) {
-#     if (is.logical(legend)) {
-#         cat("Click where you want to draw the legend")
-#         xy <- unlist(locator(1))
-#         cat("\nThe coordinates x = ", xy[1], ", y = ", xy[2], " are used\n", sep = "")
-#     } else {
-#         if (!is.numeric(legend) || length(legend) < 2)
-#             stop("wrong coordinates of legend")
-#         xy <- legend
-#     }
-#     if (length(SZ <- unique(size)) > 1) {
-#         SZ <- unique(c(min(SZ), floor(median(SZ)), max(SZ)))
-#         SHIFT <- max(SZ) / 2
-#         vspace <- strheight(" ")
-#         if (any(shape == "circles")) {
-#             for (sz in SZ) {
-#                 seqx <- seq(-sz / 2, sz / 2, length.out = 100)
-#                 seqy <- sqrt((sz /2)^2 - seqx^2)
-#                 seqx <- seqx + xy[1] + SHIFT
-#                 seqy <- xy[2] + seqy - SHIFT
-#                 lines(seqx, seqy)
-#                 text(seqx[100], seqy[100], sz, adj = c(0.5, 1.1))
-#             }
-#             xy[2] <- xy[2] - SHIFT - 2 * vspace # update 'y'
-#         }
-#         if (any(shape == "squares") || any(shape == "diamonds")) {
-#             sqrtPIon4 <- sqrt(pi) / 4
-#             ## center of the squares:
-#             orig.x <- xy[1] + max(SZ) * sqrtPIon4
-#             orig.y <- xy[2] - max(SZ) * sqrtPIon4
-#             for (sz in SZ) {
-#                 TMP <- sz * sqrtPIon4
-#                 lines(orig.x + c(-TMP, -TMP, TMP, TMP),
-#                       orig.y + c(0, TMP, TMP, 0))
-#                 text(orig.x + TMP, orig.y, sz, adj = c(0.5, 1.1))
-#             }
-#             xy[2] <- xy[2] - SHIFT - 2 * vspace # update
-#         }
-#     }
-#     if (!is.null(pie)) {
-#         nc <- ncol(pie)
-#         ##co <- if (length(bg) == 1 && bg == "white") rainbow(nc) else rep(bg, length.out = nc)
-#         co <- if (is.function(bg)) bg(nc) else rep(bg, length.out = nc)
-#         w <- diff(par("usr")[3:4]) / 40
-#         TOP <- seq(xy[2], by = -w, length.out = nc)
-#         BOTTOM <- TOP + diff(TOP[1:2]) * 0.9
-#         LEFT <- rep(xy[1], nc)
-#         RIGHT <- LEFT + w
-#         rect(LEFT, BOTTOM, RIGHT, TOP, col = co)
-#         text(RIGHT, (TOP + BOTTOM) /2, colnames(pie), adj = -0.5)
-#     }
-# }
 
 
 #' @title as.haplotype
@@ -166,6 +122,7 @@ as.haplotype <- function(hapResult){
 #' @importFrom stringr str_detect str_pad str_length
 #' @importFrom Biostrings DNAStringSet
 #' @param hapResult hapResult
+#' @param type return a charactot vector or a DNAbin object
 #' @export
 hap2string <- function(hapResult, type = "DNA"){
     colNms <- colnames(hapResult)
