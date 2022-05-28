@@ -55,11 +55,14 @@ lastUpdate:   2022.05.20
 
 **文件格式：**至少两列，第一列为材料名称，与vcf文件中的individuals对应，之后各列为不同表型；第一行为表型名称，表型名称如果包括除表型名外的其他信息如时间、地点等可以用‘.’与表型名分隔开不同元素间可用‘\_’分隔，如：`plantHeight.2021_BeiJing`，`Weight.female`
 
+
 **读取方法：**`import_pheno()`或`read.table(file = "", header = TRUE, row.names = 1, check.names = FALSE)`, `read.delim()`均可用于该文件的读取，推荐使用\`import_pheno()
+
 
 **R数据类型：**data.frame，材料名称作为row.names， 表型名称作为col.names
 
 #### 3.1.4 Accession type
+
 
 **文件格式：**至少两列，第一列为材料名称；随后不同列为对应的材料类别
 
@@ -78,9 +81,10 @@ lastUpdate:   2022.05.20
 
 #### 3.2.2 HapResult:
 
+
 #### 3.2.3 HapTree:
 
-#### 3.2.4 
+#### 3.2.4
 
 ## 4. 安装教程
 
