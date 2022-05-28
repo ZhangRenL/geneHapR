@@ -135,13 +135,13 @@ install(c("ggpubr", "vcfR", "tidyverse", "stringr", "resHape2", "randomcoloR",
 ``` r
 library(quickHapR)
 data("quickHap_test")
-hap <- get_Hap(vcf,hyb_remove = TRUE, na.drop = TRUE)
-hapVsPheno(hap = hap,pheno = pheno,phenoName = "GrainWeight.2021",minAcc = 3)
+hap <- get_hap(vcf, hyb_remove = TRUE, na.drop = TRUE)
+hapVsPheno(hap = hap,pheno = pheno, phenoName = "GrainWeight.2021",minAcc = 3)
 hapResult <- hap_result(hap)
 plotHapTable(hapResult)
 plotHapTable(hapResult)
 phenoResult <- hapVsPheno(hap = hap,
-                      pheno = pheno,
+                      pheno = phenos,
                       phenoName = "GrainWeight.2021",
                       minAcc = 3,
                       mergeFigs = TRUE)
@@ -164,7 +164,7 @@ gff = import_gff("Yugu1.gff3")
 phenos = import_pheno("allPheno.txt")
 
 # 获取基因起始位置
-GeneRange <- getGeneStartEndStrd(gff, geneID)
+# GeneRange <- getGeneStartEndStrd(gff, geneID)
 
 # 对VCF进行筛选
 vcf <- filter_vcf(vcf,                # import_vcf() 导入的vcfR
@@ -176,7 +176,7 @@ vcf <- filter_vcf(vcf,                # import_vcf() 导入的vcfR
                   type = "CDS") # 筛选模式为type或both时必须，CDS/exon/gene/genome之一
 
 # 计算并输出单倍型结果
-# hap,data.frame:第一列与最后一列分别固定为Hap和Accession，中间列为位置及对应的基因型
+# hap, data.frame:第一列与最后一列分别固定为Hap和Accession，中间列为位置及对应的基因型
 # 前四行为注释信息分别是：CHR，POS，ALLELE,INFO
 hap = get_hap(vcf,                 # import_vcf() 导入的vcfR
               filter_Chr = FALSE,  # 筛选染色体选项
@@ -194,8 +194,8 @@ hapResult = hap_result(hap,        # hap 结果
 
 # 获取单倍型进化关系
 hapNet = get_hapNet(hapResult, 
-                    accGroup = accGroup,
-                    groupNmae = colnames(accGroup)[1]) 
+                    accGroup = accGroup)
+#                    groupNmae = colnames(accGroup)[1]) 
 
 # 单倍型网络
 plot(hapNet)
