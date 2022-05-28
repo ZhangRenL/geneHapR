@@ -135,12 +135,12 @@ install(c("ggpubr", "vcfR", "tidyverse", "stringr", "resHape2", "randomcoloR",
 ``` r
 library(quickHapR)
 data("quickHap_test")
-Hap <- get_Hap(vcf,hyb_remove = TRUE, na.drop = TRUE)
-HapVsPheno(Hap = Hap,pheno = pheno,phenoName = "GrainWeight.2021",minAcc = 3)
-HapResult <- Hap_result(Hap)
-plotHapTable(HapResult)
-plotHapTable(HapResult)
-phenoResult <- HapVsPheno(Hap = Hap,
+hap <- get_Hap(vcf,hyb_remove = TRUE, na.drop = TRUE)
+hapVsPheno(hap = hap,pheno = pheno,phenoName = "GrainWeight.2021",minAcc = 3)
+hapResult <- hap_result(hap)
+plotHapTable(hapResult)
+plotHapTable(hapResult)
+phenoResult <- hapVsPheno(hap = hap,
                       pheno = pheno,
                       phenoName = "GrainWeight.2021",
                       minAcc = 3,
@@ -174,21 +174,21 @@ vcf <- filter_vcf(vcf,                # import_vcf() 导入的vcfR
                   end = 144094,       # 筛选模式为POS或both时必须，结束位置
                   gff = gff,          # 筛选模式为type或both时必须，gff
                   type = "CDS") # 筛选模式为type或both时必须，CDS/exon/gene/genome之一
-                  
+
 # 计算并输出单倍型结果
-# Hap,data.frame:第一列与最后一列分别固定为Hap和Accession，中间列为位置及对应的基因型
+# hap,data.frame:第一列与最后一列分别固定为Hap和Accession，中间列为位置及对应的基因型
 # 前四行为注释信息分别是：CHR，POS，ALLELE,INFO
-Hap = get_Hap(vcf,                 # import_vcf() 导入的vcfR
+hap = get_hap(vcf,                 # import_vcf() 导入的vcfR
               filter_Chr = FALSE,  # 筛选染色体选项
               Chr = "scaffold_1",  # 通过染色体对vcf信息进行筛选
               filter_POS = TRUE,   # 通过位置进行筛选
               startPOS = 136756,   # Numeric, 起始位置，通过位置对vcf信息进行筛选
               endPOS = 144094)     # Numeric, 终止位置，通过位置对vcf信息进行筛选
 
-# HapResult, data.frame: 第一列固定为Hap，最后两列分别固定为Accession和freq，中间列为位置及对应的基因型
+# hapResult, data.frame: 第一列固定为Hap，最后两列分别固定为Accession和freq，中间列为位置及对应的基因型
 # 前四行为注释信息分别是：CHR，POS，ALLELE,INFO
-HapResult = Hap_result(Hap,        # Hap 结果
-                       HapPrefix = "H",  # 单倍型前缀
+hapResult = hap_result(hap,        # hap 结果
+                       hapPrefix = "H",  # 单倍型前缀
                        out = FALSE,# 是否输出文件，如果为TRUE， 必须指定输出路径file
                        file = "results/Seita.1G001600_HapResult.txt")  # 输出文件路径（tab分隔的表格）
 
@@ -204,7 +204,7 @@ plotHapNet(hapNet)
 
 # 可视化单倍型结果
 plotGeneStructure(gff,                # gff注释信息
-                  HapResult,          # 单倍型结果
+                  hapResult,          # 单倍型结果
                   Chr = "scaffold_1", # 基因所在染色体
                   startPOS = 136756,  # 基因结构示意图的起始位点
                   endPOS = 144094,    # 基因结构示意图的终止位置
@@ -214,20 +214,20 @@ plotGeneStructure(gff,                # gff注释信息
                   fiveUTR_h = 0.02, 
                   threeUTR_h = 0.01) 
 # 单倍型表格
-plotHapTable(HapResult,               # 单倍型结果
-             HapPrefix = "H",         # 单倍型前缀（阿拉伯数字前的字母）
+plotHapTable(hapResult,               # 单倍型结果
+             hapPrefix = "H",         # 单倍型前缀（阿拉伯数字前的字母）
              geneID = "",             # 基因ID， 作为图表Title
              title.color = "grey90")  # 表头底色
 
 # 单倍型与表型的关联分析
-phenoResult = HapVsPheno(Hap,        # data.frame:第一列与最后一列分别固定为Hap和Accession，中间列为位置及对应的基因型
-                 phenos,      # data.frame: 第一列固定为Accession，随后各列为表型数据，phenoName作为colnames
-                 phenoName = "yourPhenoName", # 本次分析中使用的表型名称
-                 HapPrefix = "H",             # 单倍型编号的前缀
-                 geneID = "Seita.1G000000",   # 基因ID， 作为表头信息
-                 mergeFigs = TRUE,    # 是否将两图融合
-                 minAcc = 5)          # 需要分析的单倍型包含的数据量最小值
-                 
+phenoResult = hapVsPheno(hap,        # data.frame:第一列与最后一列分别固定为Hap和Accession，中间列为位置及对应的基因型
+                         phenos,      # data.frame: 第一列固定为Accession，随后各列为表型数据，phenoName作为colnames
+                         phenoName = "yourPhenoName", # 本次分析中使用的表型名称
+                         hapPrefix = "H",             # 单倍型编号的前缀
+                         geneID = "Seita.1G000000",   # 基因ID， 作为表头信息
+                         mergeFigs = TRUE,    # 是否将两图融合
+                         minAcc = 5)          # 需要分析的单倍型包含的数据量最小值
+
 # plot(phenoResult$fig_pvalue)
 # plot(phenoResult$fig_Violin)
 
