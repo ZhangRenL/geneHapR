@@ -28,6 +28,13 @@ get_hapNet <- function(hapResult, accGroup = accGroup, groupName = groupName){
 
 
 #' @title plotHapNet
+#' @usage
+#' plotHapNet(hapNet,
+#'            size = "freq", scale.ratio = 1, cex = 0.8,
+#'            col.link = 1, link.width = link.width,
+#'            show.mutation = 1, lwd = 1,
+#'            pieCol = pieCol, pie = hapGroup,
+#'            legendPOS = "left", addLegend, ...)
 #' @param lenendPOS one of "bottomright", "bottom", "bottomleft", "left",
 #' "topleft", "top", "topright", "right" and "center".
 #' @param size circle size
@@ -41,7 +48,7 @@ plotHapNet <- function(hapNet,
                        col.link = 1, link.width = link.width,
                        show.mutation = 1, lwd = 1,
                        pieCol = pieCol, pie = hapGroup,
-                       legendPOS = "left",  ...){
+                       legendPOS = "left", addLegend, ...){
     if(!inherits(hapNet, "haploNet"))
         stop("'hapNet' must be of 'haploNet' class")
     hapGroup <- attr(hapNet, "hapGroup")
@@ -56,7 +63,7 @@ plotHapNet <- function(hapNet,
         plot(hapNet, col.link = col.link,
              size = size, scale.ratio = scale.ratio, cex = cex,
              show.mutation = show.mutation, lwd = link.width,
-             bg = pieCol, pie = hapGroup, legend = TRUE, ...)
+             bg = pieCol, pie = hapGroup, legend = addLegend, ...)
 
         #legend(x = legendPOS, legend = colnames(hapGroup), col = pieCol)
 
@@ -65,7 +72,7 @@ plotHapNet <- function(hapNet,
             pieCol <- "grey90"
         plot(hapNet, col.link = col.link,
              size = size, scale.ratio = scale.ratio, cex = cex,
-             show.mutation = show.mutation, lwd = link.width,legend = TRUE,
+             show.mutation = show.mutation, lwd = link.width,legend = addLegend,
              ...)
     }
 }

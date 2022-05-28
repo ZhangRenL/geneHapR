@@ -57,15 +57,16 @@ you should generate haps with function 'get_hap' first")
 #' @name get_hap
 #' @title generat haps from vcf
 #' @description  generate hap format from vcf.
-#' @usage get_hap(vcf,
-#' hapPrefix = "H",
-#' filter_Chr = FALSE,
-#' Chr = "scaffold_1",
-#' filter_POS = FALSE,
-#' startPOS = 104,
-#' endPOS = 9889,
-#' hyb_remove = TRUE,
-#' na.drop = TRUE)
+#' @usage
+#' get_hap(vcf,
+#'         hapPrefix = "H",
+#'         filter_Chr = FALSE,
+#'         Chr = "scaffold_1",
+#'         filter_POS = FALSE,
+#'         startPOS = 104,
+#'         endPOS = 9889,
+#'         hyb_remove = TRUE,
+#'         na.drop = TRUE)
 #' @author Zhangrenl
 #' @examples
 #'

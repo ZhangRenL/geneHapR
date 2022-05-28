@@ -98,11 +98,11 @@ lastUpdate:   2022.05.20
 
 ### 4.1 **安装准备** 
 
--   [ ] 安装Rtools软件
+-   [ ] 安装[Rtools](https://cran.r-project.org/bin/windows/Rtools/)软件
 
--   [ ] 安装git软件
+-   [ ] 安装[git](https://git-scm.com/downloads)软件
 
--   [ ] 安装R packages: `devtools`，`BiocManager`
+-   [ ] 安装R packages: `devtools`，`BiocManager`，`install.packages(c("devtools", "BiocManager"))`
 
 ### 4.2 quickHapR 自动安装方式
 
@@ -162,56 +162,56 @@ data("quickHap_test") # 加载测试数据,处理自己的数据时不必执行�
 # 设定工作目录
 setwd("/your/working/directory")
 
+
+# 基本数据设定
+geneID <- "Seita.1G001600"
+Chr <- "scaffold_1"
+strand <- "-"
+start <- 136756
+end <- 144094
+hapPreFix <- "H"
+
 # 导入数据
-vcf = import_vcf("Seita.1G001600_136756_144094_-_3k_final.vcf.gz")
-gff = import_gff("Yugu1.gff3")
-phenos = import_pheno("allPheno.txt")
+vcf = import_vcf("vcf/rawvcf/Seita.1G001600_136756_144094_-_3k.vcf.gz")
+gff = import_gff("gff/Sitalica.gff3")
+phenos = import_pheno("phenos.txt")
+accGroup <- read.table("accgroup.txt", header = TRUE, check.names = FALSE, row.names = 1)
 
-# 获取基因起始位置
-# GeneRange <- getGeneStartEndStrd(gff, geneID)
 
-# 对VCF进行筛选
+# 根据GFF注释信息对外显子上的变异位点进行筛选
 vcf <- filter_vcf(vcf,                # import_vcf() 导入的vcfR
                   mode = "type",      # 筛选模式：POS/type/both之一
-                  Chr = "scaffold_1", # 筛选模式为POS或both时必须，染色体名称
-                  start = 136756,     # 筛选模式为POS或both时必须，开始位置
-                  end = 144094,       # 筛选模式为POS或both时必须，结束位置
-                  gff = gff,          # 筛选模式为type或both时必须，gff
-                  type = "CDS") # 筛选模式为type或both时必须，CDS/exon/gene/genome之一
+                  Chr = Chr, # 筛选模式为POS或both时必须，染色体名称
+                  start = start,      # 开始位置，numeric，筛选模式为POS或both时必须，
+                  end = end,          # 结束位置，numeric，筛选模式为POS或both时必须，
+                  gff = gff,          # gff，筛选模式为type或both时必须
+                  type = "CDS")       # 筛选模式为type或both时必须，CDS/exon/gene/genome之一
 
 # 计算并输出单倍型结果
 # hap, data.frame:第一列与最后一列分别固定为Hap和Accession，中间列为位置及对应的基因型
 # 前四行为注释信息分别是：CHR，POS，ALLELE,INFO
-hap = get_hap(vcf,                 # import_vcf() 导入的vcfR
-              filter_Chr = FALSE,  # 筛选染色体选项
-              Chr = "scaffold_1",  # 通过染色体对vcf信息进行筛选
-              filter_POS = TRUE,   # 通过位置进行筛选
-              startPOS = 136756,   # Numeric, 起始位置，通过位置对vcf信息进行筛选
-              endPOS = 144094)     # Numeric, 终止位置，通过位置对vcf信息进行筛选
+hap = get_hap(vcf,                   # import_vcf() 导入的vcfR
+              hapPrefix = hapPreFix, # 单倍型名称前缀
+              filter_Chr = FALSE,    # 筛选染色体选项
+              Chr = Chr,             # 通过染色体对vcf信息进行筛选
+              filter_POS = TRUE,     # 通过位置进行筛选
+              startPOS = start,      # Numeric, 起始位置，通过位置对vcf信息进行筛选
+              endPOS = end)          # Numeric, 终止位置，通过位置对vcf信息进行筛选
 
 # hapResult, data.frame: 第一列固定为Hap，最后两列分别固定为Accession和freq，中间列为位置及对应的基因型
-# 前四行为注释信息分别是：CHR，POS，ALLELE,INFO
-hapResult = hap_result(hap,        # hap 结果
-                       hapPrefix = "H",  # 单倍型前缀
-                       out = FALSE,# 是否输出文件，如果为TRUE， 必须指定输出路径file
+# 前四行为注释信息分别是：CHR, POS, ALLELE, INFO
+hapResult = hap_result(hap,                    # hap 结果
+                       hapPrefix = hapPreFix,  # 单倍型名称前缀
+                       out = FALSE,            # 是否输出文件，如果为TRUE， 必须指定输出路径file
                        file = "results/Seita.1G001600_HapResult.txt")  # 输出文件路径（tab分隔的表格）
-
-# 获取单倍型进化关系
-hapNet = get_hapNet(hapResult, 
-                    accGroup = accGroup)
-#                    groupNmae = colnames(accGroup)[1]) 
-
-# 单倍型网络
-plot(hapNet)
-plotHapNet(hapNet)
 
 
 # 可视化单倍型结果
 plotGeneStructure(gff,                # gff注释信息
                   hapResult,          # 单倍型结果
-                  Chr = "scaffold_1", # 基因所在染色体
-                  startPOS = 136756,  # 基因结构示意图的起始位点
-                  endPOS = 144094,    # 基因结构示意图的终止位置
+                  Chr = Chr, # 基因所在染色体
+                  startPOS = start,  # 基因结构示意图的起始位点
+                  endPOS = end,    # 基因结构示意图的终止位置
                   type = "pin",       # SNP类型
                   cex = 1,            # circle大小
                   CDS_h = 0.05,       # 不同基因结构的高度
@@ -219,21 +219,38 @@ plotGeneStructure(gff,                # gff注释信息
                   threeUTR_h = 0.01) 
 # 单倍型表格
 plotHapTable(hapResult,               # 单倍型结果
-             hapPrefix = "H",         # 单倍型前缀（阿拉伯数字前的字母）
-             geneID = "",             # 基因ID， 作为图表Title
+             hapPrefix = hapPrefix,   # 单倍型前缀（阿拉伯数字前的字母）
+             geneID = geneID,         # 基因ID， 作为图表Title
              title.color = "grey90")  # 表头底色
 
 # 单倍型与表型的关联分析
-phenoResult = hapVsPheno(hap,        # data.frame:第一列与最后一列分别固定为Hap和Accession，中间列为位置及对应的基因型
+phenoResult = hapVsPheno(hap,         # data.frame:第一列与最后一列分别固定为Hap和Accession，中间列为位置及对应的基因型
                          phenos,      # data.frame: 第一列固定为Accession，随后各列为表型数据，phenoName作为colnames
                          phenoName = "yourPhenoName", # 本次分析中使用的表型名称
-                         hapPrefix = "H",             # 单倍型编号的前缀
-                         geneID = "Seita.1G000000",   # 基因ID， 作为表头信息
-                         mergeFigs = TRUE,    # 是否将两图融合
-                         minAcc = 5)          # 需要分析的单倍型包含的数据量最小值
+                         hapPrefix = hapPrefix,   # 单倍型编号的前缀
+                         geneID = geneID,         # 基因ID， 作为表头信息
+                         mergeFigs = TRUE,        # 是否将两图融合
+                         minAcc = 5)              # 需要分析的单倍型包含的数据量最小值
 
 # plot(phenoResult$fig_pvalue)
 # plot(phenoResult$fig_Violin)
 
 plot(phenoResult$figs)
+
+
+# 获取单倍型进化关系
+hapNet = get_hapNet(hapResult,            # 单倍型结果
+                    accGroup = accGroup,  # 数据框，品系分组
+                    groupName = colnames(accGroup)[1])  # 分组名称，accGroup的列名称之一
+
+# 单倍型网络
+plot(hapNet)
+plotHapNet(hapNet,
+           size = "freq", scale.ratio = 1, cex = 0.8, # circle的大小
+           col.link = 1, link.width = 1, lwd = 1,     # 连接线颜色、粗细
+           show.mutation = 1,                         # 标注突变位点的方式，（0,1,2,3）之一
+           pieCol = pieCol,                           # 颜色向量，饼图颜色，与分组数量长度相同
+           addLegend = TRUE)                          # 是否标注图注
+
+
 ```
