@@ -34,6 +34,7 @@ get_hapNet <- function(hapResult, accGroup = accGroup, groupName = groupName){
 #' Used for text, and provides the default for pt.cex.
 #' @param pieCol colors
 #' @param ... pass to plot function
+#' @export
 plotHapNet <- function(hapNet,
                        size = "freq", scale.ratio = 1, cex = 0.8,
                        col.link = 1, link.width = link.width,
