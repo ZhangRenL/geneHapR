@@ -139,13 +139,17 @@ hap <- get_hap(vcf, hyb_remove = TRUE, na.drop = TRUE)
 hapVsPheno(hap = hap,pheno = pheno, phenoName = "GrainWeight.2021",minAcc = 3)
 hapResult <- hap_result(hap)
 plotHapTable(hapResult)
-plotHapTable(hapResult)
 phenoResult <- hapVsPheno(hap = hap,
                       pheno = phenos,
                       phenoName = "GrainWeight.2021",
                       minAcc = 3,
                       mergeFigs = TRUE)
 plot(phenoResult$figs)
+hapNet = get_hapNet(hapResult, 
+                    accGroup = accGroup)
+plot(hapNet)
+plotHapNet(hapNet)
+
 ```
 
 ### 5.2 软件使用

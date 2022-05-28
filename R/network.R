@@ -27,6 +27,7 @@ get_hapNet <- function(hapResult, accGroup = accGroup, groupName = groupName){
 }
 
 
+#' @title plotHapNet
 #' @param lenendPOS one of "bottomright", "bottom", "bottomleft", "left",
 #' "topleft", "top", "topright", "right" and "center".
 #' @param size circle size
