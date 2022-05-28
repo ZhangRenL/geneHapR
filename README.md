@@ -35,7 +35,7 @@ lastUpdate:   2022.05.20
 
 #### 3.1.1 vcf
 
-**文件格式：** VCF
+**文件格式：** [VCF](https://www.jianshu.com/p/b2b30b23c866)
 
 **读取方法：**`import_vcf()`或`vcfR::read.vcfR()`均可用于该文件的读取,推荐使用 `import_vcf()`
 
@@ -43,7 +43,7 @@ lastUpdate:   2022.05.20
 
 #### 3.1.2 gff: 基因组注释文件
 
-**文件格式：GFF3**
+**文件格式：**[GFF3](www.gmod.org/wiki/GFF3)
 
 **读取方法：**`import_gff()`或`rtracklayer::import()`均可用于该文件的读取,推荐使用`import_gff()`
 
@@ -77,14 +77,13 @@ lastUpdate:   2022.05.20
 
 ### 3.2 结果文件
 
-#### 3.2.1 Hap:
+#### 3.2.1 hap:
 
-#### 3.2.2 HapResult:
+#### 3.2.2 hapResult:
 
+#### 3.2.3 hapNet:
 
-#### 3.2.3 HapTree:
-
-#### 3.2.4
+#### 3.2.4 hapTree:
 
 ## 4. 安装教程
 
@@ -92,17 +91,17 @@ lastUpdate:   2022.05.20
 
 为避免不必要的安装问题，
 
-1.  建议Windows10及以上系统使用最新版的R ( \>= 4.2.1)和Rtools4.2
+1.  Windows10及以上系统推荐使用最新版的[R](https://cran.r-project.org/bin/windows/base/)和[Rtools4.2](https://cran.r-project.org/bin/windows/Rtools/rtools42/rtools.html)
 
-2.  建议Windows7 系统使用 R ( = 4.1.3)和Rtools4.0 (因系统差异，可能会出现依赖的Packages无法正常安装)
+2.  Windows7 系统推荐使用 [R ( = 4.1.3)](https://cran.r-project.org/bin/windows/base/old/4.1.3/)和[Rtools4.0](https://cran.r-project.org/bin/windows/Rtools/rtools40.html) (否则有一定概率会出现依赖的Packages无法正常安装)
 
 ### 4.1 **安装准备** 
 
--   [ ] 安装[Rtools](https://cran.r-project.org/bin/windows/Rtools/)软件
+-   [ ] 安装[Rtools](https://cran.r-project.org/bin/windows/Rtools/)软件，点击[这里](https://cran.r-project.org/bin/windows/Rtools/)下载安装
 
--   [ ] 安装[git](https://git-scm.com/downloads)软件
+-   [ ] 安装[git](https://git-scm.com/downloads)软件，点击[这里](https://git-scm.com/downloads)下载安装
 
--   [ ] 安装R packages: `devtools`，`BiocManager`，`install.packages(c("devtools", "BiocManager"))`
+-   [ ] 安装R packages: `[devtools](https://devtools.r-lib.org/)`，`[BiocManager](https://www.bioconductor.org/install/)`，安装命令`install.packages(c("devtools", "BiocManager"))`
 
 ### 4.2 quickHapR 自动安装方式
 
