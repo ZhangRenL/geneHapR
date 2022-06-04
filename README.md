@@ -1,7 +1,7 @@
 ---
 Title:  quickHapR
 Author: ZhangRenL
-Date:   2022.05.27
+Date:   2022.06.04
 lastUpdate:   2022.05.20
 ---
 
@@ -51,9 +51,9 @@ lastUpdate:   2022.05.20
 
 #### 3.1.3 phenos
 
-**注意：**这里用到的表型都应为数量性状
+**注意**:这里用到的表型都应为数量性状
 
-**文件格式：**至少两列，第一列为材料名称，与vcf文件中的individuals对应，之后各列为不同表型；第一行为表型名称，表型名称如果包括除表型名外的其他信息如时间、地点等可以用‘.’与表型名分隔开不同元素间可用‘\_’分隔，如：`plantHeight.2021_BeiJing`，`Weight.female`
+**文件格式**:至少两列，第一列为材料名称，与vcf文件中的individuals对应，之后各列为不同表型；第一行为表型名称，表型名称如果包括除表型名外的其他信息如时间、地点等可以用‘.’与表型名分隔开不同元素间可用‘\_’分隔，如：`plantHeight.2021_BeiJing`，`Weight.female`
 
 
 **读取方法：**`import_pheno()`或`read.table(file = "", header = TRUE, row.names = 1, check.names = FALSE)`, `read.delim()`均可用于该文件的读取，推荐使用\`import_pheno()
@@ -64,14 +64,14 @@ lastUpdate:   2022.05.20
 #### 3.1.4 Accession type
 
 
-**文件格式：**至少两列，第一列为材料名称；随后不同列为对应的材料类别
+**文件格式：** 至少两列，第一列为材料名称；随后不同列为对应的材料类别
 
-    Acc     col     class    
-    In1     red     Landrace
-    In2     red     Landrace
-    In3     blue    Cultivar
-    In4     blue    Cultivar
-    In5     red     Cultivar
+    Acc         type    
+    In1         Landrace
+    In2         Landrace
+    In3         Cultivar
+    In4         Cultivar
+    In5         Cultivar
 
 **读取方法：**`read.table(file = "", header = TRUE, row.names = 1)` R数据类型：data.frame，材料名称作为row.names， 分类方式作为col.names
 
@@ -101,7 +101,7 @@ lastUpdate:   2022.05.20
 
 -   [ ] 安装[git](https://git-scm.com/downloads)软件，点击[这里](https://git-scm.com/downloads)下载安装
 
--   [ ] 安装R packages: `[devtools](https://devtools.r-lib.org/)`，`[BiocManager](https://www.bioconductor.org/install/)`，安装命令`install.packages(c("devtools", "BiocManager"))`
+-   [ ] 安装R packages: [`devtools`](https://devtools.r-lib.org/)，[`BiocManager`](https://www.bioconductor.org/install/)，安装命令`install.packages(c("devtools", "BiocManager"))`
 
 ### 4.2 quickHapR 自动安装方式
 
@@ -244,7 +244,7 @@ plotHapTable(hapResult,               # 单倍型结果
 phenoResult = hapVsPheno(hap,         # data.frame:第一列与最后一列分别固定为Hap和Accession，中间列为位置及对应的基因型
                          phenos,      # data.frame: 第一列固定为Accession，随后各列为表型数据，phenoName作为colnames
                          phenoName = "yourPhenoName", # 本次分析中使用的表型名称
-                         hapPrefix = hapPrefix,   # 单倍型编号的前缀
+                         hapPrefix = hapPreFix,   # 单倍型编号的前缀
                          geneID = geneID,         # 基因ID， 作为表头信息
                          mergeFigs = TRUE,        # 是否将两图融合
                          minAcc = 5)              # 需要分析的单倍型包含的数据量最小值
