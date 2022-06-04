@@ -30,8 +30,8 @@ get_hapNet <- function(hapResult, accGroup = accGroup, groupName = groupName){
 #' @title plotHapNet
 #' @usage
 #' plotHapNet(hapNet,
-#'            size = "freq", scale.ratio = 1, cex = 0.8,
-#'            col.link = 1, link.width = link.width,
+#'            size = "freq", scale = TRUE, scale.ratio = 1, cex = 0.8,
+#'            col.link = 1, link.width = 1,
 #'            show.mutation = 1, lwd = 1,
 #'            pieCol = pieCol, pieData = hapGroup,
 #'            addLegend = FALSE, ...)
@@ -51,8 +51,8 @@ get_hapNet <- function(hapResult, accGroup = accGroup, groupName = groupName){
 #' @param ... pass to plot function
 #' @export
 plotHapNet <- function(hapNet,
-                       size = "freq", scale.ratio = 1, cex = 0.8,
-                       col.link = 1, link.width = link.width,
+                       size = "freq", scale = TRUE, scale.ratio = 1, cex = 0.8,
+                       col.link = 1, link.width = 1,
                        show.mutation = 1, lwd = 1,
                        pieCol = pieCol, pieData = hapGroup,
                        addLegend = FALSE, ...){
@@ -67,16 +67,19 @@ plotHapNet <- function(hapNet,
         if(!is.numeric(size))
             stop("'size' should be 'freq' or a given vector")
 
+    if(scale) size <- log10(size+1)
+
 
     if(!is.null(hapGroup)){
         if(missing(pieCol))
             pieCol <- rainbow(ncol(hapGroup))
-        plot(hapNet, col.link = col.link,
+        plot(hapNet, col.link = col.link,threshold = 10,
              size = size, scale.ratio = scale.ratio, cex = cex,
              show.mutation = show.mutation, lwd = link.width,
-             bg = pieCol, pie = hapGroup, legend = addLegend, ...)
+             bg = pieCol, pie = hapGroup)
 
-        #legend(x = legendPOS, legend = colnames(hapGroup), col = pieCol)
+        legend(x = "right", legend = colnames(hapGroup), fill = pieCol,cex = 0.6,...)
+
 
     } else {
         if(missing(pieCol))
