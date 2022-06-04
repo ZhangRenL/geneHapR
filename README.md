@@ -33,7 +33,7 @@ lastUpdate:   2022.05.27
 
 输入文件都属于文本文件，都可以使用文本编辑软件打开查看
 
-#### 3.1.1 vcf
+** 3.1.1 vcf **
 
 **文件格式：** [VCF](https://www.jianshu.com/p/b2b30b23c866)
 
@@ -41,7 +41,7 @@ lastUpdate:   2022.05.27
 
 **R数据类型：** vcfR
 
-#### 3.1.2 gff: 基因组注释文件
+** 3.1.2 gff: 基因组注释文件 **
 
 **文件格式：** [GFF3](www.gmod.org/wiki/GFF3)
 
@@ -49,19 +49,19 @@ lastUpdate:   2022.05.27
 
 **R数据类型：** GenomicRanges
 
-#### 3.1.3 phenos
+** 3.1.3 phenos **
 
 **注意:** 这里用到的表型都应为数量性状
 
 **文件格式**: 至少两列，第一列为材料名称，与vcf文件中的individuals对应，之后各列为不同表型；第一行为表型名称，表型名称如果包括除表型名外的其他信息如时间、地点等可以用‘.’与表型名分隔开不同元素间可用‘\_’分隔，如：`plantHeight.2021_BeiJing`，`Weight.female`
 
 
-**读取方法：** `import_pheno()`或`read.table(file = "", header = TRUE, row.names = 1, check.names = FALSE)`, `read.delim()`均可用于该文件的读取，推荐使用\`import_pheno()
+**读取方法：** `import_pheno()`或`read.table(file = "", header = TRUE, row.names = 1, check.names = FALSE)`, `read.delim()`均可用于该文件的读取，推荐使用`import_pheno()`
 
 
 **R数据类型：**data.frame，材料名称作为row.names， 表型名称作为col.names
 
-#### 3.1.4 Accession type
+** 3.1.4 Accession type **
 
 
 **文件格式：** 至少两列，第一列为材料名称；随后不同列为对应的材料类别
@@ -77,13 +77,13 @@ lastUpdate:   2022.05.27
 
 ### 3.2 结果文件
 
-#### 3.2.1 hap:
+** 3.2.1 hap:** 
 
-#### 3.2.2 hapResult:
+** 3.2.2 hapResult:** 
 
-#### 3.2.3 hapNet:
+** 3.2.3 hapNet:** 
 
-#### 3.2.4 hapTree:
+** 3.2.4 hapTree: ** 
 
 ## 4. 安装教程
 
