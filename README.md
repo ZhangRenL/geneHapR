@@ -258,7 +258,7 @@ plot(phenoResult$figs)
 # 获取单倍型进化关系
 hapNet = get_hapNet(hapResult,            # 单倍型结果
                     accGroup = accGroup,  # 数据框，品系分组
-                    groupName = colnames(accGroup)[1])  # 分组名称，accGroup的列名称之一
+                    groupName = colnames(accGroup)[2])  # 分组名称，accGroup的列名称之一
 
 # 单倍型网络
 plot(hapNet)
@@ -266,7 +266,7 @@ plotHapNet(hapNet,
            size = "freq", scale.ratio = 1, cex = 0.8, # circle的大小
            col.link = 1, link.width = 1, lwd = 1,     # 连接线颜色、粗细
            show.mutation = 1,                         # 标注突变位点的方式，（0,1,2,3）之一
-           pieCol = pieCol,                           # 颜色向量，饼图颜色，与分组数量长度相同
+           legendPosition = "right",                           # legend 位置，left，right
            addLegend = TRUE)                          # 是否标注图注
 
 

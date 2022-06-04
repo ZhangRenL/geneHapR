@@ -45,7 +45,7 @@ you should generate haps with function 'get_hap' first")
             row.names = FALSE,
             col.names = FALSE)
     }
-    class(hapResults) <- c("data.frame", "hapSummary")
+    class(hapResults) <- c("hapSummary", "data.frame")
     attr(hapResults, "options") <- attr(hap, "options")
     attr(hapResults, "hap2acc") <- attr(hap, "hap2acc")
 
@@ -111,7 +111,11 @@ get_hap <- function(
         probe <- vcfChr %in% Chr
         vcf@fix <- vcf@fix[probe,]
         vcf@gt <- vcf@gt[probe,]
-        options <- c(options, CHROMFiltered = Chr)
+        options <- c(options, CHROM = Chr)
+    } else {
+        Chr <- unique(vcfR::getCHROM(vcf))
+        if(length(Chr) > 1) stop("only one CHROM should be in vcf, consider set 'filter_Chr' as 'TRUE'")
+        options <- c(options, CHROM = Chr)
     }
 
     # filter Postion according given range
@@ -130,7 +134,10 @@ get_hap <- function(
         }
         vcf@fix <- vcf@fix[probe,]
         vcf@gt <- vcf@gt[probe,]
-        options <- c(options, POSFiltered = paste0(startPOS,"-",endPOS))
+        options <- c(options, POS = paste0(startPOS,"-",endPOS))
+    } else {
+        POS <- vcfR::getPOS(vcf)
+        options <- c(options, POS = paste0(min(POS),"-",max(POS)))
     }
 
     vcf <- order_vcf(vcf)
@@ -171,7 +178,12 @@ get_hap <- function(
     rownames(hap) <- seq_len(nrow(hap))
 
     hap <- remove_redundancy_col(hap)
-    class(hap) <- unique(c(class(hap), "haptypes"))
+    class(hap) <- unique(c("haptypes", "data.frame"))
+    accAll <- colnames(vcf@gt)[-1]
+    accRemain <- hap$Accession[hap$Accession != ""]
+    attr(hap, "AccAll") <- accAll
+    attr(hap, "AccRemain") <- accRemain
+    attr(hap, "AccRemoved") <- accAll[!accAll %in% accRemain]
     attr(hap, "options") <- options
     hap2acc <- hap$Accession[-c(1:4)]
     names(hap2acc) <- hap$Hap[-c(1:4)]

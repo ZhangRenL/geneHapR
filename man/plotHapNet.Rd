@@ -5,11 +5,12 @@
 \title{plotHapNet}
 \usage{
 plotHapNet(hapNet,
-           size = "freq", scale.ratio = 1, cex = 0.8,
-           col.link = 1, link.width = link.width,
+           size = "freq", scale = TRUE, scale.ratio = 1, cex = 0.8,
+           col.link = 1, link.width = 1,
            show.mutation = 1, lwd = 1,
            pieCol = pieCol, pieData = hapGroup,
-           addLegend = FALSE, ...)
+           addLegend = TRUE,
+           legendPosition = "left", ...)
 }
 \arguments{
 \item{hapNet}{an object of class "haploNet".}

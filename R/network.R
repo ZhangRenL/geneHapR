@@ -34,7 +34,8 @@ get_hapNet <- function(hapResult, accGroup = accGroup, groupName = groupName){
 #'            col.link = 1, link.width = 1,
 #'            show.mutation = 1, lwd = 1,
 #'            pieCol = pieCol, pieData = hapGroup,
-#'            addLegend = FALSE, ...)
+#'            addLegend = TRUE,
+#'            legendPosition = "left", ...)
 #' @param hapNet an object of class "haploNet".
 #' @param size a numeric vector giving the diameter of the circles representing the haplotypes: this is in the same unit than the links and eventually recycled.
 #' @param scale.ratio the ratio of the scale of the links representing the number of steps on the scale of the circles representing the haplotypes. It may be needed to give a value greater than one to avoid overlapping circles.
@@ -55,7 +56,7 @@ plotHapNet <- function(hapNet,
                        col.link = 1, link.width = 1,
                        show.mutation = 1, lwd = 1,
                        pieCol = pieCol, pieData = hapGroup,
-                       addLegend = FALSE, ...){
+                       addLegend = TRUE,legendPosition = "left", ...){
     if(!inherits(hapNet, "haploNet"))
         stop("'hapNet' must be of 'haploNet' class")
     if(missing(pieData)){
@@ -77,8 +78,8 @@ plotHapNet <- function(hapNet,
              size = size, scale.ratio = scale.ratio, cex = cex,
              show.mutation = show.mutation, lwd = link.width,
              bg = pieCol, pie = hapGroup)
-
-        legend(x = "right", legend = colnames(hapGroup), fill = pieCol,cex = 0.6,...)
+        if(addLegend)
+            legend(x = legendPosition, legend = colnames(hapGroup), fill = pieCol,cex = 0.6,...)
 
 
     } else {
@@ -209,23 +210,5 @@ getHapGroup <- function(hapResult,
     with(
         accGroup[,c("Hap", groupName)],
         table(hap = accGroup$Hap, group=accGroup[,groupName]))
-}
-
-
-is.indel.allele <- function(allele.vector){
-    probe1 <- stringr::str_detect(allele.vector,"/")
-    probe <- lapply(stringr::str_split(allele.vector,"[,/]"),
-                    stringr::str_length)
-    probe1 & unlist(lapply(probe, function(i) max(i)>1))
-}
-
-is.biallelic.allele <- function(allele.vector){
-    probe1 <- stringr::str_detect(allele.vector,"/")
-    !stringr::str_detect(allele.vector,",") & probe1
-}
-
-is.multiallelic.allele <- function(allele.vector){
-    probe1 <- stringr::str_detect(allele.vector,"/")
-    stringr::str_detect(allele.vector,",") & probe1
 }
 
