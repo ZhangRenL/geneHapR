@@ -69,7 +69,22 @@ import_gff <- function(gffFile, format = "GFF"){
     rtracklayer::import(gffFile, format = "GFF")
 }
 
-
+#' @name import_seqs
+#' @title  import_seqs
+#' @usage import_seqs(file, format = "fasta", ...)
+#' @examples
+#' \dontrun{
+#'    geneSeqs <- import_seqs(file = "fastaFilePath", format = "fasta")
+#' }
+#' @importFrom rtracklayer import
+#' @param file gff file path
+#' @param format Either "fasta" (the default) or "fastq"
+#' @param ... Others parameters supported by Biostrings::readDNAStringSet
+#' @export
+#' @return DNAstringSet
+import_seqs <- function(file, format = "fasta", ...){
+    Biostrings::readDNAStringSet(filepath = file, format = format, ...)
+}
 
 #' @name import_hapResult
 #' @title  import_hapResult

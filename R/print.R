@@ -27,7 +27,7 @@ print.haptypes <- function(x){
 }
 
 
-#' @exportS3Method print x
+#' @exportS3Method print hapSummary
 print.hapSummary <- function(x){
     freq <- table(names(attr(x, "hap2acc")))
     ALLELE <- x[x$Hap %in% "ALLELE",
@@ -62,3 +62,26 @@ print.hapSummary <- function(x){
 }
 
 
+#' @exportMethod write
+write.hap <- function(x, file = file, ...){
+    nc <- ncol(x)
+    nm <- names(x)
+    if("Accession" %in% nm) x[1,nm == "Accession"] <- "Accession"
+    if("freq" %in% nm) x[1,nm == "freq"] <- "freq"
+    cat("",file = file, sep = "", append = FALSE)
+    for(i in seq_len(nrow(x))){
+        cat(as.matrix(x[i,]), file = "a.txt", sep = c(rep.int("\t", nc-1), "\n"),append = TRUE)
+    }
+}
+
+
+#' @exportS3Method write.hap haptypes
+write.hap.haptypes <- function(x, file = file, ...){
+    write.hap(x, file = file, ...)
+}
+
+
+#' @exportS3Method write.hap hapSummary
+write.hap.hapSummary <- function(x, file = file, ...){
+    write.hap(x, file = file, ...)
+}
