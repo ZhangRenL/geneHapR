@@ -28,6 +28,7 @@ get_hapNet <- function(hapResult, accGroup = accGroup, groupName = groupName){
 
 
 #' @title plotHapNet
+#' @importFrom graphics legend
 #' @usage
 #' plotHapNet(hapNet,
 #'            size = "freq", scale = TRUE, scale.ratio = 1, cex = 0.8,
@@ -49,6 +50,8 @@ get_hapNet <- function(hapResult, accGroup = accGroup, groupName = groupName){
 #' @param cex character expansion factor relative to current par("cex").
 #' Used for text, and provides the default for pt.cex.
 #' @param pieCol colors
+#' @param scale TRUE
+#' @param legendPosition "left", "right"
 #' @param ... pass to plot function
 #' @export
 plotHapNet <- function(hapNet,
@@ -56,7 +59,7 @@ plotHapNet <- function(hapNet,
                        col.link = 1, link.width = 1,
                        show.mutation = 1, lwd = 1,
                        pieCol = pieCol, pieData = hapGroup,
-                       addLegend = TRUE,legendPosition = "left", ...){
+                       addLegend = TRUE, legendPosition = "left", ...){
     if(!inherits(hapNet, "haploNet"))
         stop("'hapNet' must be of 'haploNet' class")
     if(missing(pieData)){
@@ -68,7 +71,7 @@ plotHapNet <- function(hapNet,
         if(!is.numeric(size))
             stop("'size' should be 'freq' or a given vector")
 
-    if(scale) size <- log10(size+1)
+    if(scale) size <- (log10(size + 1) * 10) %/% 1
 
 
     if(!is.null(hapGroup)){

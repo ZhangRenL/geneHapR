@@ -140,6 +140,7 @@ get_hap <- function(
         options <- c(options, POS = paste0(min(POS),"-",max(POS)))
     }
 
+    # extract information from vcf
     vcf <- order_vcf(vcf)
     CHR <- vcfR::getCHROM(vcf)
     POS <- vcfR::getPOS(vcf)
@@ -148,6 +149,7 @@ get_hap <- function(
     ALLELE <- paste0(REF,"/",ALT)
     INFO <- vcfR::getINFO(vcf)
 
+    # generate hap data from vcf
     hapData <- vcf2hap_data(vcf, allS_new = allS_new,
                         REF = REF, ALT= ALT, ALLELE = ALLELE, POS = POS)
     allS_new <- hapData$allS_new
@@ -169,19 +171,20 @@ get_hap <- function(
 
     # add infos
     meta <- rbind(
-        c("CHR",CHR,""),
-        c("POS",POS,""),
-        c("INFO", INFO,""),
-        c("ALLELE",ALLELE,""))
+        c("CHR", CHR, ""),
+        c("POS", POS, ""),
+        c("INFO", INFO, ""),
+        c("ALLELE", ALLELE, ""))
     colnames(meta) <- colnames(hap)
     hap <- rbind(meta, hap)
     rownames(hap) <- seq_len(nrow(hap))
 
+    # set attributes
     hap <- remove_redundancy_col(hap)
     class(hap) <- unique(c("haptypes", "data.frame"))
     accAll <- colnames(vcf@gt)[-1]
-    accRemain <- hap$Accession[hap$Accession != ""]
     attr(hap, "AccAll") <- accAll
+    accRemain <- hap$Accession[hap$Accession != ""]
     attr(hap, "AccRemain") <- accRemain
     attr(hap, "AccRemoved") <- accAll[!accAll %in% accRemain]
     attr(hap, "options") <- options
@@ -278,10 +281,13 @@ remove_redundancy_col <- function(hap){
     # removed Redundancy cols
     removecols <- c()
     nc_hap <- ncol(hap)
+    if(hap[1,1] == "CHR")
+        gth <- hap[-c(1, 2, 3, 4),] else
+            gth <- hap
     for(c in seq_len(nc_hap)){
         namec <- colnames(hap)[c]
         if(!(namec %in% c("Hap", "Accession", "freq"))){
-            gtc <- unique(hap[-c(1, 2, 3, 4),c])
+            gtc <- unique(gth[,c])
             if(length(gtc) == 1) {
                 removecols <- c(removecols, c)
             }

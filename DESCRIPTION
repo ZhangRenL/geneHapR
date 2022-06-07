@@ -1,4 +1,4 @@
-Package: quickHapR
+Package: geneHapR
 Type: Package
 Title: R Packages for Gene Haplotype Analysis
 Description: A quick hap analysis R packages. Using vcf files to generated hap results.
@@ -7,18 +7,21 @@ biocViews: NucleosomePositioning, DataImport
 Encoding: UTF-8
 Authors@R: c(person(given = "Renliang", family = "Zhang", email = "zhang_renliang@163.com", role = c("cre","aut")),
   person(given = "Guanqing", family = "Jia", email = "jiaguanqing@caas.cn", role = c("aut")))
-Version: 0.99.01
+Version: 0.0.11
 RoxygenNote: 7.1.2
 LazyData: True
 Imports: 
   ape,
+  muscle,
   pegas,
   Biostrings,
   stringdist,
   tidyr,
   dplyr,
   reshape2, 
+  methods,
   ggpubr, 
+  stringi, 
   stringr, 
   vcfR,
   randomcoloR,

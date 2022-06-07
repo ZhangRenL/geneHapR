@@ -17,6 +17,8 @@ plotHapNet(hapNet,
 
 \item{size}{a numeric vector giving the diameter of the circles representing the haplotypes: this is in the same unit than the links and eventually recycled.}
 
+\item{scale}{TRUE}
+
 \item{scale.ratio}{the ratio of the scale of the links representing the number of steps on the scale of the circles representing the haplotypes. It may be needed to give a value greater than one to avoid overlapping circles.}
 
 \item{cex}{character expansion factor relative to current par("cex").
@@ -35,6 +37,8 @@ Used for text, and provides the default for pt.cex.}
 \item{pieData}{a matrix used to draw pie charts for each haplotype; its number of rows must be equal to the number of haplotypes.}
 
 \item{addLegend}{a logical specifying whether to draw the legend, or a vector of length two giving the coordinates where to draw the legend; FALSE by default. If TRUE, the user is asked to click where to draw the legend.}
+
+\item{legendPosition}{"left", "right"}
 
 \item{...}{pass to plot function}
 }

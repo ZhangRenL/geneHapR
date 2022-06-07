@@ -1,3 +1,15 @@
+V 0.10.1
+renamed as geneHapR
+functions:
+1. import: vcf, gff, seqs
+2. filter: vcf
+3. setATGAs0
+5. Haps generate from vcf
+6. Haps generate from seqs(fasta)
+7. Generate haploNet and visualization
+8. Haplotype visualization as table/gene module
+9. Phynotype analysis
+
 V 0.99.11
 Zhangrenl   2022.6.6
 add new functions

@@ -1,11 +1,11 @@
 ---
-Title:  quickHapR
+Title:  geneHapR
 Author: ZhangRenL
 Date:   2022.06.04
 lastUpdate:   2022.05.27
 ---
 
-# quickHapR
+# geneHapR
 
 [TOC]
 
@@ -15,7 +15,7 @@ lastUpdate:   2022.05.27
 
 1.  基于二代测序得到的大量群体的基因型信息进行单倍型分析，
 
-2.  结合表型数据筛选出优异单倍型进行后续研究 [quickHapR](https://gitee.com/zhangrenl/quickHapR)
+2.  结合表型数据筛选出优异单倍型进行后续研究 [geneHapR](https://gitee.com/zhangrenl/geneHapR)
 
 ## 2. 基本逻辑/步骤
 
@@ -103,24 +103,24 @@ lastUpdate:   2022.05.27
 
 -   [ ] 安装R packages: [`devtools`](https://devtools.r-lib.org/)，[`BiocManager`](https://www.bioconductor.org/install/)，安装命令`install.packages(c("devtools", "BiocManager"))`
 
-### 4.2 quickHapR 自动安装方式
+### 4.2 geneHapR 自动安装方式
 
 ``` r
 # 自动安装命令
 # 1. 选择从gitee安装（国内代码托管平台）
 # 注意：该方式需要先安装Rtools和Git两个软件
-devtools::install_git("https://gitee.com/zhangrenl/quickHapr")
+devtools::install_git("https://gitee.com/zhangrenl/geneHapR")
 
 # 2. 选择从github安装
-devtools::install_github("zhangrenl/quickHapr")
+devtools::install_github("zhangrenl/geneHapR")
 ```
 
-### 4.3 quickHapR手动安装方式
+### 4.3 geneHapR手动安装方式
 
 ``` r
 # 如果上述命令安装失败可前往Gitee下载预编译R包，选择本地安装
 # 注意：该方式安装不保证是最新版
-# 本地安装quickHapR前还需手动安装依赖的R packages：
+# 本地安装geneHapR前还需手动安装依赖的R packages：
 install.packages("BiocManager")
 library(BiocManager)
 install(c("ggpubr", "vcfR", "tidyverse", "stringr", "resHape2", "randomcoloR",
@@ -132,7 +132,7 @@ install(c("ggpubr", "vcfR", "tidyverse", "stringr", "resHape2", "randomcoloR",
 ### 5.1 软件测试
 
 ``` r
-library(quickHapR)
+library(geneHapR)
 data("quickHap_test")
 hap <- get_hap(vcf, hyb_remove = TRUE, na.drop = TRUE)
 hapVsPheno(hap = hap,pheno = pheno, phenoName = "GrainWeight.2021",minAcc = 3)
@@ -157,8 +157,8 @@ plotHapNet(hapNet)
 
 **1. 直接导入数据**
 ``` r
-# 加载quickHapR
-library(quickHapR)
+# 加载geneHapR
+library(geneHapR)
 # 设定工作目录
 setwd("/your/working/directory")
 

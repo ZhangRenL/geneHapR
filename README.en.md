@@ -1,16 +1,16 @@
 ---
-Title:  quickHapR
+Title:  geneHapR
 Author: ZhangRenL
 Date:   2022.05.14
 ---
 
-# quickHapR
+# geneHapR
 
 ## 1 Introduction
 
 The gene haplotype were generated through vcf file.
 
-Haplotype analysis was performed based on the genotype information of a large number of populations obtained by next-generation sequencing. Combined with phenotypic data to screen out excellent haplotypes for follow-up research quickHapR
+Haplotype analysis was performed based on the genotype information of a large number of populations obtained by next-generation sequencing. Combined with phenotypic data to screen out excellent haplotypes for follow-up research geneHapR
 
 ## 2. Basic logic
 
@@ -33,24 +33,24 @@ Haplotype analysis was performed based on the genotype information of a large nu
 -   [ ] Install git software
 -   [ ] Install R packages: `devtools`, `BiocManager`
 
-### 3.2 quickHapR automatic installation method
+### 3.2 geneHapR automatic installation method
 
 ``` r
 # auto install command
 # 1. Choose to install from gitee(domestic code hosting platform)
 # Note: This method needs to install Rtools and Git first
-devtools :: install_git("https://gitee.com/zhangrenl/quickhapr")
+devtools :: install_git("https://gitee.com/zhangrenl/geneHapR")
 
 # 2. Choose to install from github
-devtools :: install_github("zhangrenl/quickhapr")
+devtools :: install_github("zhangrenl/geneHapR")
 ```
 
-### 3.3 quickHapR manual installation
+### 3.3 geneHapR manual installation
 
 ``` r
 # If the installation of the above command fails, you can go to Gitee to download the precompiled R package and select local installation
 # Note the latest version was not promised by this way.
-# Before installing quickHapR locally, you need to manually install the dependent R packages:
+# Before installing geneHapR locally, you need to manually install the dependent R packages:
 install.packages("BiocManager")
 library(BiocManager)
 install(c("ggpubr", "vcfR", "tidyverse", "stringr", "reshape2", "randomcoloR",
@@ -62,7 +62,7 @@ install(c("ggpubr", "vcfR", "tidyverse", "stringr", "reshape2", "randomcoloR",
 ### 4.1 Package Testing
 
 ``` r
-library(quickHapR)
+library(geneHapR)
 data("quickHap_test")
 hap <- get_hap(vcf, hyb_remove = TRUE, na.drop = TRUE)
 hapResult <- hap_result(hap)
@@ -80,8 +80,8 @@ plot(phenoResult$figs)
 ### 4.2 Software usage
 
 ``` r
-# Load quickhapR
-library(quickHapR)
+# Load geneHapR
+library(geneHapR)
 data("quickHap_test")# Load test data, you don't have to execute this line when processing your own data
 
 # set working directory

@@ -1,5 +1,6 @@
+#' @importFrom stringi stri_pad_right
 #' @exportS3Method print haptypes
-print.haptypes <- function(x){
+print.haptypes <- function(x, ...){
     freq <- attr(x, "freq")
     accAll <- attr(x, "AccAll")
     accRemain <- attr(x, "AccRemain")
@@ -28,7 +29,7 @@ print.haptypes <- function(x){
 
 
 #' @exportS3Method print hapSummary
-print.hapSummary <- function(x){
+print.hapSummary <- function(x, ...){
     freq <- table(names(attr(x, "hap2acc")))
     ALLELE <- x[x$Hap %in% "ALLELE",
                         !names(x) %in% c("Hap","Accession", "freq")]
@@ -62,7 +63,7 @@ print.hapSummary <- function(x){
 }
 
 
-#' @exportMethod write
+
 write.hap <- function(x, file = file, ...){
     nc <- ncol(x)
     nm <- names(x)
@@ -74,14 +75,21 @@ write.hap <- function(x, file = file, ...){
     }
 }
 
+#' @title writeout
+#' @param x objec of haplotypes or hapSummary
+#' @param file filepath
+#' @param ... other parameters will be drop
+#' @export
+writeout <- function(x, file, ...) UseMethod("writeout")
 
-#' @exportS3Method write.hap haptypes
-write.hap.haptypes <- function(x, file = file, ...){
+
+#' @exportS3Method writeout haptypes
+writeout.haptypes <- function(x, file = file, ...){
     write.hap(x, file = file, ...)
 }
 
 
-#' @exportS3Method write.hap hapSummary
-write.hap.hapSummary <- function(x, file = file, ...){
+#' @exportS3Method writeout hapSummary
+writeout.hapSummary <- function(x, file = file, ...){
     write.hap(x, file = file, ...)
 }
