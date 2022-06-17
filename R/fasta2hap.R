@@ -18,9 +18,10 @@
 #' @param Ref T
 #' @param hyb_remove T
 #' @param na.drop T
-#' @param minFlankFraction A value in [0, 1] that indicates the minimum fraction needed to call a gap in the consensus string (default is 0.1).
-#' @param maxGapsPerSeq A value in [0, 1] that indicates the maximum gaps allowed in a seq after alignment
+#' @param minFlankFraction A value in `[0, 1]` that indicates the minimum fraction needed to call a gap in the consensus string (default is 0.1).
+#' @param maxGapsPerSeq A value in `[0, 1]` that indicates the maximum gaps allowed in a seq after alignment
 #' @param ... parameters will pass to musle::musle() for DNA multi alignment
+#' @inherit hap_result examples
 #' @export
 seqs2hap <- function(seqs,
                      Ref = names(seqs)[1],
@@ -140,6 +141,8 @@ Please consider elevate 'minFlankFraction'")
     return(seqs)
 }
 
+
+# return data.frame,
 seq2hap_data <- function(seqs, allS_new = allS_new, RefSeq = RefSeq){
     # get refSeq trimed length
     Ref <- names(RefSeq)

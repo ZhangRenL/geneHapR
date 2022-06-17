@@ -6,38 +6,93 @@
 \usage{
 plotHapTable(hapResult,
              hapPrefix = "H",
-             geneID = "",
+             title = "",
+             geneID = geneID,
+             INFO_tag = INFO_tag,
+             tag_split = tag_split,
+             tag_field = 0,
+             tag_name = tag_name,
              displayIndelSize = 0, angle = c(0,45,90),
              replaceMultiAllele = TRUE,
-             title.color = "grey90")
+             ALLELE.color = "grey90")
 }
 \arguments{
 \item{hapResult}{hapResult}
 
 \item{hapPrefix}{hapPrefix}
 
-\item{geneID}{geneID used as mainTitle}
+\item{title}{mainTitle}
+
+\item{INFO_tag}{\code{INFO} was take from
+\code{\href{https://gatk.broadinstitute.org/hc/en-us/articles/360035531692-VCF-Variant-Call-Forma}{VCF}}
+file. The annotations contained in the INFO field are represented as tag-value
+pairs, where the tag and value are separated by an equal sign, ie '=', and
+pairs are separated by colons, ie ';'.}
+
+\item{tag_split}{usually, the value of tag-value contains one information.
+However, if a tag contains more than one fields, eg \code{ANN}, then \code{tag_split} is
+needed. When \code{INFO_tag} was set as \code{ANN} or \code{SNPEFF}, \code{tag_split} will be set
+as \verb{[|]} by default, see details.}
+
+\item{tag_field}{integer, if a tag-value contains more than one fields,
+user need to specified which field should be display. If \code{tag_field} set as
+\code{zero}, the whole contents will be displayed. Default as \code{zero}.}
+
+\item{tag_name}{tag name is displayed in Hap figure. If \code{tag_name} is
+missing, will take the value of \code{INFO_tag}.}
 
 \item{displayIndelSize}{display indels with max size of displayIndelSize,
 If set as 0, all indels will convert into 'i*'.}
 
 \item{angle}{angle of coordinate, should be one of 0, 45 and 90}
 
-\item{replaceMultiAllele}{Whether to replace MultiAllele with T*,
-defalt as TRUE}
+\item{replaceMultiAllele}{whether to replace \code{MultiAllele} with 'T*',
+default as TRUE.}
 
-\item{title.color}{title.color, defalt is grey90}
+\item{ALLELE.color}{ALLELE.color, default is grey90}
 }
 \value{
 ggplot2 object
 }
 \description{
-plot you hap result as a table
+display hap result as a table-like figure
+}
+\details{
+\enumerate{
+\item Allele
+\item Annotation
+\item Annotation_Impact
+\item Gene_Name
+\item Gene_ID
+\item Feature_Type
+\item Feature_ID
+\item Transcript_BioType
+\item Rank
+\item HGVS.c
+\item HGVS.p
+\item cDNA.pos / cDNA.length
+}
 }
 \examples{
-
+\dontrun{
+# load example data
 data("quickHap_test")
-hap <- get_hap(vcf,hyb_remove = TRUE, na.drop = TRUE)
+
+# generate hap result from vcfR object
+hap <- vcf2hap(vcf, hyb_remove = TRUE, na.drop =TRUE)
+
+# generate hap result from DNAStringSet object
+hap <- seqs2hap(seqs, Ref = names(seqs)[1], needAlign = TRUE, needTrim = TRUE)
+
+# summary hap result for plot hap table
 hapResult <- hap_result(hap)
+
+# plot hap table
 plotHapTable(hapResult)
+
+# user could change/add themes, title, ...
+p <- plotHapTable(hapResult)
+p + ggplot2::theme_classic()
+p + ggplot2::labs(title = "new title")
+}
 }

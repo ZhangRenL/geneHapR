@@ -1,4 +1,5 @@
 #' @importFrom stringi stri_pad_right
+#' @importFrom tibble tibble
 #' @exportS3Method print haptypes
 print.haptypes <- function(x, ...){
     freq <- attr(x, "freq")
@@ -25,6 +26,9 @@ print.haptypes <- function(x, ...){
         cat("\n ",stringi::stri_pad_right(nn, 11)," ", sep = "")
         cat(options[i])
     }
+    cat("\n\n")
+    print(tibble::as_tibble(x))
+
 }
 
 
@@ -60,36 +64,8 @@ print.hapSummary <- function(x, ...){
         cat("\n ",names(options)[i],":\t", sep = "")
         cat(options[i])
     }
+    cat("\n\n")
+    print(tibble::as_tibble(x))
 }
 
 
-
-write.hap <- function(x, file = file, ...){
-    nc <- ncol(x)
-    nm <- names(x)
-    if("Accession" %in% nm) x[1,nm == "Accession"] <- "Accession"
-    if("freq" %in% nm) x[1,nm == "freq"] <- "freq"
-    cat("",file = file, sep = "", append = FALSE)
-    for(i in seq_len(nrow(x))){
-        cat(as.matrix(x[i,]), file = "a.txt", sep = c(rep.int("\t", nc-1), "\n"),append = TRUE)
-    }
-}
-
-#' @title writeout
-#' @param x objec of haplotypes or hapSummary
-#' @param file filepath
-#' @param ... other parameters will be drop
-#' @export
-writeout <- function(x, file, ...) UseMethod("writeout")
-
-
-#' @exportS3Method writeout haptypes
-writeout.haptypes <- function(x, file = file, ...){
-    write.hap(x, file = file, ...)
-}
-
-
-#' @exportS3Method writeout hapSummary
-writeout.hapSummary <- function(x, file = file, ...){
-    write.hap(x, file = file, ...)
-}

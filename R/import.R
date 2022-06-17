@@ -5,10 +5,8 @@
 #' @description  import vcf file
 #' @examples
 #' \dontrun{
-#' data("quickHap_test")
-#' vcfR::write.vcf(vcf, file = "test.vcf.gz")
+#'
 #' vcf <- import_vcf(file = "test.vcf.gz")
-#' unlink("test.vcf.gz")
 #' }
 #' @importFrom vcfR read.vcfR
 #' @param vcf_file file path of vcf
@@ -32,11 +30,9 @@ import_vcf <- function(vcf_file = vcf_file, ...) {
 #' and the latter part will be set as foot of the fig.
 #' @examples
 #' \dontrun{
-#' data("quickHap_test")
-#' write.table(pheno, file = "test.pheno.txt", quote = FALSE, sep = "\t")
+#'
 #' pheno <- import_pheno("test.pheno.txt")
-#' unlink("test.pheno.txt")
-#'}
+#' }
 #' @importFrom utils read.delim
 #' @param phenoFile pheno file path, should be a table separated by tab
 #' @param comment.char comment.char, start with comment.char will be ignored
@@ -58,6 +54,7 @@ import_pheno <- function(phenoFile, comment.char = "#", ...){
 #' @usage import_gff(gffFile, format = "GFF")
 #' @examples
 #' \dontrun{
+#'
 #'     gff <- import_gff("your.gff", format = "GFF")
 #' }
 #' @importFrom rtracklayer import
@@ -88,26 +85,100 @@ import_seqs <- function(file, format = "fasta", ...){
 
 #' @name import_hapResult
 #' @title  import_hapResult
-#' @usage import_hapResult(file)
+#' @usage import_hapResult(file, ...)
+#' @description
+#' This function could be used for import hap result or hap summary result.
+#' The type of returned object is decided by hap result format, see details.
+#' @details
+#' The hap result and hap summary result have common features.
+#'   The common features of these two types are:
+#'     First four rows contains extra information: CHR, POS, INFO and ALLELE
+#'     Hap names were in the first column.
+#'   The differences are:
+#'     Hap summary result have a freq column while hap result not.
+#'     Rows represent haplotypes in hap summary result, while rows represent accessions in hap result.
+#'     In addtion, the accessions of each haplotype in hap summary result were separated by ';'.
 #' @examples
 #' \dontrun{
-#'     hapResult <- import_hapResult("your_hapResult_file.txt")
+#'
+#' hapResult <- import_hapResult("your_hapResult_file.txt")
 #' }
-#' @importFrom rtracklayer import
 #' @param file hapResult file path
+#' @param ... extras will pass to `read.delim()`
 #' @export
-#' @return data.frame
-import_hapResult <- function(file){
-    hapResult <- read.delim(file, header = F)
-    colnames(hapResult) <- hapResult[2,]
+#' @return hapSummary or haptypes
+import_hapResult <- function(file, ...){
+    hapResult <- read.delim(file, header = F, ...)
+
+    # check rows format
+    if(nrow(hapResult) == 5)
+        warning("There is only one haplotype?") else
+            if(nrow(hapResult) < 5)
+                stop("Please check your input file.")
+
+    # get POS
+    POS <- suppressWarnings(as.numeric(hapResult[hapResult[,1] == "POS",]))
+    POS <- na.omit(POS)
+    if(length(POS) == 1)
+        warning("There is only one loci?") else
+            if(length(POS) < 1)
+                stop("Please check your input file")
+
+    # check columns
+    cn <- c("Hap", POS)
+    if(ncol(hapResult) - length(POS) == 2){
+        cn <- c(cn, "Accession")
+        class(hapResult) <- c("haptypes", "data.frame")
+    } else if(ncol(hapResult) - length(POS) == 3){
+        if(is.numeric(hapResult[,ncol(hapResult)])){
+            cn <- c(cn, "Accession", "freq")
+        } else if(is.numeric(hapResult[,ncol(hapResult) - 1])){
+            cn <- c(cn, "freq", "Accession")
+        } else {
+            stop("Can't find Please check your input file.")
+        }
+        class(hapResult) <- c("hapSummary", "data.frame")
+    } else {
+        stop("Please check your input file.")
+    }
+
+    # set colnames
+    colnames(hapResult) <- cn
+
+    # set attr options
+    attr(hapResult, "options") <- c(Source = "Read from file")
     return(hapResult)
 }
 
 
+#' @title save hap results on disk
+#' @name write.hap
+#' @usage write.hap(x, file = file, sep = "\t")
+#' @description
+#' This function will write hap result into a txt file.
+#' @inherit import_hapResult details
+#' @examples
+#' \dontrun{
+#'
+#' write.hap(hap, file = "hap.txt")
+#' }
+#' @param x objec of haplotypes or hapSummary
+#' @param file file path, where to save the hap result
+#' @param sep the field separator string. Values within each row of x are separated by this string.
+#' @export
+write.hap <- function(x, file = file, sep = "\t"){
+    nc <- ncol(x)
+    nm <- names(x)
+    if("Accession" %in% nm) x[1,nm == "Accession"] <- "Accession"
+    if("freq" %in% nm) x[1,nm == "freq"] <- "freq"
+    cat("",file = file, sep = "", append = FALSE)
+    for(i in seq_len(nrow(x))){
+        cat(as.matrix(x[i,]), file = file, sep = c(rep.int(sep, nc-1), "\n"),append = TRUE)
+    }
+}
 
 
-
-
+# import pips
 `%>%` <- magrittr::`%>%`
 `%over%` <- IRanges::`%over%`
 

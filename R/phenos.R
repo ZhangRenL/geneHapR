@@ -10,7 +10,7 @@
 #' @examples
 #'
 #' data("quickHap_test")
-#' hap <- get_hap(vcf,hyb_remove = TRUE, na.drop = TRUE)
+#' hap <- vcf2hap(vcf,hyb_remove = TRUE, na.drop = TRUE)
 #' # plot the figs direactively
 #' hapVsPheno(hap = hap,pheno = phenos,phenoName = "GrainWeight.2021",minAcc = 3)
 #'

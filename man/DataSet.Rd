@@ -8,18 +8,15 @@
 \alias{vcf}
 \alias{accGroup}
 \title{Datasets
-gff contains a sample of gff file used for test and samples}
+\code{gff} contains a example of gff file used for test of
+visualization mutations on gene model.}
 \description{
-Datasets
-gff contains a sample of gff file used for test and samples
+\code{phenos} contains a simulated test pheno data used for test of comparison
+between different haps
 
-Datasets
-phenos contains a simulated test pheno data used for test and samples
+\code{vcf}, a vcfR object provide a data set for test of \code{seq2hap()}.
+\code{vcf} contains indels, snps, biallelic sites and multiallelic sites.
 
-Datasets
-vcf contains a vcf dataset used for test and samples
-
-Datasets
-data.frame defined the group of each accessions
+\code{accGroup} a data.frame defined the group of each accessions
 }
 \keyword{datasets}

@@ -1,13 +1,33 @@
-#' @title get_hapNet
-#' @description calculate hap net using hap result
+#' @title generate haplotype net relationshop with haplotype result
+#' @description get_hapNet computes a haplotype network with haplotype summary result.
+#' @seealso plot, plothapNet, hap_result
 #' @usage get_hapNet(hapResult, accGroup = accGroup, groupName = groupName)
 #' @importFrom pegas haploNet
 #' @importFrom stringdist stringdist
+#' @references
+#' Article{,
+#' title = {The stringdist package for approximate string matching},
+#' author = {M.P.J. {van der Loo}},
+#' year = {2014},
+#' journal = {The {R} {J}ournal},
+#' volume = {6},
+#' issue = {1},
+#' url = {https://CRAN.R-project.org/package=stringdist},
+#' pages = {111-122},
+#' }
+#' Article{,
+#'     title = {pegas: an {R} package for population genetics with an integrated--modular approach},
+#'   author = {E. Paradis},
+#'     journal = {Bioinformatics},
+#'     year = {2010},
+#'     volume = {26},
+#'     pages = {419-420},
+#' }
 #' @param hapResult hapResult
-#' @param accGroup data.frame specified groups of each accessions,
-#' used for pie plot. If missing, pie will not draw in plotHapNet.
+#' @param accGroup data.frame, specified groups of each accession.
+#' Used for pie plot. If missing, pie will not draw in plotHapNet.
 #' Or you can supplied a hap.group mattrix with plot(hapNet, pie = hap.group).
-#' @param groupName one colname of accGroup
+#' @param groupName the group name used for pie plot, should be one of accGroup colnames, defalt as the first column name
 #' @return haplonet class
 #' @export
 get_hapNet <- function(hapResult, accGroup = accGroup, groupName = groupName){
@@ -97,7 +117,8 @@ plotHapNet <- function(hapNet,
 
 
 #' @title as.haplotype
-#' @description calculat Hap net from a hapSummary object
+#' @description convert hapSummary into haplotype (pegas)
+#' @note It's not advised for hapSummary with indels, due to indels will replaced by equal length of SNPs.
 #' @importFrom ape as.DNAbin
 #' @param hapResult hapResult
 #' @return haplotype class

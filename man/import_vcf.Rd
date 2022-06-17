@@ -21,10 +21,8 @@ import vcf file
 }
 \examples{
 \dontrun{
-data("quickHap_test")
-vcfR::write.vcf(vcf, file = "test.vcf.gz")
+
 vcf <- import_vcf(file = "test.vcf.gz")
-unlink("test.vcf.gz")
 }
 }
 \author{

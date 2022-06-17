@@ -13,5 +13,8 @@ as.haplotype(hapResult)
 haplotype class
 }
 \description{
-calculat Hap net from a hapSummary object
+convert hapSummary into haplotype (pegas)
+}
+\note{
+It's not advised for hapSummary with indels, due to indels will replaced by equal length of SNPs.
 }

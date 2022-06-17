@@ -1,14 +1,87 @@
+#' @title Set position of ATG as zero
+#' @name SetATGas0
+#' @description
+#' Filter hap result and gff annotation according to provided information.
+#' And then set position of ATG as zero in hap result and gff annotation.
+#' The upstream was negative while the gene range and downstream was positive.
+#'
+#' **Notice:** the position of "ATG" after modified was 0, 1 and 2 separately.
+#' The site in hap result exceed the selected range will be **dropped**.
+#' @usage
+#' gffSetATGas0(gff = gff, hap = hap,
+#'              geneID = geneID,
+#'              Chr = Chr, POS = c(start, end))
+#' @param gff gff
+#' @param hap hap results
+#' @param geneID geneID
+#' @param Chr Chrom name
+#' @param POS vector defined by `start` and `end` position
+#' @importFrom GenomicRanges strand
+#' @examples
+#' # load example dataset
+#' data("quickHap_test")
+#'
+#' # generate hap results
+#' hap <- vcf2hap(vcf)
+#'
+#' # set position of ATG as zero in gff
+#' newgff <- gffSetATGas0(gff = gff, hap = hap,
+#'                        geneID = "test1G0387",
+#'                        Chr = "scaffold_1",
+#'                        POS = c(4300, 7910))
+#'
+#' # set position of ATG as zero in hap results
+#' newhap <- hapSetATGas0(gff = gff, hap = hap,
+#'                        geneID = "test1G0387",
+#'                        Chr = "scaffold_1",
+#'                        POS = c(4300, 7910))
+#'
+#' # visualization mutations on gene model with newgff and newhap
+#' plotGeneStructure(gff = newgff, hapResult = newhap)
+#'
+#' @return `gffSetATGas0`: filtered gff with position of ATG was as zero
+#' @seealso
+#' \code{\link[geneHapR:plotGeneStructure]{plotGeneStructure()}}
+#' @export
+gffSetATGas0 <- function(gff = gff, hap = hap,
+                         geneID = geneID,
+                         Chr = Chr, POS = c(start, end)){
+    tmp <- setATGas0(gff = gff, hap = hap,
+                     geneID = geneID,
+                     Chr = Chr, POS = POS)
+    return(tmp$gff)
+}
+
+
+#' @name SetATGas0
+#' @usage
+#' hapSetATGas0(gff = gff, hap = hap,
+#'              geneID = geneID,
+#'              Chr = Chr, POS = c(start, end))
+#' @return `hapSetATGas0`: hap results only position of ATG was set as zero
+#' @export
+hapSetATGas0 <- function(gff = gff, hap = hap,
+                         geneID = geneID,
+                         Chr = Chr, POS = c(start, end)){
+    tmp <- setATGas0(gff = gff, hap = hap,
+                     geneID = geneID,
+                     Chr = Chr, POS = POS)
+    hap <- tmp$hap
+    return(hap)
+}
+
+
 setATGas0 <- function(gff = gff, hap = hap,
                       geneID = geneID,
                       Chr = Chr, POS = c(start, end)){
     # filter gff by postion
     if(missing(Chr)) {
         warning("Chr is missing, using CHROM in hap")
-        Chr <- hap[1,2]
+        Chr <- hap[hap$Hap == "CHR",2]
     }
     if(missing(POS)){
         warning("POS is missing, using postion info in hap")
-        POS <- hap[2,]
+        POS <- hap[hap$Hap == "POS",1]
         POS <- suppressWarnings(as.numeric(POS))
         POS <- na.omit(POS)
         POS <- c(min(POS), max(POS))
@@ -81,65 +154,4 @@ setATGas0 <- function(gff = gff, hap = hap,
     GenomicRanges::strand(gffOver) <- "+"
 
     return(list(gff = gffOver, hap = hap))
-}
-
-#' @title gffSetATGas0
-#' @description set ATG posision as 0.
-#' @importFrom GenomicRanges strand
-#' @usage
-#' gffSetATGas0(gff = gff, hap = hap,
-#'              geneID = geneID,
-#'              Chr = Chr, POS = c(start, end))
-#' @param gff imported gff
-#' @param hap hap result with meta infos
-#' @param geneID geneID
-#' @param Chr Chrom name
-#' @param POS vector defined by start and end position
-#' @examples
-#' data("quickHap_test")
-#' hap <- get_hap(vcf)
-#' gffn <- gffSetATGas0(gff = gff, hap = hap,
-#'                   geneID = "test1G0387",
-#'                   Chr = "scaffold_1",
-#'                   POS = c(4300, 7910))
-#' @return filtered gff with set ATG position as 0
-#' @export
-gffSetATGas0 <- function(gff = gff, hap = hap,
-                         geneID = geneID,
-                         Chr = Chr, POS = c(start, end)){
-    tmp <- setATGas0(gff = gff, hap = hap,
-                     geneID = geneID,
-                     Chr = Chr, POS = POS)
-    return(tmp$gff)
-}
-
-
-#' @title hapSetATGas0
-#' @description set ATG posision as 0
-#' @usage
-#' hapSetATGas0(gff = gff, hap = hap,
-#'              geneID = geneID,
-#'              Chr = Chr, POS = c(start, end))
-#' @param gff imported gff
-#' @param hap hap result with meta infos
-#' @param geneID geneID
-#' @param Chr Chrom name
-#' @param POS vector defined by start and end position
-#' @examples
-#' data("quickHap_test")
-#' hap <- get_hap(vcf)
-#' hapn <- hapSetATGas0(gff = gff, hap = hap,
-#'                      geneID = "test1G0387",
-#'                      Chr = "scaffold_1",
-#'                      POS = c(4300, 7910))
-#' @return hap results with set ATG position as 0
-#' @export
-hapSetATGas0 <- function(gff = gff, hap = hap,
-                         geneID = geneID,
-                         Chr = Chr, POS = c(start, end)){
-    tmp <- setATGas0(gff = gff, hap = hap,
-                     geneID = geneID,
-                     Chr = Chr, POS = POS)
-    hap <- tmp$hap
-    return(hap)
 }

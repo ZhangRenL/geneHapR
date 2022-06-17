@@ -24,9 +24,9 @@ seqs2hap(seqs,
 
 \item{needTrim}{T}
 
-\item{minFlankFraction}{A value in [0, 1] that indicates the minimum fraction needed to call a gap in the consensus string (default is 0.1).}
+\item{minFlankFraction}{A value in \verb{[0, 1]} that indicates the minimum fraction needed to call a gap in the consensus string (default is 0.1).}
 
-\item{maxGapsPerSeq}{A value in [0, 1] that indicates the maximum gaps allowed in a seq after alignment}
+\item{maxGapsPerSeq}{A value in \verb{[0, 1]} that indicates the maximum gaps allowed in a seq after alignment}
 
 \item{hapPrefix}{T}
 
@@ -34,4 +34,27 @@ seqs2hap(seqs,
 }
 \description{
 generate hap results from seqs
+}
+\examples{
+\dontrun{
+# load example data
+data("quickHap_test")
+
+# generate hap result from vcfR object
+hap <- vcf2hap(vcf, hyb_remove = TRUE, na.drop =TRUE)
+
+# generate hap result from DNAStringSet object
+hap <- seqs2hap(seqs, Ref = names(seqs)[1], needAlign = TRUE, needTrim = TRUE)
+
+# summary hap result for plot hap table
+hapResult <- hap_result(hap)
+
+# plot hap table
+plotHapTable(hapResult)
+
+# user could change/add themes, title, ...
+p <- plotHapTable(hapResult)
+p + ggplot2::theme_classic()
+p + ggplot2::labs(title = "new title")
+}
 }

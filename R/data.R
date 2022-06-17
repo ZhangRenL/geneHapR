@@ -1,6 +1,7 @@
 
 #' Datasets
-#' gff contains a sample of gff file used for test and samples
+#' `gff` contains a example of gff file used for test of
+#' visualization mutations on gene model.
 #'
 #'
 #' @name DataSet
@@ -10,7 +11,9 @@
 NULL
 
 #' Datasets
-#' phenos contains a simulated test pheno data used for test and samples
+#'
+#' `phenos` contains a simulated test pheno data used for test of comparison
+#' between different haps
 #'
 #'
 #' @name DataSet
@@ -22,8 +25,9 @@ NULL
 
 
 #' Datasets
-#' vcf contains a vcf dataset used for test and samples
 #'
+#' `vcf`, a vcfR object provide a data set for test of `seq2hap()`.
+#' `vcf` contains indels, snps, biallelic sites and multiallelic sites.
 #'
 #' @name DataSet
 #' @aliases vcf
@@ -35,8 +39,8 @@ NULL
 
 
 #' Datasets
-#' data.frame defined the group of each accessions
 #'
+#' `accGroup` a data.frame defined the group of each accessions
 #'
 #' @name DataSet
 #' @aliases accGroup

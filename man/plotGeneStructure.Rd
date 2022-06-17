@@ -4,11 +4,12 @@
 \alias{plotGeneStructure}
 \title{plotGeneStructure}
 \usage{
-plotGeneStructure(gff, hapResult,
-Chr,
-startPOS, endPOS,
-type = "pin", cex = 0.7,
-CDS_h = 0.05, fiveUTR_h = 0.02, threeUTR_h = 0.01)
+plotGeneStructure(gff,
+                  hapResult,
+                  Chr,
+                  startPOS, endPOS,
+                  type = "pin", cex = 0.7,
+                  CDS_h = 0.05, fiveUTR_h = 0.02, threeUTR_h = 0.01)
 }
 \arguments{
 \item{gff}{gff}
@@ -16,13 +17,13 @@ CDS_h = 0.05, fiveUTR_h = 0.02, threeUTR_h = 0.01)
 \item{hapResult}{ouput of hap_result(), a data.frame consistant
 with 4 metarows: Chr, POS, Allele and ANN, and each genotype of each hap}
 
-\item{Chr}{Chr, it will use the first Chr in the meta rows by defalt}
+\item{Chr}{Chr, it will use the first Chr in the meta rows by default}
 
 \item{startPOS}{If missing, will use the min position
-in the second meta rows by defalt}
+in the second meta rows by default}
 
 \item{endPOS}{If missing, will use the max position
-in the second meta rows by defalt}
+in the second meta rows by default}
 
 \item{type}{character. Could be circle, pie, pin, pie.stack or flag}
 
@@ -36,7 +37,7 @@ plotGeneStructure
 \examples{
 
 data("quickHap_test")
-hap <- get_hap(vcf,hyb_remove = TRUE, na.drop = TRUE)
+hap <- vcf2hap(vcf,hyb_remove = TRUE, na.drop = TRUE)
 hapResult <- hap_result(hap)
 plotGeneStructure(gff, hapResult,
                   startPOS = 4100,

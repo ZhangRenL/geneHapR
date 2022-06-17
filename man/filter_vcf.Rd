@@ -32,60 +32,6 @@ if type set to custom, the custom_type is needed.}
 \description{
 filter vcf by gff file or by position or both
 }
-\details{
-#' @description 根据变异位点所在区域的类型进行筛选
-#' @title filter_hap_by_gff
-#' @usage
-#' filter_hap(gff = gff,
-#'            hap = hap,
-#'            hapPrefix_new = "C_H",
-#'            type = c("CDS", "exon", "gene","genome", "custom"),
-#'            custom_type = c("CDS", "exon", "gene"))
-#' @param gff gff文件
-#' @param hap hap或hapResult
-#' @param hapPrefix_new new prefix for filtered haps
-#' @param type 筛选模式，CDS/exon/gene/genome/custom之一，
-#' 如果是custom则必须设定custom_type
-#' @param custom_type 自定义筛选模式
-#' @importFrom IRanges start
-#' @importFrom IRanges `%over%`
-#' @examples
-#' # filtet hap
-#' data("quickHap_test")
-#' hap <- get_hap(vcf)
-#' hap <- filter_hap(gff = gff, hap = hap, type = "CDS")
-#'
-#' @export
-filter_hap <- function(gff = gff,
-                       hap = hap,
-                       hapPrefix_new = "C_H",
-                       type = c("CDS", "exon", "gene", "genome", "custom"),
-                       custom_type = c("CDS", "exon", "gene")){
-    if(!type %in% c("CDS", "exon", "gene","genome", "custom"))
-        stop('type must be one of  c("CDS", "exon", "gene","genome", "custom")')
-    if(type == "custom") type <- custom_type
-    # filter gff file by type type
-    if(type == "genome") {
-        gff <- gff
-    } else {
-        gff <- gff[gff$type %in% type]
-    }
-    meta <- hap[1:4,]
-    POS <- suppressWarnings(as.numeric(meta[2,]))
-    POS <- na.omit(POS)
-    Chr <- meta[1,2]
-    hapRange <- POS2GRanges(Chr = Chr, POS = POS)
-    hapRange <- hapRange[!(hapRange %over% gff)]
-    POS_rm <- IRanges::start(hapRange)
-    probe <- !(colnames(hap) %in% POS_rm)
-    hap <- hap[,probe]
-    meta <- hap[1:4,]
-    hap <- hap[5:nrow(hap), -1]
-    hap <- assign_hapID(hap, hapPrefix = hapPrefix_new)
-    hap <- rbind(meta, hap)
-    return(hap)
-}
-}
 \examples{
 # filtet hap
 data("quickHap_test")

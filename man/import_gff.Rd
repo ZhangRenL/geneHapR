@@ -19,6 +19,7 @@ import_gff
 }
 \examples{
 \dontrun{
+
     gff <- import_gff("your.gff", format = "GFF")
 }
 }

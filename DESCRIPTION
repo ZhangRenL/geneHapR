@@ -1,44 +1,44 @@
 Package: geneHapR
 Type: Package
 Title: R Packages for Gene Haplotype Analysis
-Description: A quick hap analysis R packages. Using vcf files to generated hap results.
-  Combinding phenos data to mining a advantaged haplotype.
+Description: This packages provides a suite for one or multi-genes haplotype analysis, visualizion and compare phenos between different haps.
 biocViews: NucleosomePositioning, DataImport
 Encoding: UTF-8
-Authors@R: c(person(given = "Renliang", family = "Zhang", email = "zhang_renliang@163.com", role = c("cre","aut")),
-  person(given = "Guanqing", family = "Jia", email = "jiaguanqing@caas.cn", role = c("aut")))
+Authors@R: 
+  c(person(given = "Zhang", family = "Renliang", email = "zhang_renliang@163.com", role = c("aut", "cre")),
+    person(given = "Jia", family = "Guanqing", email = "jiaguanqing@caas.cn", role = c("aut")))
 Version: 0.0.11
 RoxygenNote: 7.1.2
 LazyData: True
 Imports: 
   ape,
-  muscle,
-  pegas,
   Biostrings,
-  stringdist,
-  tidyr,
   dplyr,
-  reshape2, 
-  methods,
   ggpubr, 
-  stringi, 
-  stringr, 
-  vcfR,
+  GenomicRanges,
+  magrittr,
+  methods,
+  muscle,
+  IRanges,
+  pegas,
   randomcoloR,
+  reshape2, 
+  rlang,
   rtracklayer, 
   trackViewer,
-  magrittr,
-  GenomicRanges,
-  IRanges,
-  rlang,
   stats,
-  utils
+  stringdist,
+  stringi, 
+  stringr, 
+  tibble,
+  tidyr,
+  utils,
+  vcfR
 Depends: 
   ggplot2,
   R (>= 4.0.0)
 License: GPL-3
 Suggests: 
-    knitr,
-    rmarkdown
+    knitr
 VignetteBuilder: knitr
-
+Roxygen: list(markdown = TRUE)

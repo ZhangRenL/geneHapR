@@ -1,3 +1,4 @@
+# sites definition
 homo <- c("A", "C", "G", "T")
 names(homo) <- paste(homo, homo, sep = "/")
 unknown <- c(".", "N")
@@ -8,17 +9,18 @@ hetero <- c("A|C","A|G","A|T",
             "T|A","T|C","T|G")
 names(hetero) <- stringr::str_replace(hetero,"[|]", "/")
 
+
 allS <- list(homo = homo,
              unknown = unknown,
              hetero = hetero,
              all = c(homo, hetero))
+
 
 # B: C G T
 # D: A G T
 # H: A C T
 # V：A C G
 # N: A C G T
-
 update_allS <- function(allS_new, REF = REF, ALT = ALT){
     ALT <- stringr::str_split(ALT, pattern = ",")
     ALT <- unlist(ALT)
@@ -51,7 +53,6 @@ update_allS <- function(allS_new, REF = REF, ALT = ALT){
 }
 
 
-
 is.indel.allele <- function(allele.vector){
     probe1 <- stringr::str_detect(allele.vector,"/")
     probe <- lapply(stringr::str_split(allele.vector,"[,/]"),
@@ -59,10 +60,12 @@ is.indel.allele <- function(allele.vector){
     probe1 & unlist(lapply(probe, function(i) max(i)>1))
 }
 
+
 is.biallelic.allele <- function(allele.vector){
     probe1 <- stringr::str_detect(allele.vector,"/")
     !stringr::str_detect(allele.vector,",") & probe1
 }
+
 
 is.multiallelic.allele <- function(allele.vector){
     probe1 <- stringr::str_detect(allele.vector,"/")
