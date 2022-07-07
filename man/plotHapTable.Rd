@@ -7,7 +7,7 @@
 plotHapTable(hapResult,
              hapPrefix = "H",
              title = "",
-             geneID = geneID,
+             geneName = geneName,
              INFO_tag = INFO_tag,
              tag_split = tag_split,
              tag_field = 0,
@@ -23,20 +23,23 @@ plotHapTable(hapResult,
 
 \item{title}{mainTitle}
 
+\item{geneName}{used for filter INFO filed of ANN}
+
 \item{INFO_tag}{\code{INFO} was take from
-\code{\href{https://gatk.broadinstitute.org/hc/en-us/articles/360035531692-VCF-Variant-Call-Forma}{VCF}}
-file. The annotations contained in the INFO field are represented as tag-value
+\href{https://gatk.broadinstitute.org/hc/en-us/articles/360035531692-VCF-Variant-Call-Forma}{\code{VCF}}
+file. The annotations in the INFO field are represented as tag-value
 pairs, where the tag and value are separated by an equal sign, ie '=', and
-pairs are separated by colons, ie ';'.}
+pairs are separated by colons, ie ';'.
+For more information please see details.}
 
 \item{tag_split}{usually, the value of tag-value contains one information.
 However, if a tag contains more than one fields, eg \code{ANN}, then \code{tag_split} is
 needed. When \code{INFO_tag} was set as \code{ANN} or \code{SNPEFF}, \code{tag_split} will be set
-as \verb{[|]} by default, see details.}
+as "|" by default, see details.}
 
 \item{tag_field}{integer, if a tag-value contains more than one fields,
 user need to specified which field should be display. If \code{tag_field} set as
-\code{zero}, the whole contents will be displayed. Default as \code{zero}.}
+\code{0}, the whole contents will be displayed. Default as \code{0}.}
 
 \item{tag_name}{tag name is displayed in Hap figure. If \code{tag_name} is
 missing, will take the value of \code{INFO_tag}.}
@@ -47,7 +50,7 @@ If set as 0, all indels will convert into 'i*'.}
 \item{angle}{angle of coordinate, should be one of 0, 45 and 90}
 
 \item{replaceMultiAllele}{whether to replace \code{MultiAllele} with 'T*',
-default as TRUE.}
+default as \code{TRUE}.}
 
 \item{ALLELE.color}{ALLELE.color, default is grey90}
 }
@@ -58,6 +61,22 @@ ggplot2 object
 display hap result as a table-like figure
 }
 \details{
+In \href{https://gatk.broadinstitute.org/hc/en-us/articles/360035531692-VCF-Variant-Call-Forma}{\code{VCF}}
+files, the INFO field are represented as tag-value
+pairs, where the tag and value are separated by an equal sign, ie '=', and
+pairs are separated by colons, ie ';'.
+
+If hapresults were generated from vcf, \code{INFO} is null.
+If hapresults were generated from vcf, \code{INFO} were same as in source vcf.
+Some tag-values may contains more than one value separated by
+"|", eg: "ANN" or "snpEFF" added by snpeff or other software. For those
+fields we need specified value of \code{tag_field} and \code{tag_split}, it's suggest
+specified the value of \code{tag_name} for display in figure.
+
+\code{snpeff}, a toolbox for genetic variant annotation and functional effect
+prediction, will add annotations to "INFO" filed in vcf file under a tag
+named as "ANN". The annotations contains several fields separated by "|".
+eg:
 \enumerate{
 \item Allele
 \item Annotation
@@ -70,20 +89,48 @@ display hap result as a table-like figure
 \item Rank
 \item HGVS.c
 \item HGVS.p
-\item cDNA.pos / cDNA.length
+\item cDNA.pos/cDNA.length
+... ...
 }
+
+However, the \code{INFO} in hap results may missing annotations that we need.
+In this case, we can custom INFOs in hapresults with \code{addINFO()} or
+\code{replaceINFO()}.
+Once the needed annotations were included in hap results, we can display
+them with \code{plotHapTable()} by specify the value of \code{INFO_tag}.
 }
 \examples{
 \dontrun{
-# load example data
-data("quickHap_test")
 
-# generate hap result from vcfR object
+#### 1. generate hap result from vcf file ####
+# imoprt vcf data
+vcf <- import_vcf("myVcfFile.vcf.gz")
+
+# calculate hap result with vcfR
 hap <- vcf2hap(vcf, hyb_remove = TRUE, na.drop =TRUE)
 
-# generate hap result from DNAStringSet object
-hap <- seqs2hap(seqs, Ref = names(seqs)[1], needAlign = TRUE, needTrim = TRUE)
 
+#### 2. calculate hap from DNA seqs ####
+# import DNA seqs from fasta file
+seqs <- import_seqs("myseq.fa", format = "fasta")
+
+# aline multi-seqs
+aliedSeqs <- allignSeqs(seqs)
+
+# trim alined seqs
+trimedSeqs <- trimSeqs(seqs,
+                       minFlankFraction = 0.1)
+
+# calculate hap result with trimed seqs
+hap <- seqs2hap(trimedSeqs,
+                Ref = names(seqs)[1],
+                hyb_remove = TRUE,
+                maxGapsPerSeq = 0.25,
+                hapPrefix = "H")
+
+
+
+#### 3. summary and visualizatiion ####
 # summary hap result for plot hap table
 hapResult <- hap_result(hap)
 
@@ -95,4 +142,7 @@ p <- plotHapTable(hapResult)
 p + ggplot2::theme_classic()
 p + ggplot2::labs(title = "new title")
 }
+}
+\seealso{
+\code{\link[geneHapR:addINFO]{addINFO()}}
 }

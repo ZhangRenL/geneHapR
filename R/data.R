@@ -1,4 +1,3 @@
-
 #' Datasets
 #' `gff` contains a example of gff file used for test of
 #' visualization mutations on gene model.
@@ -9,6 +8,7 @@
 #' @docType data
 #' @keywords datasets
 NULL
+
 
 #' Datasets
 #'
@@ -23,7 +23,6 @@ NULL
 NULL
 
 
-
 #' Datasets
 #'
 #' `vcf`, a vcfR object provide a data set for test of `seq2hap()`.
@@ -34,8 +33,6 @@ NULL
 #' @docType data
 #' @keywords datasets
 NULL
-
-
 
 
 #' Datasets

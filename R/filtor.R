@@ -1,33 +1,25 @@
-POS2GRanges <- function(Chr, POS){
-    POSRange <- GenomicRanges::GRanges(
-        seqnames = Chr,
-        IRanges::IRanges(
-            start = POS,
-            width = rep(1, length(POS))))
-    return(POSRange)
-}
-
-
-
-
-#' @description filter vcf by gff file or by position or both
-#' @title filter_vcf_by_gff
+# checked
+#' @name filter_vcf_by_gff
+#' @title filter vcf by gff
+#' @description filter vcf by gff annotation or by position or both
 #' @usage
 #' filter_vcf(vcf, gff = gff,
 #'            mode = c("POS", "type", "both"),
 #'            Chr = Chr, start = start, end = end,
 #'            type = c("CDS", "exon", "gene", "genome", "custom"),
 #'            cusTyp = c("CDS", "five_prime_UTR", "three_prime_UTR"))
-#' @param vcf imported vcf
-#' @param gff imported gff
-#' @param mode filter mode, one of POS/type/both
-#' @param Chr CHROM name, needed if mode set to 'POS' or 'both'
-#' @param start Start position, needed if mode set to 'POS' or 'both'
-#' @param end End position, needed if mode set to 'POS' or 'both'
-#' @param type filter type, needed if mode set to 'type' or 'both',
-#' one of CDS/exon/gene/genome/custom,
-#' if type set to custom, the custom_type is needed.
-#' @param cusTyp vector, custom filter type, needed if type set to custom
+#' @param vcf object of `vcfR` class, vcf file imported by `import_vcf()`
+#' @param gff object of `GRanges` class, genome annotations imported by
+#' `import_gff()`
+#' @param mode filter mode, one of "POS", "type", "both"
+#' @param Chr CHROM name, needed if mode set to "POS" or "both"
+#' @param start start position, needed if mode set to "POS" or "both"
+#' @param end end position, needed if mode set to "POS" or "both"
+#' @param type filter type, needed if mode set to "type" or "both",
+#' one of "CDS", "exon", "gene", "genome", "custom",
+#' if `type` was set to "custom", then `custom_type` is needed.
+#' @param cusTyp character vector, custom filter type,
+#' needed if `type` set to "custom"
 #' @importFrom IRanges start
 #' @importFrom IRanges `%over%`
 #' @examples
@@ -47,16 +39,21 @@ POS2GRanges <- function(Chr, POS){
 #'                     type = "CDS")
 #'
 #' @export
-filter_vcf <- function(vcf, gff = gff,
+filter_vcf <- function(vcf,
+                       gff = gff,
                        mode = c("POS", "type", "both"),
-                       Chr = Chr, start = start, end = end,
+                       Chr = Chr,
+                       start = start,
+                       end = end,
                        type = c("CDS", "exon", "gene", "genome", "custom"),
-                       cusTyp = c("CDS", "five_prime_UTR", "three_prime_UTR")){
-
-    if(mode == "POS" | mode == "both"){
-        if(missing(Chr)) stop("Chr is missing!")
-        if(missing(start)) stop("start is missing!")
-        if(missing(end)) stop("end is missing!")
+                       cusTyp = c("CDS", "five_prime_UTR", "three_prime_UTR")) {
+    if (mode == "POS" | mode == "both") {
+        if (missing(Chr))
+            stop("Chr is missing!")
+        if (missing(start))
+            stop("start is missing!")
+        if (missing(end))
+            stop("end is missing!")
         POS <- vcfR::getPOS(vcf)
         POS <- as.numeric(POS)
         Chrs <- vcfR::getCHROM(vcf)
@@ -64,19 +61,22 @@ filter_vcf <- function(vcf, gff = gff,
         probe <- probe & Chrs == Chr
         vcf@fix <- vcf@fix[probe,]
         vcf@gt <- vcf@gt[probe,]
-        }
+    }
 
-    if(mode == "type" | mode == "both"){
-        if(missing(gff)) stop("gff is missing!")
-        if(type == "custom") type <- cusTyp
-        if(length(type) != 1 )
-            stop('Type must be one of c("CDS","exon","gene","genome","custom")')
-        if(type == "genome") {
+    if (mode == "type" | mode == "both") {
+        if (missing(gff))
+            stop("gff is missing!")
+        if (type == "custom")
+            type <- cusTyp
+        if (length(type) != 1)
+            stop('Type must be one of c("CDS", "exon", "gene", "genome", "custom")')
+        if (type == "genome") {
             gff <- gff
         } else {
             gff <- gff[gff$type %in% type]
         }
-        if(missing(Chr)) Chr <- vcfR::getCHROM(vcf)[1]
+        if (missing(Chr))
+            Chr <- vcfR::getCHROM(vcf)[1]
         POS <- vcfR::getPOS(vcf)
         POS <- as.numeric(POS)
         POSRange <- POS2GRanges(Chr = Chr, POS = POS)
@@ -89,4 +89,14 @@ filter_vcf <- function(vcf, gff = gff,
     }
 
     return(vcf)
+}
+
+
+
+
+POS2GRanges <- function(Chr, POS) {
+    POSRange <- GenomicRanges::GRanges(seqnames = Chr,
+                                       IRanges::IRanges(start = POS,
+                                                        width = rep(1, length(POS))))
+    return(POSRange)
 }

@@ -7,15 +7,16 @@
 import_gff(gffFile, format = "GFF")
 }
 \arguments{
-\item{gffFile}{gff file path}
+\item{gffFile}{the gff file path}
 
-\item{format}{defalt as GFF}
+\item{format}{should be one of "gff", "gff1", "gff2", "gff3", "gvf",
+or "gtf". Default as GFF}
 }
 \value{
 GRange object
 }
 \description{
-import_gff
+import genome annotations in \code{gff/gff3} format
 }
 \examples{
 \dontrun{

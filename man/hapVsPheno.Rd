@@ -2,38 +2,70 @@
 % Please edit documentation in R/phenos.R
 \name{hapVsPheno}
 \alias{hapVsPheno}
+\alias{hapVspheno}
 \title{hapVsPheno}
 \usage{
 hapVsPheno(hap,
-pheno,
-phenoName,hapPrefix = "H",
-geneID = "test1G0387",
-mergeFigs = TRUE,
-minAcc = 5,
-...)
+           pheno,
+           phenoName, hapPrefix = "H",
+           title = "test1G0387",
+           mergeFigs = TRUE,
+           minAcc = 5, ...)
+
+hapVspheno(hap,
+            pheno,
+            outPutSingleFile = TRUE,
+            hapPrefix = "H",
+            title = "Seita.0G000000",
+            file = file,
+            width = 12,
+            height = 8,
+            res = res, ...)
 }
 \arguments{
-\item{hap}{hap}
+\item{hap}{object of "haptypes" class, generate with\code{vcf2hap()} or
+\code{seqs2hap()}}
 
-\item{pheno}{pheno}
+\item{pheno}{object of "data.frame" class, imported by \code{import_pheno()}}
 
-\item{phenoName}{pheno name}
+\item{phenoName}{pheno name for plot, should be one column name of \code{pheno}}
 
-\item{hapPrefix}{hap  prefix}
+\item{hapPrefix}{prefix of hapotypes, default as "H"}
 
-\item{geneID}{gene ID for plot title}
+\item{title}{a charater which will used for figure title}
 
-\item{mergeFigs}{merge heatmap and box plot or not}
+\item{mergeFigs}{bool type, indicate whether merge the heat map and box
+plot or not. Default as \code{TRUE}}
 
-\item{minAcc}{If observations numberof a Hap less than this number will
-not be compared with others or ploted}
+\item{minAcc}{If observations number of a Hap less than this number will
+not be compared with others or be ploted. Should not less than 3 due to the
+t-test will meaninglessly. default as 5}
 
 \item{...}{options will pass to ggpubr}
+
+\item{outPutSingleFile}{\code{TRUE} or \code{FALSE} indicate whether put all figs
+into to each pages of single file or generate multi-files.
+Only worked while file type is pdf}
+
+\item{file}{the output file name/path. File type could be pdf, png, tiff,
+jpg or bmp. \code{file} will only used for out file name/path directly if file
+type is "pdf" and \code{outPutSingleFile} set as \code{TRUE}. Otherwise the pheno names
+will added for each file name/path.}
+
+\item{width}{manual option for determining the output file width in inches.
+(default: 12)}
+
+\item{height}{manual option for determining the output file height in inches.
+(default: 8)}
+
+\item{res}{The nominal resolution in ppi which will be recorded in the
+bitmap file, if a positive integer. Also used for units other than the
+default, and to convert points to pixels.}
 }
 \value{
 list. A list contains a character vector with Haps were applied
 student test, a mattrix contains p-value of each compare of Haps and a
-ggplot2 object named as figs if mergeFigs set as TRUE, or two ggplot2
+ggplot2 object named as figs if mergeFigs set as \code{TRUE}, or two ggplot2
 objects names as fig_pvalue and fig_Violin
 }
 \description{
@@ -44,11 +76,11 @@ hapVsPheno
 data("quickHap_test")
 hap <- vcf2hap(vcf,hyb_remove = TRUE, na.drop = TRUE)
 # plot the figs direactively
-hapVsPheno(hap = hap,pheno = phenos,phenoName = "GrainWeight.2021",minAcc = 3)
+hapVsPheno(hap = hap,pheno = pheno,phenoName = "GrainWeight.2021",minAcc = 3)
 
 #do not merge the files
 results <- hapVsPheno(hap = hap,
-                      pheno = phenos,
+                      pheno = pheno,
                       phenoName = "GrainWeight.2021",
                       minAcc = 3,
                       mergeFigs = FALSE)
@@ -56,13 +88,26 @@ plot(results$fig_pvalue)
 plot(results$fig_Violin)
 
 \dontrun{
-# plot multi figs in a 'for' work folw
+# generate multi figs in a 'for' work folw
 pheno$GrainWeight.2022 = pheno$GrainWeight.2021 + c(1:nrow(pheno))
 for(i in colnames(pheno)){
-    results <- hapVsPheno(hap = hap,pheno = phenos,phenoName = i,minAcc = 3)
+    results <- hapVsPheno(hap = hap, pheno = pheno,phenoName = i,minAcc = 3)
     png(paste0(i,".png"))
     plot(results$figs)
 dev.off()
 }
+}
+
+\dontrun{
+# analysis all pheno in the data.frame of pheno
+hapVspheno(hap,
+            pheno,
+            outPutSingleFile = TRUE,
+            hapPrefix = "H",
+            title = "Seita.0G000000",
+            file = "mypheno.tiff",
+            width = 12,
+            height = 8,
+            res = 300)
 }
 }

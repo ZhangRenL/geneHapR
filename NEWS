@@ -1,3 +1,20 @@
+V 0.11.1
+Fix bugs.
+TODO:
+1. debug seqs2hap
+2. modified ReadMe
+All Functions:
+1.  import: vcf, gff, seqs
+2.  filter: vcf
+3.  setATGAs0
+5.  Haps generate from vcf or sequencess(fasta)
+6.  Generate haploNet and visualization
+7.  Haplotype summary and visualization (hap table and gene modle)
+8.  Haplotype envoe relationships
+9.  Phynotype analysis
+
+
+
 V 0.10.1
 renamed as geneHapR
 functions:

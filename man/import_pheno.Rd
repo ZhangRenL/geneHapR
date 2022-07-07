@@ -18,11 +18,15 @@ data.frame, Accession names were set as rownames and cols were
 named by pheno names
 }
 \description{
-first col should be Accessions
-phenos should loacted begin second col，
-phenoName should at the first row,
-If "." located in pheno name, the former part of phenoName will be set as y axis name
-and the latter part will be set as foot of the fig.
+import phenos from table format file
+}
+\details{
+First column should be Accessions;
+phenos should begin from second col，
+phenoName should located at the first row,
+If a dot '.' is located in pheno name, then
+the part before the dot will be set as y axis name
+while the followed will be set as foot of the fig.
 }
 \examples{
 \dontrun{

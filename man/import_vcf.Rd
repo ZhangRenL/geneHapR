@@ -17,13 +17,17 @@ import_vcf(vcf_file = vcf_file, ...)
 vcfR object
 }
 \description{
-import vcf file
+Read and files in the \verb{*.vcf} structured text format,
+as well as the compressed \verb{*.vcf.gz} format.
 }
 \examples{
 \dontrun{
 
 vcf <- import_vcf(file = "test.vcf.gz")
 }
+}
+\seealso{
+\code{\link[vcfR:read.vcfR]{vcfR::read.vcfR()}}
 }
 \author{
 Zhangrenl

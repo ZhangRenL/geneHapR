@@ -24,17 +24,21 @@
 getGenePOS <- function(gff = gff,
                        geneID = geneID,
                        type = type,
-                       gffTermContaingeneID = "Parent"){
+                       gffTermContaingeneID = "Parent") {
     # get target gene range
-    if(missing(type)){
-        gffGene <- getGeneRanges(gff = gff,
-                                 geneID = geneID,
-                                 gffTermContaingeneID = "Parent")
+    if (missing(type)) {
+        gffGene <- getGeneRanges(
+            gff = gff,
+            geneID = geneID,
+            gffTermContaingeneID = "Parent"
+        )
     } else {
-        gffGene <- getGeneRanges(gff = gff,
-                                 geneID = geneID,
-                                 type = type,
-                                 gffTermContaingeneID = "Parent")
+        gffGene <- getGeneRanges(
+            gff = gff,
+            geneID = geneID,
+            type = type,
+            gffTermContaingeneID = "Parent"
+        )
 
     }
 
@@ -74,20 +78,21 @@ getGenePOS <- function(gff = gff,
 getGeneRanges <- function(gff = gff,
                           geneID = geneID,
                           type = type,
-                          gffTermContaingeneID = "Parent"){
+                          gffTermContaingeneID = "Parent") {
     # set probes for target gene
     probeCol <- GenomicRanges::as.data.frame(gff)
-    probeCol <- probeCol[,gffTermContaingeneID]
+    probeCol <- probeCol[, gffTermContaingeneID]
     probeCol <- unlist(probeCol)
     probe <- stringr::str_detect(probeCol, geneID)
     probe[is.na(probe)] <- FALSE
 
     # get ranges of target gene
-    if(!TRUE %in% probe) stop("Can't found geneID in current gff")
+    if (!TRUE %in% probe)
+        stop("Can't found geneID in current gff")
     gffGene <- gff[probe]
 
     # filter range types
-    if(!missing(type)){
+    if (!missing(type)) {
         probe <- gffGene$type %in% type
         probe[is.na(probe)] <- FALSE
         gffGene <- gffGene[probe]

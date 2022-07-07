@@ -7,7 +7,7 @@
 \title{geneHapR: R Packages for Gene Haplotype Analysis}
 \description{
 This packages provides a suite for one or multi-genes haplotype analysis,
-visualizion and compare phenos between different haps.
+visualizion and phenotypes analysis.
 }
 \details{
 The haplotype analysis requires sequences such as fasta which could be

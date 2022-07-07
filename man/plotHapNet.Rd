@@ -7,41 +7,90 @@
 plotHapNet(hapNet,
            size = "freq", scale = TRUE, scale.ratio = 1, cex = 0.8,
            col.link = 1, link.width = 1,
-           show.mutation = 1, lwd = 1,
-           pieCol = pieCol, pieData = hapGroup,
+           show.mutation = 1,
+           backGround = backGround, hapGroup = hapGroup,
            addLegend = TRUE,
            legendPosition = "left", ...)
 }
 \arguments{
-\item{hapNet}{an object of class "haploNet".}
+\item{hapNet}{an object of class "haploNet"}
 
-\item{size}{a numeric vector giving the diameter of the circles representing the haplotypes: this is in the same unit than the links and eventually recycled.}
+\item{size}{a numeric vector giving the diameter of the circles
+representing the haplotypes: this is in the same unit than the
+links and eventually recycled.}
 
-\item{scale}{TRUE}
+\item{scale}{bool type indicate whether scale the circle size
+with 'log10(size + 1)', default as \code{TRUE}}
 
-\item{scale.ratio}{the ratio of the scale of the links representing the number of steps on the scale of the circles representing the haplotypes. It may be needed to give a value greater than one to avoid overlapping circles.}
+\item{scale.ratio}{the ratio of the scale of the links representing
+number of steps on the scale of the circles representing the haplotypes.
+It may be needed to give a value greater than one to avoid overlapping
+circles.}
 
-\item{cex}{character expansion factor relative to current par("cex").
+\item{cex}{character expansion factor relative to current par("cex")
 Used for text, and provides the default for pt.cex.}
 
-\item{col.link}{a character vector specifying the colours of the links; eventually recycled.}
+\item{col.link}{a character vector specifying the colours of the links;
+eventually recycled.}
 
-\item{link.width}{a numeric vector giving the width of the links; eventually recycled.}
+\item{link.width}{a numeric vector giving the width of the links;
+eventually recycled.}
 
-\item{show.mutation}{an integer value: if 0, nothing is drawn on the links; if 1, the mutations are shown with small segments on the links; if 2, they are shown with small dots; if 3, the number of mutations are printed on the links.}
+\item{show.mutation}{an integer value:
 
-\item{lwd}{a numeric vector giving the width of the links; eventually recycled.}
+if 0, nothing is drawn on the links;
 
-\item{pieCol}{colors}
+if 1, the mutations are shown with small segments on the links;
 
-\item{pieData}{a matrix used to draw pie charts for each haplotype; its number of rows must be equal to the number of haplotypes.}
+if 2, they are shown with small dots;
 
-\item{addLegend}{a logical specifying whether to draw the legend, or a vector of length two giving the coordinates where to draw the legend; FALSE by default. If TRUE, the user is asked to click where to draw the legend.}
+if 3, the number of mutations are printed on the links.}
 
-\item{legendPosition}{"left", "right"}
+\item{backGround}{a color vector with length equal to number of
+Accession types}
 
-\item{...}{pass to plot function}
+\item{hapGroup}{a matrix used to draw pie charts for each haplotype;
+its number of rows must be equal to the number of haplotypes}
+
+\item{addLegend}{a logical specifying whether to draw the legend,
+default as \code{TRUE}}
+
+\item{legendPosition}{indicate where to plot the legend.
+Should be one of "bottomright", "bottom", "bottomleft", "left", "topleft",
+"top", "topright", "right", "center"}
+
+\item{...}{other parameters will pass to \code{plot} function}
 }
 \description{
 plotHapNet
+}
+\examples{
+
+# load sample datasets
+data("quickHap_test")
+
+# generate haplotype result from vcfR
+hap <- vcf2hap(vcf)
+hapResult <- hap_result(hap)
+
+# calculate haploNet
+hapNet <- get_hapNet(hapResult,
+                     accGroup = accGroup, # accession types
+                     groupName = colnames(accGroup)[2])
+
+# plot haploNet
+plot(hapNet)
+# plot haploNet
+plotHapNet(hapNet,
+           size = "freq", scale.ratio = 1,  # circle size
+           scale = TRUE, # scale circle with 'log10(size + 1)'
+           cex = 1, # size of hap symbol
+           col.link = 2, # link colors
+           link.width = 2, # link widths
+           show.mutation = 2, # mutation types one of c(0,1,2,3)
+           legendPosition = "right") # legend position
+}
+\seealso{
+\code{\link[geneHapR:hap_result]{hap_result()}} and
+\code{\link[geneHapR:get_hapNet]{get_hapNet()}}.
 }

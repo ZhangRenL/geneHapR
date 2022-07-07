@@ -4,23 +4,22 @@
 \alias{import_seqs}
 \title{import_seqs}
 \usage{
-import_seqs(file, format = "fasta", ...)
+import_seqs(filepath, format = "fasta")
 }
 \arguments{
-\item{file}{gff file path}
+\item{filepath}{A character vector containing the path(s) to the file(s)
+to read or write.
+Reading files in gzip format (which usually have the '.gz' extension) is
+supported.
+\emph{Note} that only DNA supported here.}
 
-\item{format}{Either "fasta" (the default) or "fastq"}
-
-\item{...}{Others parameters supported by Biostrings::readDNAStringSet}
-}
-\value{
-DNAstringSet
+\item{format}{Either \code{"fasta"} (the default) or \code{"fastq"}}
 }
 \description{
 import_seqs
 }
 \examples{
 \dontrun{
-   geneSeqs <- import_seqs(file = "fastaFilePath", format = "fasta")
+   geneSeqs <- import_seqs(filepath = "fastaFilePath", format = "fasta")
 }
 }

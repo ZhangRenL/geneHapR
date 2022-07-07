@@ -1,22 +1,24 @@
+# file Checked
+# checked
 #' @name hapVsPheno
 #' @title hapVsPheno
-#' @usage hapVsPheno(hap,
-#' pheno,
-#' phenoName,hapPrefix = "H",
-#' geneID = "test1G0387",
-#' mergeFigs = TRUE,
-#' minAcc = 5,
-#' ...)
+#' @usage
+#' hapVsPheno(hap,
+#'            pheno,
+#'            phenoName, hapPrefix = "H",
+#'            title = "test1G0387",
+#'            mergeFigs = TRUE,
+#'            minAcc = 5, ...)
 #' @examples
 #'
 #' data("quickHap_test")
 #' hap <- vcf2hap(vcf,hyb_remove = TRUE, na.drop = TRUE)
 #' # plot the figs direactively
-#' hapVsPheno(hap = hap,pheno = phenos,phenoName = "GrainWeight.2021",minAcc = 3)
+#' hapVsPheno(hap = hap,pheno = pheno,phenoName = "GrainWeight.2021",minAcc = 3)
 #'
 #' #do not merge the files
 #' results <- hapVsPheno(hap = hap,
-#'                       pheno = phenos,
+#'                       pheno = pheno,
 #'                       phenoName = "GrainWeight.2021",
 #'                       minAcc = 3,
 #'                       mergeFigs = FALSE)
@@ -24,72 +26,79 @@
 #' plot(results$fig_Violin)
 #'
 #' \dontrun{
-#' # plot multi figs in a 'for' work folw
+#' # generate multi figs in a 'for' work folw
 #' pheno$GrainWeight.2022 = pheno$GrainWeight.2021 + c(1:nrow(pheno))
 #' for(i in colnames(pheno)){
-#'     results <- hapVsPheno(hap = hap,pheno = phenos,phenoName = i,minAcc = 3)
+#'     results <- hapVsPheno(hap = hap, pheno = pheno,phenoName = i,minAcc = 3)
 #'     png(paste0(i,".png"))
 #'     plot(results$figs)
 #' dev.off()
 #' }
 #' }
-#' @param hap hap
-#' @param pheno pheno
-#' @param phenoName pheno name
-#' @param hapPrefix hap  prefix
-#' @param geneID gene ID for plot title
-#' @param mergeFigs merge heatmap and box plot or not
-#' @param minAcc If observations numberof a Hap less than this number will
-#' not be compared with others or ploted
+#' @param hap object of "haptypes" class, generate with`vcf2hap()` or
+#' `seqs2hap()`
+#' @param pheno object of "data.frame" class, imported by `import_pheno()`
+#' @param phenoName pheno name for plot, should be one column name of `pheno`
+#' @param hapPrefix prefix of hapotypes, default as "H"
+#' @param title a charater which will used for figure title
+#' @param mergeFigs bool type, indicate whether merge the heat map and box
+#' plot or not. Default as `TRUE`
+#' @param minAcc If observations number of a Hap less than this number will
+#' not be compared with others or be ploted. Should not less than 3 due to the
+#' t-test will meaninglessly. default as 5
 #' @param ... options will pass to ggpubr
 #' @importFrom stats na.omit t.test
 #' @importFrom rlang .data
 #' @export
 #' @return list. A list contains a character vector with Haps were applied
 #' student test, a mattrix contains p-value of each compare of Haps and a
-#' ggplot2 object named as figs if mergeFigs set as TRUE, or two ggplot2
+#' ggplot2 object named as figs if mergeFigs set as `TRUE`, or two ggplot2
 #' objects names as fig_pvalue and fig_Violin
-hapVsPheno <- function(
-    hap,
-    pheno,
-    phenoName,
-    hapPrefix = "H",
-    geneID = "test1G0387",
-    mergeFigs = TRUE,
-    minAcc = 5,
-    ...)
+hapVsPheno <- function(hap,
+                       pheno,
+                       phenoName,
+                       hapPrefix = "H",
+                       title = "test1G0387",
+                       mergeFigs = TRUE,
+                       minAcc = 5,
+                       ...)
 {
-    if(missing(phenoName)) {
+    if (missing(phenoName)) {
         warning("phenoName is null, will use the first pheno")
         phenoName <- colnames(pheno)[1]
     }
-    if(!(phenoName %in% colnames(pheno))) {
+    if (!(phenoName %in% colnames(pheno))) {
         stop("Could not find ", phenoName, " in colnames of pheno")
     }
     result <- list()
-    hap <- hap[stringr::str_starts(hap[,1],hapPrefix),]
-    Accessions <- hap[,colnames(hap) == "Accession"]
-    haps <- hap[,1]
+    hap <- hap[stringr::str_starts(hap[, 1], hapPrefix),]
+    Accessions <- hap[, colnames(hap) == "Accession"]
+    haps <- hap[, 1]
     names(haps) <- Accessions
 
     pheno$Hap <- haps[row.names(pheno)]
-    phenop <- pheno[,c("Hap",phenoName)]
+    phenop <- pheno[, c("Hap", phenoName)]
     phenop <- na.omit(phenop)
-    if(nrow(phenop) == 0) stop(
-    "After removed NAs, accession with certain Hap have no
-    observations of ", phenoName,". Please check your pheno file.")
+    if (nrow(phenop) == 0)
+        stop(
+            "After removed NAs, accession with certain Hap have no
+    observations of ",
+            phenoName,
+            ". Please check your pheno file."
+        )
 
     hps <- table(phenop$Hap)
 
     # filter Haps for plot
-    if(max(hps) < minAcc) stop(
-        "there is no haps to plot (no Haps with observations more than ",
-        minAcc, ")")
+    if (max(hps) < minAcc)
+        stop("there is no haps to plot (no Haps with observations more than ",
+             minAcc,
+             ")")
 
     hps <- hps[hps >= minAcc]
 
     hpsnm <- names(hps)
-    hps <- paste0(names(hps),"(",hps,")")
+    hps <- paste0(names(hps), "(", hps, ")")
     names(hps) <- hpsnm
 
     # T 检验
@@ -106,17 +115,16 @@ hapVsPheno <- function(
             hapi <- phenop[phenop$Hap == i, phenoName]
             hapj <- phenop[phenop$Hap == j, phenoName]
             if (length(hapi) >= minAcc & length(hapj) >= minAcc) {
-                pvalue <- try(t.test(hapi,hapj)$p.value,silent = TRUE)
+                pvalue <- try(t.test(hapi, hapj)$p.value, silent = TRUE)
 
-                T.Result[j, i] <- ifelse(
-                    is.numeric(pvalue) & !is.na(pvalue),
-                    pvalue, 1)
+                T.Result[j, i] <- ifelse(is.numeric(pvalue) &
+                                             !is.na(pvalue),
+                                         pvalue, 1)
                 T.Result[i, j] <- T.Result[j, i]
                 plotHap <- c(plotHap, i, j)
-                if(T.Result[i, j] < 0.05) {
-                    my_comparisons <- c(
-                        my_comparisons,
-                        list(hps[c(i,j)]))
+                if (T.Result[i, j] < 0.05) {
+                    my_comparisons <- c(my_comparisons,
+                                        list(hps[c(i, j)]))
                 }
             }
         }
@@ -125,43 +133,51 @@ hapVsPheno <- function(
     result$plotHap <- unique(plotHap)
     result$T.Result <- T.Result
     plotHap <- unique(plotHap)
-    if(is.null(plotHap)) stop(
-        "there is no haps to plot (no Haps with observations more than ",
-        minAcc)
+    if (is.null(plotHap))
+        stop("there is no haps to plot (no Haps with observations more than ",
+             minAcc)
 
-    if(length(plotHap) > 1){
+    if (length(plotHap) > 1) {
         T.Result <- T.Result[!is.na(T.Result[, 1]), !is.na(T.Result[1, ])]
 
         # ggplot
 
-        if(nrow(T.Result) > 1)  { # 获得矩阵的上三角或下三角
+        if (nrow(T.Result) > 1)  {
+            # 获得矩阵的上三角或下三角
             T.Result[lower.tri(T.Result)] = NA
         }
         melResult <- reshape2::melt(T.Result, na.rm = TRUE)
 
-        melResult$label <- ifelse(
-            melResult$value>1,
-            1,
-            ifelse(
-                melResult$value<0.001,
-                0.001,
-                round(melResult$value,3)))
+        melResult$label <- ifelse(melResult$value > 1,
+                                  1,
+                                  ifelse(
+                                      melResult$value < 0.001,
+                                      0.001,
+                                      round(melResult$value, 3)
+                                  ))
 
-        fig1 <- ggplot2::ggplot(
-            data = melResult,
-            mapping = ggplot2::aes_(x =~Var1, y =~Var2, fill =~value)) +
+        fig1 <- ggplot2::ggplot(data = melResult,
+                                mapping = ggplot2::aes_(
+                                    x =  ~ Var1,
+                                    y =  ~ Var2,
+                                    fill =  ~ value
+                                )) +
             ggplot2::geom_tile(color = "white") +
-            ggplot2::ggtitle(label = geneID, subtitle = phenoName)+
+            ggplot2::ggtitle(label = title, subtitle = phenoName) +
             ggplot2::scale_fill_gradientn(
-                colours = c("red","grey", "grey90"),
+                colours = c("red", "grey", "grey90"),
                 limit = c(0, 1.000001),
-                name = parse(text = "italic(p)~value")) +
+                name = parse(text = "italic(p)~value")
+            ) +
             ggplot2::geom_text(
                 ggplot2::aes_(
-                    x=~Var1, y=~Var2,
-                    label =~ label),
+                    x =  ~ Var1,
+                    y =  ~ Var2,
+                    label =  ~ label
+                ),
                 color = "black",
-                size = 4) +
+                size = 4
+            ) +
             ggplot2::theme(
                 axis.title.x =  ggplot2::element_blank(),
                 axis.title.y =  ggplot2::element_blank(),
@@ -170,55 +186,69 @@ hapVsPheno <- function(
                 panel.background =  ggplot2::element_blank(),
                 axis.ticks =  ggplot2::element_blank(),
                 plot.subtitle = ggplot2::element_text(hjust = 0.5),
-                plot.title = ggplot2::element_text(hjust = 0.5)) +
-            ggplot2::guides(
-                fill = ggplot2::guide_colorbar(
-                    title.position = "top",
-                    title.hjust = 0.5))
-    } else fig1 <- ggplot2::ggplot() + ggplot2::theme_minimal()
+                plot.title = ggplot2::element_text(hjust = 0.5)
+            ) +
+            ggplot2::guides(fill = ggplot2::guide_colorbar(title.position = "top",
+                                                           title.hjust = 0.5))
+    } else
+        fig1 <- ggplot2::ggplot() + ggplot2::theme_minimal()
 
     # 作图，箱线图
     data <- phenop[phenop$Hap %in% plotHap,]
-    data <- data[order(data$Hap,decreasing = FALSE),]
+    data <- data[order(data$Hap, decreasing = FALSE),]
 
     data$Hap <- hps[data$Hap]
-    capt <- stringr::str_split(phenoName,"[.]")[[1]][2]
-    if(is.na(capt)) fig2 <- ggpubr::ggviolin(
-        data,
-        x = "Hap",
-        y = phenoName,
-        color = "Hap",
-        legend = "right", legend.title = "",
-        add = "boxplot", ...) else
-            fig2 <- ggpubr::ggviolin(
-                data,
-                x = "Hap",
-                y = phenoName,
-                color = "Hap",
-                caption = capt,
-                legend = "right", legend.title = "",
-                add = "boxplot", ...)
-     fig2 <- fig2 +  # 不要动
+    capt <- stringr::str_split(phenoName, "[.]")[[1]][2]
+    if (is.na(capt))
+        fig2 <- ggpubr::ggviolin(
+            data,
+            x = "Hap",
+            y = phenoName,
+            color = "Hap",
+            legend = "right",
+            legend.title = "",
+            add = "boxplot",
+            ...
+        )
+    else
+        fig2 <- ggpubr::ggviolin(
+            data,
+            x = "Hap",
+            y = phenoName,
+            color = "Hap",
+            caption = capt,
+            legend = "right",
+            legend.title = "",
+            add = "boxplot",
+            ...
+        )
+    fig2 <- fig2 +  # 不要动
         #    stat_compare_means(label.y = max(data[,2]))+
         # 去掉这行就没有比较了(Kruskal-Wallis test)
-        ggplot2::ggtitle(label = geneID) +
+        ggplot2::ggtitle(label = title) +
         ggplot2::theme(
-            plot.subtitle = ggplot2::element_text(
-                hjust = 0.5),
+            plot.subtitle = ggplot2::element_text(hjust = 0.5),
             axis.text.x = ggplot2::element_text(
-                angle=ifelse(length(hps) >= 6, 45, 0),
-                hjust = ifelse(length(hps) >= 6, 1, 0.5)),
-            plot.title = ggplot2::element_text(hjust = 0.5)) +
-        ggplot2::ylab(stringr::str_split(phenoName,"[.]")[[1]][1])
-    if(length(my_comparisons) > 0) {
+                angle = ifelse(length(hps) >= 6, 45, 0),
+                hjust = ifelse(length(hps) >= 6, 1, 0.5)
+            ),
+            plot.title = ggplot2::element_text(hjust = 0.5)
+        ) +
+        ggplot2::ylab(stringr::str_split(phenoName, "[.]")[[1]][1])
+    if (length(my_comparisons) > 0) {
         fig2 <- fig2 + # 添加箱线图
             ggpubr::stat_compare_means(
                 comparisons = unique(my_comparisons),
-                paired = FALSE, method = "t.test")
+                paired = FALSE,
+                method = "t.test"
+            )
     }
 
-    if(mergeFigs)  {
-        fig3 <- ggpubr::ggarrange(fig1, fig2, nrow = 1, labels = c("A","B"))
+    if (mergeFigs)  {
+        fig3 <- ggpubr::ggarrange(fig1,
+                                  fig2,
+                                  nrow = 1,
+                                  labels = c("A", "B"))
         result$figs <- fig3
     } else {
         result$fig_pvalue <- fig1
@@ -229,111 +259,171 @@ hapVsPheno <- function(
 }
 
 
-
-#' @name hapVsPhenos
-#' @title hapVsPhenoS
+# checked
+#' @name hapVsPheno
 #' @usage
-#' hapVsPhenos(hap,
-#'             phenos,
+#' hapVspheno(hap,
+#'             pheno,
 #'             outPutSingleFile = TRUE,
 #'             hapPrefix = "H",
-#'             geneID = "Seita.0G000000",
-#'             mergeFigs = TRUE,
+#'             title = "Seita.0G000000",
 #'             file = file,
 #'             width = 12,
-#'             height = 8, ...)
-#' @param hap hap
-#' @param phenos phenos
-#' @param outPutSingleFile only worked while file type is pdf.
-#' Out all figs in a single pdf file, figs will plot in each pages.
-#' @param hapPrefix hap  prefix
-#' @param geneID gene ID forplot title
-#' @param mergeFigs merge heatmapand box plot or not
-#' @param file out put file name. File type could be pdf, png, tiff, jpg, bmp.
+#'             height = 8,
+#'             res = res, ...)
+#' @param outPutSingleFile `TRUE` or `FALSE` indicate whether put all figs
+#' into to each pages of single file or generate multi-files.
+#' Only worked while file type is pdf
+#' @param file the output file name/path. File type could be pdf, png, tiff,
+#' jpg or bmp. `file` will only used for out file name/path directly if file
+#' type is "pdf" and `outPutSingleFile` set as `TRUE`. Otherwise the pheno names
+#' will added for each file name/path.
 #' @param width manual option for determining the output file width in inches.
-#' (defalt: 12)
+#' (default: 12)
 #' @param height manual option for determining the output file height in inches.
-#' (defalt: 8)
-#' @param ... options will pass to ggpubr
+#' (default: 8)
+#' @param res The nominal resolution in ppi which will be recorded in the
+#' bitmap file, if a positive integer. Also used for units other than the
+#' default, and to convert points to pixels.
+#' @examples
+#'
+#' \dontrun{
+#' # analysis all pheno in the data.frame of pheno
+#' hapVspheno(hap,
+#'             pheno,
+#'             outPutSingleFile = TRUE,
+#'             hapPrefix = "H",
+#'             title = "Seita.0G000000",
+#'             file = "mypheno.tiff",
+#'             width = 12,
+#'             height = 8,
+#'             res = 300)
+#' }
 #' @importFrom stats na.omit t.test
 #' @import grDevices
 #' @export
 #' @return NULL
-hapVsPhenos <- function(hap,
-                        phenos,
+hapVspheno <- function(hap,
+                        pheno,
                         outPutSingleFile = TRUE,
                         hapPrefix = "H",
-                        geneID = "Seita.0G000000",
-                        mergeFigs = TRUE,
+                        title = "Seita.0G000000",
                         file = file,
                         width = 12,
                         height = 8,
-                        ...){
+                        res = res,
+                        ...) {
     # 表型关联
-    if(missing(hap)) stop("hap is missing!")
-    if(missing(phenos)) stop("phenos is missing!")
-    if(missing(file)) stop("Error: Output file name/path is missing!")
+    if (missing(hap))
+        stop("hap is missing!")
+    if (missing(pheno))
+        stop("pheno is missing!")
+    if (missing(file))
+        stop("Error: Output file name/path is missing!")
 
     surFix <- getSurFix(file)
-    if(!surFix %in% c("pdf", "png", "tif", "tiff", "jpg", "jpeg", "bmp"))
+    if (!surFix %in% c("pdf", "png", "tif", "tiff", "jpg", "jpeg", "bmp"))
         stop("The file type should be one of pdf, png, tiff, jpg and bmp")
-    if(surFix != "pdf") outPutSingleFile <- FALSE
+    if (surFix != "pdf")
+        outPutSingleFile <- FALSE
 
     probe <- ifelse(surFix == "pdf",
                     ifelse(outPutSingleFile,
                            TRUE,
                            FALSE),
                     FALSE)
-    if(probe){
-        message("File type is pdf and 'outPutSingleFile' set as TRUE, all figs will plot in ", file)
+    if (probe) {
+        message("
+        File type is pdf and 'outPutSingleFile' set as TRUE,
+        all figs will plot in ",
+                file)
         pdf(file, width = width, height = height)
     }
-    if(!is.data.frame(phenos)) stop("phenos should be a data.frame object")
-    if(ncol(phenos) == 1)
-        warning("There is only one col detected in phenos, 'hapVsPheno' is prefered")
-    phenoNames <- colnames(phenos)
+    if (!is.data.frame(pheno))
+        stop("pheno should be a data.frame object")
+    if (ncol(pheno) == 1)
+        warning("There is only one col detected in pheno, 'hapVsPheno' is prefered")
+    phenoNames <- colnames(pheno)
     steps <- 0
-    for (phenoName in phenoNames){
-        if(!probe){
+    for (phenoName in phenoNames) {
+        if (!probe) {
+            file <- stringr::str_remove(file, paste0(".", surFix))
+            filename <- paste0(file, "_", phenoName, ".", surFix)
+            message("Figures will save to ", filename)
             switch(
                 surFix,
-                "pdf" = pdf(file, width = width, height = height),
-                "png" = png(filename = file,
-                            width = width, height = height, units = "in", res = 300),
-                "bmp" = bmp(filename = file,
-                            width = width, height = height, units = "in", res = 300),
-                "jpg" = png(filename = file,
-                            width = width, height = height, units = "in", res = 300),
-                "jpeg" = png(filename = file,
-                             width = width, height = height, units = "in", res = 300),
-                "tif" = tiff(filename = file,
-                             width = width, height = height, units = "in", res = 300),
-                "tiff" = tiff(filename = file,
-                              width = width, height = height, units = "in", res = 300))
+                "pdf" = pdf(filename, width = width, height = height),
+                "png" = png(
+                    filename = filename,
+                    width = width,
+                    height = height,
+                    units = "in",
+                    res = res
+                ),
+                "bmp" = bmp(
+                    filename = filename,
+                    width = width,
+                    height = height,
+                    units = "in",
+                    res = res
+                ),
+                "jpg" = png(
+                    filename = filename,
+                    width = width,
+                    height = height,
+                    units = "in",
+                    res = res
+                ),
+                "jpeg" = png(
+                    filename = filename,
+                    width = width,
+                    height = height,
+                    units = "in",
+                    res = res
+                ),
+                "tif" = tiff(
+                    filename = filename,
+                    width = width,
+                    height = height,
+                    units = "in",
+                    res = res
+                ),
+                "tiff" = tiff(
+                    filename = filename,
+                    width = width,
+                    height = height,
+                    units = "in",
+                    res = res
+                )
+            )
         }
         steps <- steps + 1
-        message("Total: ", ncol(phenos),"; current: ", steps,";\t", phenoName)
-        resulti <- hapVsPheno(hap,
-                              pheno = phenos,
-                              phenoName = phenoName,
-                              hapPrefix=hapPrefix,
-                              geneID = geneID,
-                              mergeFigs = mergeFigs,
-                              ...)
+        message("Total: ",
+                ncol(pheno),
+                "; current: ",
+                steps,
+                ";\t",
+                phenoName)
+        resulti <- hapVsPheno(
+            hap,
+            pheno = pheno,
+            phenoName = phenoName,
+            hapPrefix = hapPrefix,
+            title = title,
+            mergeFigs = TRUE,
+            ...
+        )
 
-        if(mergeFigs){
-            plot(resulti$figs)
-        } else {
-            plot(resulti$fig_pvalue)
-            plot(resulti$fig_Violin)
-        }
-        if(!probe) dev.off()
+        plot(resulti$figs)
+        if (!probe)
+            dev.off()
     }
-    if(probe) dev.off()
+    if (probe)
+        dev.off()
 }
 
 
-getSurFix <- function(Name){
+getSurFix <- function(Name) {
     parts <- strsplit(Name, ".", fixed = TRUE,)
     lparth <- length(parts[[1]])
     surFix <- parts[[1]][lparth]
