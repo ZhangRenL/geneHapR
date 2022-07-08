@@ -114,7 +114,7 @@ hap_summary <- function(hap,
 #'              geneName = geneName,
 #'              INFO_tag = INFO_tag,
 #'              tag_split = tag_split,
-#'              tag_field = 0,
+#'              tag_field = tag_field,
 #'              tag_name = tag_name,
 #'              displayIndelSize = 0, angle = c(0,45,90),
 #'              replaceMultiAllele = TRUE,
@@ -199,7 +199,7 @@ plotHapTable <- function(hapSummary,
                          geneName = geneName,
                          INFO_tag = INFO_tag,
                          tag_split = tag_split,
-                         tag_field = 0,
+                         tag_field = tag_field,
                          tag_name = tag_name,
                          displayIndelSize = 0,
                          angle = c(0, 45, 90),
@@ -210,10 +210,10 @@ plotHapTable <- function(hapSummary,
     if (!missing(geneName) & title == "")
         title <- geneName
 
-
     if ("Accession" %in% colnames(hapSummary)) {
         hapSummary <- hapSummary[, colnames(hapSummary) != 'Accession']
     }
+
 
     hps <-
         hapSummary[grepl(paste0(hapPrefix, "[0-9]{1,}"), hapSummary[, 1]), ] %>%
@@ -289,9 +289,22 @@ plotHapTable <- function(hapSummary,
 
     hps <- rbind(ALLELE, hps)
     # Add extra information
-    if (!missing(INFO_tag)) {
-        if (missing(tag_name))
+    if (! missing(INFO_tag)) {
+        m <- "length of 'tag_split', 'tag_name' and 'tag_field' should be equal with 'INFO_tag'"
+        if(! missing(tag_split))
+            if(length(INFO_tag) != length(tag_split))
+                stop(m)
+        if(missing(tag_name)){
             tag_name <- INFO_tag
+        } else {
+            if(length(INFO_tag) != length(tag_name))
+                stop(m)
+        }
+        # if(! missing(tag_field))
+        #     if(length(INFO_tag) != length(tag_field))
+        #         stop(m)
+
+
         # get INFOs in hap results
         INFO <- t(hapSummary[hapSummary$Hap == "INFO", ])
         INFO <- strsplit(INFO, ";")
@@ -305,7 +318,9 @@ plotHapTable <- function(hapSummary,
                     x[startsWith(x, paste0(i, "="))]))
             # split by "=", removed tag_name
             INFOi <- stringr::str_remove(INFOi, paste0(i, "="))
-            if (tag_field[ntag] != 0) {
+            if (missing(tag_field)){
+                Ii <- INFOi
+            } else {
                 Ii <- list()
                 if (i %in% c("ANN", "SNPEFF")) {
                     if (missing(geneName))
@@ -321,24 +336,24 @@ plotHapTable <- function(hapSummary,
                             next
 
                         infi <- ""
-                        for (k in seq_len(length(INFOi[[j]]))) {
-                            if (INFOi[[j]][[k]][4] == geneName)
-                                infi <-
-                                    paste(infi, INFOi[[j]][[k]][tag_field[ntag]], sep = ",")
+                            for (k in seq_len(length(INFOi[[j]]))) {
+                                if (INFOi[[j]][[k]][4] == geneName)
+                                    infi <-
+                                        paste(infi, INFOi[[j]][[k]][tag_field[ntag]], sep = ",")
 
+                            }
+                            Ii[[j]] <- stringr::str_remove(infi, ",")
                         }
-                        Ii[[j]] <- stringr::str_remove(infi, ",")
+                    } else {
+                        if (missing(tag_split))
+                            stop("'tag_split' is missing!!!")
+                        Ii <- lapply(INFOi,
+                                     function(x) {
+                                         unlist(strsplit(x, tag_split))[tag_field[ntag]]
+                                     }) %>% unlist()
                     }
-                } else {
-                    if (missing(tag_split))
-                        stop("'tag_split' is missing!!!")
-                    Ii <- lapply(INFOi,
-                                 function(x) {
-                                     unlist(strsplit(x, tag_split))[tag_field[ntag]]
-                                 }) %>% unlist()
                 }
-            } else
-                Ii <- INFOi
+
             Ii <- unlist(Ii)
             # Ii[Ii == ""] <- NA
             hps <- rbind(c(tag_name[ntag], Ii, ""), hps)
@@ -419,6 +434,8 @@ plotHapTable <- function(hapSummary,
                                                        title.hjust = 0.5))
     return(fig0)
 }
+
+
 
 #' @name plotGeneStructure
 #' @title plotGeneStructure

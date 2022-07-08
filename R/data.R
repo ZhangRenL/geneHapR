@@ -12,12 +12,12 @@ NULL
 
 #' Datasets
 #'
-#' `phenos` contains a simulated test pheno data used for test of comparison
+#' `pheno` contains a simulated test pheno data used for test of comparison
 #' between different haps
 #'
 #'
 #' @name DataSet
-#' @aliases phenos
+#' @aliases pheno
 #' @docType data
 #' @keywords datasets
 NULL

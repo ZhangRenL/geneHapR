@@ -4,14 +4,15 @@ TODO:
 1. debug seqs2hap
 2. modified ReadMe
 All Functions:
-1.  import: vcf, gff, seqs
-2.  filter: vcf
-3.  setATGAs0
-5.  Haps generate from vcf or sequencess(fasta)
+1.  import/export: vcf, gff, seqs, hapresult
+2.  VCF and sequences manipulation: preprocess big vcf, filter vcf, align and trim sequences
+3.  calculate hap: from sequences or vcfs
+4.  setATGAs0
+5.  add Annotations to INFO field
+5.  Haplotype summary and visualization (hap table and gene modle)
 6.  Generate haploNet and visualization
-7.  Haplotype summary and visualization (hap table and gene modle)
-8.  Haplotype envoe relationships
-9.  Phynotype analysis
+7.  Haplotype envoe relationships
+8.  Phynotype analysis
 
 
 

@@ -176,11 +176,12 @@ import_hap <- function(file, ...) {
     POS <-
         suppressWarnings(as.numeric(hap[hap[, 1] == "POS", ]))
     POS <- na.omit(POS)
-    if (length(POS) == 1)
+    if (length(POS) == 1) {
         warning("There is only one loci?")
-    else
+    } else {
         if (length(POS) < 1)
             stop("Please check your input file")
+    }
 
     # check columns
     colnms <- c("Hap", POS)
@@ -228,10 +229,10 @@ import_hap <- function(file, ...) {
 write.hap <- function(x, file = file, sep = "\t") {
     nc <- ncol(x)
     nm <- names(x)
-    if ("Accession" %in% nm)
-        x[1, nm == "Accession"] <- "Accession"
-    if ("freq" %in% nm)
-        x[1, nm == "freq"] <- "freq"
+    # if ("Accession" %in% nm)
+    #     x[1, nm == "Accession"] <- "Accession"
+    # if ("freq" %in% nm)
+    #     x[1, nm == "freq"] <- "freq"
     cat("",
         file = file,
         sep = "",

@@ -20,18 +20,18 @@ trimSeqs(seqs,
 \arguments{
 \item{seqs}{DNAStringSet or DNAMultipleAlignment}
 
-\item{Ref}{default as name of first seq}
+\item{Ref}{the reference sequences. Default as the first sequence}
 
 \item{hyb_remove}{whether remove accessions contains hybrid site or not}
 
 \item{na.drop}{whether Drop accessions contains "N"
 Default as \code{TRUE}.}
 
-\item{maxGapsPerSeq}{A value in \verb{[0, 1]} that indicates the maximum
+\item{maxGapsPerSeq}{value in \verb{[0, 1]} that indicates the maximum
 fraction of gaps allowed in each seq after alignment. (default is 0.25)
 Seqs with gap percent exceed that will be dropped.}
 
-\item{hapPrefix}{Prefix of hap names, default as "H".}
+\item{hapPrefix}{Prefix of hap names. Default as "H".}
 
 \item{...}{parameters will pass to muscle::muscle() for DNA multi alignment}
 

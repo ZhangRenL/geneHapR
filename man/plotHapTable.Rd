@@ -4,20 +4,20 @@
 \alias{plotHapTable}
 \title{plotHapTable}
 \usage{
-plotHapTable(hapResult,
+plotHapTable(hapSummary,
              hapPrefix = "H",
              title = "",
              geneName = geneName,
              INFO_tag = INFO_tag,
              tag_split = tag_split,
-             tag_field = 0,
+             tag_field = tag_field,
              tag_name = tag_name,
              displayIndelSize = 0, angle = c(0,45,90),
              replaceMultiAllele = TRUE,
              ALLELE.color = "grey90")
 }
 \arguments{
-\item{hapResult}{hapResult}
+\item{hapSummary}{hapSummary}
 
 \item{hapPrefix}{hapPrefix}
 
@@ -66,8 +66,8 @@ files, the INFO field are represented as tag-value
 pairs, where the tag and value are separated by an equal sign, ie '=', and
 pairs are separated by colons, ie ';'.
 
-If hapresults were generated from vcf, \code{INFO} is null.
-If hapresults were generated from vcf, \code{INFO} were same as in source vcf.
+If hapSummarys were generated from vcf, \code{INFO} is null.
+If hapSummarys were generated from vcf, \code{INFO} were same as in source vcf.
 Some tag-values may contains more than one value separated by
 "|", eg: "ANN" or "snpEFF" added by snpeff or other software. For those
 fields we need specified value of \code{tag_field} and \code{tag_split}, it's suggest
@@ -94,7 +94,7 @@ eg:
 }
 
 However, the \code{INFO} in hap results may missing annotations that we need.
-In this case, we can custom INFOs in hapresults with \code{addINFO()} or
+In this case, we can custom INFOs in hapSummarys with \code{addINFO()} or
 \code{replaceINFO()}.
 Once the needed annotations were included in hap results, we can display
 them with \code{plotHapTable()} by specify the value of \code{INFO_tag}.
@@ -132,13 +132,13 @@ hap <- seqs2hap(trimedSeqs,
 
 #### 3. summary and visualizatiion ####
 # summary hap result for plot hap table
-hapResult <- hap_result(hap)
+hapSummary <- hap_summary(hap)
 
 # plot hap table
-plotHapTable(hapResult)
+plotHapTable(hapSummary)
 
 # user could change/add themes, title, ...
-p <- plotHapTable(hapResult)
+p <- plotHapTable(hapSummary)
 p + ggplot2::theme_classic()
 p + ggplot2::labs(title = "new title")
 }

@@ -5,7 +5,7 @@
 \title{Pre-process large vcf}
 \usage{
 filterLargeVCF(VCFin = "", VCFout = VCFout,
-              Chr = Chr, POS = POS, override = TRUE)
+                Chr = Chr, POS = POS, override = TRUE)
 }
 \arguments{
 \item{VCFin}{Path of input \verb{*.vcf/*.vcf.gz} file.}

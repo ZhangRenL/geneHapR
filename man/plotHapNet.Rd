@@ -67,14 +67,14 @@ plotHapNet
 \examples{
 
 # load sample datasets
-data("quickHap_test")
+data("geneHap_test")
 
 # generate haplotype result from vcfR
 hap <- vcf2hap(vcf)
-hapResult <- hap_result(hap)
+hapSummary <- hap_summary(hap)
 
 # calculate haploNet
-hapNet <- get_hapNet(hapResult,
+hapNet <- get_hapNet(hapSummary,
                      accGroup = accGroup, # accession types
                      groupName = colnames(accGroup)[2])
 
@@ -91,6 +91,6 @@ plotHapNet(hapNet,
            legendPosition = "right") # legend position
 }
 \seealso{
-\code{\link[geneHapR:hap_result]{hap_result()}} and
+\code{\link[geneHapR:hap_summary]{hap_summary()}} and
 \code{\link[geneHapR:get_hapNet]{get_hapNet()}}.
 }

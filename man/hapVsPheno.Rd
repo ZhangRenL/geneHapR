@@ -23,7 +23,7 @@ hapVspheno(hap,
             res = res, ...)
 }
 \arguments{
-\item{hap}{object of "haptypes" class, generate with\code{vcf2hap()} or
+\item{hap}{object of "hapResult" class, generate with\code{vcf2hap()} or
 \code{seqs2hap()}}
 
 \item{pheno}{object of "data.frame" class, imported by \code{import_pheno()}}
@@ -73,7 +73,7 @@ hapVsPheno
 }
 \examples{
 
-data("quickHap_test")
+data("geneHap_test")
 hap <- vcf2hap(vcf,hyb_remove = TRUE, na.drop = TRUE)
 # plot the figs direactively
 hapVsPheno(hap = hap,pheno = pheno,phenoName = "GrainWeight.2021",minAcc = 3)

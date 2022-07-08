@@ -17,9 +17,9 @@
 #' @importFrom Biostrings letterFrequency width
 #' @importFrom methods as
 #' @param seqs DNAStringSet or DNAMultipleAlignment
-#' @param Ref default as name of first seq
-#' @param hapPrefix Prefix of hap names, default as "H".
-#' @param maxGapsPerSeq A value in `[0, 1]` that indicates the maximum
+#' @param Ref the reference sequences. Default as the first sequence
+#' @param hapPrefix Prefix of hap names. Default as "H".
+#' @param maxGapsPerSeq value in `[0, 1]` that indicates the maximum
 #' fraction of gaps allowed in each seq after alignment. (default is 0.25)
 #' Seqs with gap percent exceed that will be dropped.
 #' @param hyb_remove whether remove accessions contains hybrid site or not

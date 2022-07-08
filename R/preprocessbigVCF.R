@@ -6,7 +6,7 @@
 #' `*.vcf/*.vcf.gz` file.
 #' @usage
 #'  filterLargeVCF(VCFin = "", VCFout = VCFout,
-#'               Chr = Chr, POS = POS, override = TRUE)
+#'                 Chr = Chr, POS = POS, override = TRUE)
 #' @param VCFin Path of input `*.vcf/*.vcf.gz` file.
 #' @param VCFout Path or path vector of output `*.vcf/*.vcf.gz` file.
 #' @param Chr a single `CHROM` name or `CHROM` names vector.
@@ -64,7 +64,7 @@ filterLargeVCF <- function(VCFin = "",
     if (!override)
         if (TRUE %in% file.exists(VCFout))
             stop(paste(VCFout[file.exists(VCFout)], collapse = " "),
-                 " existed, please check inputs")
+                 " existed, please check 'VCFout'")
     if (length(Chr) == 1)
         if (length(POS) != 2 | !is.numeric(POS)) {
             stop("'POS' should be interger vector consist with start and end position")
@@ -89,7 +89,7 @@ filterLargeVCF <- function(VCFin = "",
     } else if (nCond > 1) {
         if (length(VCFout) != nCond)
             stop("length of 'VCFout' should be equal with 'Chr' and 'POS'")
-        filterLargeVCF_Muli(
+        filterLargeVCF_Multi(
             VCFin = VCFin,
             VCFout = VCFout,
             Chr = Chr,
@@ -162,7 +162,7 @@ filterLargeVCF_One <- function(VCFin = VCFin,
 
 
 
-filterLargeVCF_Muli <- function(VCFin = VCFin,
+filterLargeVCF_Multi <- function(VCFin = VCFin,
                                 VCFout = VCFout,
                                 Chr = Chr,
                                 POS = POS,

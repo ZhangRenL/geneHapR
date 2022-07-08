@@ -70,18 +70,24 @@ is.indel.allele <- function(allele.vector) {
     probe1 <- stringr::str_detect(allele.vector, "/")
     probe <- lapply(stringr::str_split(allele.vector, "[,/]"),
                     stringr::str_length)
-    probe1 & unlist(lapply(probe, function(i)
+    probe <- probe1 & unlist(lapply(probe, function(i)
         max(i) > 1))
+    probe[is.na(probe)] <- FALSE
+    return(probe)
 }
 
 
 is.biallelic.allele <- function(allele.vector) {
     probe1 <- stringr::str_detect(allele.vector, "/")
-    ! stringr::str_detect(allele.vector, ",") & probe1
+    probe <- ! stringr::str_detect(allele.vector, ",") & probe1
+    probe[is.na(probe)] <- FALSE
+    return(probe)
 }
 
 
 is.multiallelic.allele <- function(allele.vector) {
     probe1 <- stringr::str_detect(allele.vector, "/")
-    stringr::str_detect(allele.vector, ",") & probe1
+    probe <- stringr::str_detect(allele.vector, ",") & probe1
+    probe[is.na(probe)] <- FALSE
+    return(probe)
 }

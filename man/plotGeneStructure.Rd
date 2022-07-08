@@ -5,7 +5,7 @@
 \title{plotGeneStructure}
 \usage{
 plotGeneStructure(gff,
-                  hapResult,
+                  hapSummary,
                   Chr,
                   startPOS, endPOS,
                   type = "pin", cex = 0.7,
@@ -14,7 +14,7 @@ plotGeneStructure(gff,
 \arguments{
 \item{gff}{gff}
 
-\item{hapResult}{ouput of hap_result(), a data.frame consistant
+\item{hapSummary}{ouput of hap_summary(), a data.frame consistant
 with 4 metarows: Chr, POS, Allele and ANN, and each genotype of each hap}
 
 \item{Chr}{Chr, it will use the first Chr in the meta rows by default}
@@ -36,10 +36,10 @@ plotGeneStructure
 }
 \examples{
 
-data("quickHap_test")
+data("geneHap_test")
 hap <- vcf2hap(vcf,hyb_remove = TRUE, na.drop = TRUE)
-hapResult <- hap_result(hap)
-plotGeneStructure(gff, hapResult,
+hapSummary <- hap_summary(hap)
+plotGeneStructure(gff, hapSummary,
                   startPOS = 4100,
                   endPOS = 8210,
                   cex = 0.75)

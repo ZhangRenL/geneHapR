@@ -26,7 +26,7 @@ named vectors contains start, end and strand
 getGenePOS
 }
 \examples{
-data("quickHap_test")
+data("geneHap_test")
 genePOS <- getGenePOS(gff = gff,
            geneID = "test1G0387",
            type = "CDS",

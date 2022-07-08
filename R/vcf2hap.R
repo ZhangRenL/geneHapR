@@ -28,7 +28,7 @@
 #'         startPOS = startPOS,
 #'         endPOS = endPOS,
 #'         hyb_remove = TRUE,
-#'         na.drop = TRUE, file = file)
+#'         na.drop = TRUE)
 #' @author Zhangrenl
 #' @inherit hap_summary examples
 #' @param vcf vcfR object imported by `import_vcf`
@@ -44,8 +44,6 @@
 #' @param Chr Chromosome name, needed when `filter_Chr` was set as `TRUE`
 #' @param startPOS,endPOS Start and end position, needed when `filter_POS` was
 #' set as `TRUE`. In addition, `startPOS` must less than `endPOS`
-#' @param file file path where to save the hap result. If missing, nothing will
-#' be saved to disk
 #' @seealso
 #' extract genotype from vcf:
 #' \code{\link[vcfR:extract_gt_tidy]{vcfR::extract_gt_tidy()}},
@@ -73,8 +71,7 @@ vcf2hap <- function(vcf,
                     startPOS = startPOS,
                     endPOS = endPOS,
                     hyb_remove = TRUE,
-                    na.drop = TRUE,
-                    file = file) {
+                    na.drop = TRUE) {
     requireNamespace('tidyr')
     requireNamespace('dplyr')
     allS_new <- allS
@@ -184,18 +181,6 @@ only one CHROM should be in vcf, consider set 'filter_Chr' as 'TRUE'
     names(hap2acc) <- hap$Hap[-c(1:4)]
     attr(hap, "hap2acc") <- hap2acc
     attr(hap, "freq") <- table(hap$Hap[-c(1:4)])
-
-    # write result to disk
-    if (!missing(file))  {
-        utils::write.table(
-            hap,
-            file = file,
-            sep = "\t",
-            quote = FALSE,
-            row.names = FALSE,
-            col.names = FALSE
-        )
-    }
 
     return(hap)
 }

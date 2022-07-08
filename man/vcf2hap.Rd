@@ -12,7 +12,7 @@ vcf2hap(vcf,
         startPOS = startPOS,
         endPOS = endPOS,
         hyb_remove = TRUE,
-        na.drop = TRUE, file = file)
+        na.drop = TRUE)
 }
 \arguments{
 \item{vcf}{vcfR object imported by \code{import_vcf}}
@@ -35,12 +35,9 @@ Default as \code{TRUE}}
 
 \item{na.drop}{whether drop accessions contains unknown allele site or not
 Default as \code{TRUE}.}
-
-\item{file}{file path where to save the hap result. If missing, nothing will
-be saved to disk}
 }
 \value{
-\code{haptypes} object, first four rows are meta information:
+\code{hapResult} object, first four rows are meta information:
 \code{CHR}, \code{POS}, \code{INFO}, \code{ALLELE.}
 \code{Hap} names were located in the first column, \code{Accessions} were placed at
 the last column.
@@ -99,13 +96,13 @@ hap <- seqs2hap(trimedSeqs,
 
 #### 3. summary and visualizatiion ####
 # summary hap result for plot hap table
-hapResult <- hap_result(hap)
+hapSummary <- hap_summary(hap)
 
 # plot hap table
-plotHapTable(hapResult)
+plotHapTable(hapSummary)
 
 # user could change/add themes, title, ...
-p <- plotHapTable(hapResult)
+p <- plotHapTable(hapSummary)
 p + ggplot2::theme_classic()
 p + ggplot2::labs(title = "new title")
 }

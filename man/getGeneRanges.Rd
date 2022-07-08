@@ -23,7 +23,7 @@ defalt is Parent}
 getGeneRanges
 }
 \examples{
-data("quickHap_test")
+data("geneHap_test")
 geneRanges <- getGeneRanges(gff = gff,
                             geneID = "test1G0387",
                             type = "CDS",

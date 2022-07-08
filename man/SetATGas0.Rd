@@ -40,7 +40,7 @@ The site in hap result exceed the selected range will be \strong{dropped}.
 }
 \examples{
 # load example dataset
-data("quickHap_test")
+data("geneHap_test")
 
 # generate hap results
 hap <- vcf2hap(vcf)
@@ -58,7 +58,7 @@ newhap <- hapSetATGas0(gff = gff, hap = hap,
                        POS = c(4300, 7910))
 
 # visualization mutations on gene model with newgff and newhap
-plotGeneStructure(gff = newgff, hapResult = newhap)
+plotGeneStructure(gff = newgff, hapSummary = newhap)
 
 }
 \seealso{

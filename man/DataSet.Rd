@@ -4,14 +4,14 @@
 \name{DataSet}
 \alias{DataSet}
 \alias{gff}
-\alias{phenos}
+\alias{pheno}
 \alias{vcf}
 \alias{accGroup}
 \title{Datasets
 \code{gff} contains a example of gff file used for test of
 visualization mutations on gene model.}
 \description{
-\code{phenos} contains a simulated test pheno data used for test of comparison
+\code{pheno} contains a simulated test pheno data used for test of comparison
 between different haps
 
 \code{vcf}, a vcfR object provide a data set for test of \code{seq2hap()}.
