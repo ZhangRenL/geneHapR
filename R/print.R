@@ -1,8 +1,8 @@
 # File Checked
 #' @importFrom stringi stri_pad_right
 #' @importFrom tibble tibble
-#' @exportS3Method print haptypes
-print.haptypes <- function(x, ...) {
+#' @exportS3Method print hapResult
+print.hapResult <- function(x, ...) {
     freq <- attr(x, "freq")
     accAll <- attr(x, "AccAll")
     accRemain <- attr(x, "AccRemain")

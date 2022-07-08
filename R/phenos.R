@@ -11,7 +11,7 @@
 #'            minAcc = 5, ...)
 #' @examples
 #'
-#' data("quickHap_test")
+#' data("geneHap_test")
 #' hap <- vcf2hap(vcf,hyb_remove = TRUE, na.drop = TRUE)
 #' # plot the figs direactively
 #' hapVsPheno(hap = hap,pheno = pheno,phenoName = "GrainWeight.2021",minAcc = 3)
@@ -35,7 +35,7 @@
 #' dev.off()
 #' }
 #' }
-#' @param hap object of "haptypes" class, generate with`vcf2hap()` or
+#' @param hap object of "hapResult" class, generate with`vcf2hap()` or
 #' `seqs2hap()`
 #' @param pheno object of "data.frame" class, imported by `import_pheno()`
 #' @param phenoName pheno name for plot, should be one column name of `pheno`

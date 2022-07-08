@@ -25,7 +25,7 @@
 #' @param hyb_remove whether remove accessions contains hybrid site or not
 #' @param na.drop whether Drop accessions contains "N"
 #' Default as `TRUE`.
-#' @inherit hap_result examples
+#' @inherit hap_summary examples
 #' @export
 seqs2hap <- function(seqs,
                      Ref = names(seqs)[1],
@@ -94,7 +94,7 @@ seqs2hap <- function(seqs,
     hap <- remove_redundancy_col(hap)
 
     # set attributes
-    class(hap) <- unique(c("haptypes", "data.frame"))
+    class(hap) <- unique(c("hapResult", "data.frame"))
     attr(hap, "AccAll") <- accAll
     accRemain <- hap$Accession[hap$Accession != ""]
     attr(hap, "AccRemain") <- accRemain

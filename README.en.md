@@ -63,11 +63,11 @@ install(c("ggpubr", "vcfR", "tidyverse", "stringr", "reshape2", "randomcoloR",
 
 ``` r
 library(geneHapR)
-data("quickHap_test")
+data("geneHap_test")
 hap <- get_hap(vcf, hyb_remove = TRUE, na.drop = TRUE)
-hapResult <- hap_result(hap)
-plotHapTable(hapResult)
-plotHapTable(hapResult)
+hapSummary <- hap_summary(hap)
+plotHapTable(hapSummary)
+plotHapTable(hapSummary)
 hapVsPheno(hap = hap, pheno = pheno, phenoName = "GrainWeight.2021", minAcc = 3)
 phenoResult <- hapVsPheno(hap = hap,
                       pheno = pheno,
@@ -82,7 +82,7 @@ plot(phenoResult$figs)
 ``` r
 # Load geneHapR
 library(geneHapR)
-data("quickHap_test")# Load test data, you don't have to execute this line when processing your own data
+data("geneHap_test")# Load test data, you don't have to execute this line when processing your own data
 
 # set working directory
 setwd("/your/working/directory")
@@ -110,17 +110,17 @@ hap = get_hap(vcf,                 # import_vcf()imported vcfR
               startPOS = 136756,   # Numeric, starting position, filter vcf information by position
               endPOS = 144094)     # Numeric, end position, filter vcf information by position
 
-# hapResult, data.frame: The first column is fixed as Hap, the last two columns are fixed as Accession and freq respectively, the middle column is the position and the corresponding genotype
+# hapSummary, data.frame: The first column is fixed as Hap, the last two columns are fixed as Accession and freq respectively, the middle column is the position and the corresponding genotype
 # The first four lines of comment information are: CHR, POS, ALLELE, INFO
-hapResult = hap_result(hap,          # hap result
+hapSummary = hap_summary(hap,          # hap result
                        hapPrefix = "H",  # prefix of hap names
                        out  = FALSE, # Whether to output the file, if TRUE, the output path file must be specified
-                       file = "results/Seita.1G001600_hapResult.txt")  # output file path(tab separated table)
+                       file = "results/Seita.1G001600_hapSummary.txt")  # output file path(tab separated table)
 
 
 # Visualize haplotype results
 plotGeneStructure(gff,                # gff annotation information
-                  hapResult,          # haplotype result
+                  hapSummary,          # haplotype result
                   Chr = "scaffold_1", # the chromosome where the gene is located
                   startPOS = 136756,  # the starting position of the schematic diagram of the gene structure
                   endPOS = 144094,    # the end position of the schematic diagram of the gene structure
@@ -129,7 +129,7 @@ plotGeneStructure(gff,                # gff annotation information
                   CDS_h = 0.05,       # height of different gene structures
                   fiveUTR_h = 0.02,
                   threeUTR_h = 0.01)
-plotHapTable(hapResult,               # haplotype result
+plotHapTable(hapSummary,               # haplotype result
              hapPrefix = "H",         # Haplotype prefix(letters before Arabic numerals)
              geneID = "",             # gene ID, as chart Title
              title.color = "grey90")  # header background color

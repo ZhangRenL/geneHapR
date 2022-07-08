@@ -30,7 +30,7 @@
 #'         hyb_remove = TRUE,
 #'         na.drop = TRUE, file = file)
 #' @author Zhangrenl
-#' @inherit hap_result examples
+#' @inherit hap_summary examples
 #' @param vcf vcfR object imported by `import_vcf`
 #' @param filter_Chr logical, whether filter vcf by chromosome or not, default
 #' as `FALSE`. If set as `TRUE`, `Chr` is needed
@@ -55,7 +55,7 @@
 #' filter vcf according **position** and **annotations**:
 #' \code{\link[geneHapR:filter_vcf]{filter_vcf()}}
 #' @return
-#' `haptypes` object, first four rows are meta information:
+#' `hapResult` object, first four rows are meta information:
 #' `CHR`, `POS`, `INFO`, `ALLELE.`
 #' `Hap` names were located in the first column, `Accessions` were placed at
 #' the last column.
@@ -173,7 +173,7 @@ only one CHROM should be in vcf, consider set 'filter_Chr' as 'TRUE'
 
     # set attributes
     hap <- remove_redundancy_col(hap)
-    class(hap) <- unique(c("haptypes", "data.frame"))
+    class(hap) <- unique(c("hapResult", "data.frame"))
     accAll <- colnames(vcf@gt)[-1]
     attr(hap, "AccAll") <- accAll
     accRemain <- hap$Accession[hap$Accession != ""]

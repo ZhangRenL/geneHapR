@@ -138,9 +138,9 @@ import_MultipleAlignment <- function(filepath,
 
 
 # Checked
-#' @name import_hapResult
-#' @title  import_hapResult
-#' @usage import_hapResult(file, ...)
+#' @name import_hap
+#' @title  import_hap
+#' @usage import_hap(file, ...)
 #' @description
 #' This function could be used for import hap result or hap summary result.
 #' The type of returned object is decided by hap result format, see details.
@@ -156,25 +156,25 @@ import_MultipleAlignment <- function(filepath,
 #' @examples
 #' \dontrun{
 #'
-#' hapResult <- import_hapResult("your_hapResult_file.txt")
+#' hap <- import_hap("hapSummary_OR_hapResult_file.txt")
 #' }
-#' @param file hapResult file path
+#' @param file hapSummary or hapResult file path
 #' @param ... extras will pass to `read.delim()`
 #' @export
-#' @return hapSummary or haptypes
-import_hapResult <- function(file, ...) {
-    hapResult <- read.delim(file, header = F, ...)
+#' @return hapSummary or hapResult
+import_hap <- function(file, ...) {
+    hap <- read.delim(file, header = F, ...)
 
     # check rows format
-    if (nrow(hapResult) == 5)
+    if (nrow(hap) == 5)
         warning("There is only one haplotype?")
     else
-        if (nrow(hapResult) < 5)
+        if (nrow(hap) < 5)
             stop("Please check your input file.")
 
     # get POS
     POS <-
-        suppressWarnings(as.numeric(hapResult[hapResult[, 1] == "POS", ]))
+        suppressWarnings(as.numeric(hap[hap[, 1] == "POS", ]))
     POS <- na.omit(POS)
     if (length(POS) == 1)
         warning("There is only one loci?")
@@ -183,29 +183,29 @@ import_hapResult <- function(file, ...) {
             stop("Please check your input file")
 
     # check columns
-    cn <- c("Hap", POS)
-    if (ncol(hapResult) - length(POS) == 2) {
-        cn <- c(cn, "Accession")
-        class(hapResult) <- c("haptypes", "data.frame")
-    } else if (ncol(hapResult) - length(POS) == 3) {
-        if (is.numeric(hapResult[, ncol(hapResult)])) {
-            cn <- c(cn, "Accession", "freq")
-        } else if (is.numeric(hapResult[, ncol(hapResult) - 1])) {
-            cn <- c(cn, "freq", "Accession")
+    colnms <- c("Hap", POS)
+    if (ncol(hap) - length(POS) == 2) {
+        colnms <- c(colnms, "Accession")
+        class(hap) <- c("hapResult", "data.frame")
+    } else if (ncol(hap) - length(POS) == 3) {
+        if (is.numeric(hap[, ncol(hap)])) {
+            colnms <- c(colnms, "Accession", "freq")
+        } else if (is.numeric(hap[, ncol(hap) - 1])) {
+            colnms <- c(colnms, "freq", "Accession")
         } else {
             stop("Can't find Please check your input file.")
         }
-        class(hapResult) <- c("hapSummary", "data.frame")
+        class(hap) <- c("hapSummary", "data.frame")
     } else {
         stop("Please check your input file.")
     }
 
     # set colnames
-    colnames(hapResult) <- cn
+    colnames(hap) <- colnms
 
     # set attr options
-    attr(hapResult, "options") <- c(Source = "Read from file")
-    return(hapResult)
+    attr(hap, "options") <- c(Source = "Read from file")
+    return(hap)
 }
 
 
@@ -215,13 +215,13 @@ import_hapResult <- function(file, ...) {
 #' @usage write.hap(x, file = file, sep = "\t")
 #' @description
 #' This function will write hap result into a txt file.
-#' @inherit import_hapResult details
+#' @inherit import_hap details
 #' @examples
 #' \dontrun{
 #'
 #' write.hap(hap, file = "hap.txt")
 #' }
-#' @param x objec of haplotypes or hapSummary
+#' @param x objec of `haplotypes` or `hapSummary` class
 #' @param file file path, where to save the hap result
 #' @param sep the field separator string. Values within each row of x are separated by this string.
 #' @export

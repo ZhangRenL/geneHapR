@@ -20,7 +20,7 @@
 #' @importFrom GenomicRanges strand
 #' @examples
 #' # load example dataset
-#' data("quickHap_test")
+#' data("geneHap_test")
 #'
 #' # generate hap results
 #' hap <- vcf2hap(vcf)
@@ -38,7 +38,7 @@
 #'                        POS = c(4300, 7910))
 #'
 #' # visualization mutations on gene model with newgff and newhap
-#' plotGeneStructure(gff = newgff, hapResult = newhap)
+#' plotGeneStructure(gff = newgff, hapSummary = newhap)
 #'
 #' @return `gffSetATGas0`: filtered gff with position of ATG was as zero
 #' @seealso

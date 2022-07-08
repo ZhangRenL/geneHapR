@@ -11,7 +11,7 @@
 #' @param gffTermContaingeneID which term contains the geneID in your gff,
 #' defalt is Parent
 #' @examples
-#' data("quickHap_test")
+#' data("geneHap_test")
 #' genePOS <- getGenePOS(gff = gff,
 #'            geneID = "test1G0387",
 #'            type = "CDS",
@@ -68,7 +68,7 @@ getGenePOS <- function(gff = gff,
 #'              type = type,
 #'              gffTermContaingeneID = "Parent")
 #' @examples
-#' data("quickHap_test")
+#' data("geneHap_test")
 #' geneRanges <- getGeneRanges(gff = gff,
 #'                             geneID = "test1G0387",
 #'                             type = "CDS",
