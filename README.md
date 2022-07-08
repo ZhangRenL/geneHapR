@@ -224,7 +224,7 @@ hapSummary = hap_summary(hap,                    # hap 结果
 
 
 # 可视化单倍型结果
-plotGeneStructure(gff,                # gff注释信息
+displayVarOnGeneModel(gff,                # gff注释信息
                   hapSummary,          # 单倍型结果
                   Chr = Chr, # 基因所在染色体
                   startPOS = start,  # 基因结构示意图的起始位点

@@ -119,7 +119,7 @@ hapSummary = hap_summary(hap,          # hap result
 
 
 # Visualize haplotype results
-plotGeneStructure(gff,                # gff annotation information
+displayVarOnGeneModel(gff,                # gff annotation information
                   hapSummary,          # haplotype result
                   Chr = "scaffold_1", # the chromosome where the gene is located
                   startPOS = 136756,  # the starting position of the schematic diagram of the gene structure

@@ -437,10 +437,10 @@ plotHapTable <- function(hapSummary,
 
 
 
-#' @name plotGeneStructure
-#' @title plotGeneStructure
+#' @name displayVarOnGeneModel
+#' @title displayVarOnGeneModel
 #' @usage
-#' plotGeneStructure(gff,
+#' displayVarOnGeneModel(gff,
 #'                   hapSummary,
 #'                   Chr,
 #'                   startPOS, endPOS,
@@ -451,7 +451,7 @@ plotHapTable <- function(hapSummary,
 #' data("geneHap_test")
 #' hap <- vcf2hap(vcf,hyb_remove = TRUE, na.drop = TRUE)
 #' hapSummary <- hap_summary(hap)
-#' plotGeneStructure(gff, hapSummary,
+#' displayVarOnGeneModel(gff, hapSummary,
 #'                   startPOS = 4100,
 #'                   endPOS = 8210,
 #'                   cex = 0.75)
@@ -473,7 +473,7 @@ plotHapTable <- function(hapSummary,
 #' @param CDS_h,fiveUTR_h,threeUTR_h The height of CDS 5'UTR and 3'UTR
 #' @export
 #' @return NULL
-plotGeneStructure <- function(gff,
+displayVarOnGeneModel <- function(gff,
                               hapSummary,
                               Chr,
                               startPOS,

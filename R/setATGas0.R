@@ -38,11 +38,11 @@
 #'                        POS = c(4300, 7910))
 #'
 #' # visualization mutations on gene model with newgff and newhap
-#' plotGeneStructure(gff = newgff, hapSummary = newhap)
+#' displayVarOnGeneModel(gff = newgff, hapSummary = newhap)
 #'
 #' @return `gffSetATGas0`: filtered gff with position of ATG was as zero
 #' @seealso
-#' \code{\link[geneHapR:plotGeneStructure]{plotGeneStructure()}}
+#' \code{\link[geneHapR:displayVarOnGeneModel]{displayVarOnGeneModel()}}
 #' @export
 gffSetATGas0 <- function(gff = gff,
                          hap = hap,
