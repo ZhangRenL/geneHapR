@@ -2,7 +2,6 @@
 % Please edit documentation in R/phenos.R
 \name{hapVsPheno}
 \alias{hapVsPheno}
-\alias{hapVspheno}
 \title{hapVsPheno}
 \usage{
 hapVsPheno(hap,
@@ -11,16 +10,6 @@ hapVsPheno(hap,
            title = "test1G0387",
            mergeFigs = TRUE,
            minAcc = 5, ...)
-
-hapVspheno(hap,
-            pheno,
-            outPutSingleFile = TRUE,
-            hapPrefix = "H",
-            title = "Seita.0G000000",
-            file = file,
-            width = 12,
-            height = 8,
-            res = res, ...)
 }
 \arguments{
 \item{hap}{object of "hapResult" class, generate with\code{vcf2hap()} or
@@ -42,25 +31,6 @@ not be compared with others or be ploted. Should not less than 3 due to the
 t-test will meaninglessly. default as 5}
 
 \item{...}{options will pass to ggpubr}
-
-\item{outPutSingleFile}{\code{TRUE} or \code{FALSE} indicate whether put all figs
-into to each pages of single file or generate multi-files.
-Only worked while file type is pdf}
-
-\item{file}{the output file name/path. File type could be pdf, png, tiff,
-jpg or bmp. \code{file} will only used for out file name/path directly if file
-type is "pdf" and \code{outPutSingleFile} set as \code{TRUE}. Otherwise the pheno names
-will added for each file name/path.}
-
-\item{width}{manual option for determining the output file width in inches.
-(default: 12)}
-
-\item{height}{manual option for determining the output file height in inches.
-(default: 8)}
-
-\item{res}{The nominal resolution in ppi which will be recorded in the
-bitmap file, if a positive integer. Also used for units other than the
-default, and to convert points to pixels.}
 }
 \value{
 list. A list contains a character vector with Haps were applied
@@ -75,7 +45,7 @@ hapVsPheno
 
 data("geneHap_test")
 hap <- vcf2hap(vcf,hyb_remove = TRUE, na.drop = TRUE)
-# plot the figs direactively
+# plot the figs directly
 hapVsPheno(hap = hap,pheno = pheno,phenoName = "GrainWeight.2021",minAcc = 3)
 
 #do not merge the files
@@ -96,18 +66,5 @@ for(i in colnames(pheno)){
     plot(results$figs)
 dev.off()
 }
-}
-
-\dontrun{
-# analysis all pheno in the data.frame of pheno
-hapVspheno(hap,
-            pheno,
-            outPutSingleFile = TRUE,
-            hapPrefix = "H",
-            title = "Seita.0G000000",
-            file = "mypheno.tiff",
-            width = 12,
-            height = 8,
-            res = 300)
 }
 }

@@ -37,8 +37,9 @@ Imports:
 Depends: 
   ggplot2,
   R (>= 4.0.0)
+Suggests:
+  knitr,
+  rmarkdown
 License: GPL-3
-Suggests: 
-    knitr
 VignetteBuilder: knitr
 Roxygen: list(markdown = TRUE)

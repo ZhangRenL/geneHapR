@@ -13,7 +13,7 @@
 #'
 #' data("geneHap_test")
 #' hap <- vcf2hap(vcf,hyb_remove = TRUE, na.drop = TRUE)
-#' # plot the figs direactively
+#' # plot the figs directly
 #' hapVsPheno(hap = hap,pheno = pheno,phenoName = "GrainWeight.2021",minAcc = 3)
 #'
 #' #do not merge the files
@@ -260,9 +260,10 @@ hapVsPheno <- function(hap,
 
 
 # checked
-#' @name hapVsPheno
+#' @name hapVsPhenos
+#' @title hapVsPhenos
 #' @usage
-#' hapVspheno(hap,
+#' hapVsPhenos(hap,
 #'             pheno,
 #'             outPutSingleFile = TRUE,
 #'             hapPrefix = "H",
@@ -289,7 +290,7 @@ hapVsPheno <- function(hap,
 #'
 #' \dontrun{
 #' # analysis all pheno in the data.frame of pheno
-#' hapVspheno(hap,
+#' hapVsPhenos(hap,
 #'             pheno,
 #'             outPutSingleFile = TRUE,
 #'             hapPrefix = "H",
@@ -303,7 +304,7 @@ hapVsPheno <- function(hap,
 #' @import grDevices
 #' @export
 #' @return NULL
-hapVspheno <- function(hap,
+hapVsPhenos <- function(hap,
                         pheno,
                         outPutSingleFile = TRUE,
                         hapPrefix = "H",
@@ -349,7 +350,6 @@ hapVspheno <- function(hap,
         if (!probe) {
             file <- stringr::str_remove(file, paste0(".", surFix))
             filename <- paste0(file, "_", phenoName, ".", surFix)
-            message("Figures will save to ", filename)
             switch(
                 surFix,
                 "pdf" = pdf(filename, width = width, height = height),
@@ -402,8 +402,9 @@ hapVspheno <- function(hap,
                 ncol(pheno),
                 "; current: ",
                 steps,
-                ";\t",
-                phenoName)
+                ";\tphynotype: ",
+                phenoName, appendLF = FALSE)
+        cat("\tfile: ", filename, "\n", sep = "")
         resulti <- hapVsPheno(
             hap,
             pheno = pheno,

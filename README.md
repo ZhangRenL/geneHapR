@@ -271,3 +271,19 @@ plotHapNet(hapNet,
 
 
 ```
+
+
+
+```
+data(geneHapR_test)
+vcf@fix = vcf@fix[1:4,]
+vcf@gt = vcf@gt[1:4,]
+hap = vcf2hap(vcf)
+hapsum = hap_summary(hap)
+plotHapTable(hapsum, angle = 45, displayIndelSize = 3)
+displayVarOnGeneModel(gff, hapsum, startPOS = 4300, endPOS = 7950)
+hapNet = get_hapNet(hapsum, accGroup = accGroup, groupName = "Type")
+plot(hapNet)
+plotHapNet(hapNet)
+hapVsPheno(hap, pheno, minAcc = 3)
+```

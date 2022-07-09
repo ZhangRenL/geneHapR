@@ -1,0 +1,56 @@
+---
+title: "workflow"
+author: "Zhang RenLiang"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{workflow}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+# geneHapR workfolw
+
+## R Markdown
+
+
+
+
+## Workflow
+
+
+Work begins with a variant call format file (VCF) or DNA sequences file (FASTA).
+An annotation file and phenotype data (data.frame) and accession group (data.frame) are also suggested.
+These later file and two R object of `data.frame` class are conditionally needed. 
+The below workflow outlines the major steps involved in geneHapR usage.
+
+
+
+![geneHapR workfolw](geneHapR_workflow.png)
+
+
+
+The blue fonts indicate functions the user need to become familiar with.
+There are effectively three phases in the workflow: firstly, import data; secondly, processing the objects in memory; and finally, visualization and export the results.
+Import large data set frequently presents a bottleneck due to restriction of hardware performance and insufficient computer memory.
+Fortunately, it is only a matter of time to import a large data set due to the former limitation.
+It's suggest that perform haplotype analysis with a comparatively small range every time and then merge the results to get over the latter limitation.
+
+
+Once the data sets are import into memory, we can continue the process with geneHapR.
+There are three small steps in data processing.
+First, we generate hap data (generate an object of `hapResult` class) from VCFs (object of `vcfR` class) or DNA Sequences (object of `DNAStringSet` class).
+Next, we summarize the hap result (generate an object of `hapSummary` class) into a shorter table.
+Finally, we computes the hapNet (generate an object of `haploNet` class) from summarized hap result (suggest with accession groups information).
+
+
+Finally, we can visualize and export the results.
+Display variants on gene model with R base graphics package takes an object of `hapSummary` class and an object of `Granges` class contains genome annotations. .
+Visualization of hapTable with `ggplot2` package takes an object of `hapSummary` class.
+HapNet Visualization with R base graphics package takes an object of `haploNet` class.
+Visualization of association between hap and phenotype with `ggplot2` package takes an object of `hapResult` class and an object of `data.frame` contains phenotype data.
+Certainly, the user is able to make some modifications to the plots with command of `ggplot2` or R base graphics packages.
+
+
+
+**Note that** the hap results (object of `hapResult` and `hapSummary` class) are able to export to drive or import from drive by `write.hap()` or `import_hap()`.         

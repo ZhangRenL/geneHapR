@@ -207,6 +207,9 @@ plotHapTable <- function(hapSummary,
                          ALLELE.color = "grey90")
 {
     requireNamespace('tidyr')
+    if (inherits(hapSummary, "hapResult"))
+        hapSummary <- hap_summary(hapSummary)
+
     if (!missing(geneName) & title == "")
         title <- geneName
 
@@ -441,11 +444,11 @@ plotHapTable <- function(hapSummary,
 #' @title displayVarOnGeneModel
 #' @usage
 #' displayVarOnGeneModel(gff,
-#'                   hapSummary,
-#'                   Chr,
-#'                   startPOS, endPOS,
-#'                   type = "pin", cex = 0.7,
-#'                   CDS_h = 0.05, fiveUTR_h = 0.02, threeUTR_h = 0.01)
+#'                       hapSummary,
+#'                       Chr,
+#'                       startPOS, endPOS,
+#'                       type = "pin", cex = 0.7,
+#'                       CDS_h = 0.05, fiveUTR_h = 0.02, threeUTR_h = 0.01)
 #' @examples
 #'
 #' data("geneHap_test")

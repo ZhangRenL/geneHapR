@@ -9,9 +9,8 @@ All Functions:
 3.  calculate hap: from sequences or vcfs
 4.  setATGAs0
 5.  add Annotations to INFO field
-5.  Haplotype summary and visualization (hap table and gene modle)
-6.  Generate haploNet and visualization
-7.  Haplotype envoe relationships
+6.  Haplotype summary and visualization (hap table and gene modle)
+7.  haploNet calculation and visualization
 8.  Phynotype analysis
 
 

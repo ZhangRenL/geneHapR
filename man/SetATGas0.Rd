@@ -58,9 +58,9 @@ newhap <- hapSetATGas0(gff = gff, hap = hap,
                        POS = c(4300, 7910))
 
 # visualization mutations on gene model with newgff and newhap
-plotGeneStructure(gff = newgff, hapSummary = newhap)
+displayVarOnGeneModel(gff = newgff, hapSummary = newhap)
 
 }
 \seealso{
-\code{\link[geneHapR:plotGeneStructure]{plotGeneStructure()}}
+\code{\link[geneHapR:displayVarOnGeneModel]{displayVarOnGeneModel()}}
 }

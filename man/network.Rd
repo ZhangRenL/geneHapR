@@ -41,6 +41,7 @@ hapNet <- get_hapNet(hapSummary,
 
 # plot haploNet
 plot(hapNet)
+
 # plot haploNet
 plotHapNet(hapNet,
            size = "freq", scale.ratio = 1,  # circle size
