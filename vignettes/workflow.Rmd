@@ -26,7 +26,7 @@ The below workflow outlines the major steps involved in geneHapR usage.
 
 
 
-![geneHapR workfolw](geneHapR_workflow.png)
+![geneHapR workfolw](geneHapR_workflow.png){:width=512}
 
 
 
