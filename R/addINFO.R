@@ -72,3 +72,25 @@ addINFO <- function(hap,
     return(hap)
 }
 
+#' @name addINFO
+#' @title Summary hap results
+#' @description add annotations to `INFO` fields used for `plotHapTable()`
+#' @usage
+#' sites(hap)
+#' @examples
+#' \dontrun{
+#' # check how many sites were concluded in hapResult/hapSummary
+#' sites(hap)
+#' }
+#' @seealso
+#' \code{\link[geneHapR:plotHapTable]{plotHapTable()}}
+#' @param hap object of `hapResult` or `hapSummary` class
+#' @export
+sites <- function(hap){
+    # get POS in hap
+    POS <- t(hap[hap$Hap == "POS", ])[, 1]
+    POS <- suppressWarnings(as.numeric(names(POS)))
+    probe <- !is.na(POS)
+    POS <- POS[probe]
+    length(POS)
+}

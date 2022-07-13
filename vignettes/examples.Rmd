@@ -124,7 +124,7 @@ hapResult <- seqs2hap(seqs,
 newgff <- gffSetATGas0(gff = gff, hap = hapResult,
                        geneID = "test1G0387",
                        Chr = "scaffold_1",
-                       POS = c(4300, 7910))
+                       POS = c(4300, 7910)) 
 
 # set position of ATG as zero in hapResult/hapSummary
 newhap <- hapSetATGas0(gff = gff, hap = hapResult,

@@ -4,3 +4,5 @@
 .Ruserdata
 renv/
 inst/doc
+/doc/
+/Meta/

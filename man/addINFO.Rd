@@ -2,11 +2,14 @@
 % Please edit documentation in R/addINFO.R
 \name{addINFO}
 \alias{addINFO}
+\alias{sites}
 \title{Summary hap results}
 \usage{
 addINFO(hap,
         tag = "", values = values,
         replace = FALSE, sep = ";")
+
+sites(hap)
 }
 \arguments{
 \item{hap}{object of \code{hapResult} or \code{hapSummary} class}
@@ -24,6 +27,8 @@ Default as FALSE}
 }
 \description{
 add annotations to \code{INFO} fields used for \code{plotHapTable()}
+
+add annotations to \code{INFO} fields used for \code{plotHapTable()}
 }
 \examples{
 \dontrun{
@@ -34,7 +39,13 @@ hap <- vcf2hap(vcf)
 values <- paste0("newInfo",c(1:9))
 hap <- addINFO(hap, tag = "new", values = values, replace = TRUE)
 }
+\dontrun{
+# check how many sites were concluded in hapResult/hapSummary
+sites(hap)
+}
 }
 \seealso{
+\code{\link[geneHapR:plotHapTable]{plotHapTable()}}
+
 \code{\link[geneHapR:plotHapTable]{plotHapTable()}}
 }

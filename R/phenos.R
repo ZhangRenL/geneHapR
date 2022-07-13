@@ -286,6 +286,7 @@ hapVsPheno <- function(hap,
 #' @param res The nominal resolution in ppi which will be recorded in the
 #' bitmap file, if a positive integer. Also used for units other than the
 #' default, and to convert points to pixels.
+#' @inheritParams hapVsPheno
 #' @examples
 #'
 #' \dontrun{
@@ -406,7 +407,7 @@ hapVsPhenos <- function(hap,
                 phenoName, appendLF = FALSE)
         cat("\tfile: ", filename, "\n", sep = "")
         resulti <- hapVsPheno(
-            hap,
+            hap = hap,
             pheno = pheno,
             phenoName = phenoName,
             hapPrefix = hapPrefix,

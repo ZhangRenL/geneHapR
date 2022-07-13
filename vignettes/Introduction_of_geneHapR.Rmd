@@ -1,0 +1,415 @@
+---
+title: "Introduction of geneHapR"
+author: "Zhang RenLiang"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Introduction of geneHapR}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+`geneHapR` is a package that designed for one or multi-genes haplotype analysis, visualization and phenotype association.
+
+## Preliminaries
+
+Input files frequently present challenges to analysis.
+
+A common problem I encounter is that chromosome names and gene IDs are not standardized among **VCF**, **FASTA** and **GFF** files.
+That means additional work for users with or without R.
+I suggest that reading these files into R, synchronizing the names in R and then proceeding with downstream analyses.
+
+Large **VCF** or **GFF** file is another important consideration when using geneHapR. Usually, the annotation file (GFF) and variants call format (VCF) files are commonly at chromosome or genome level. Thus they may be huge. However, a gene size is range from hundreds to thousands bp. It means the dataset for a gene haplotype analysis is very small portion inside the huge file. Thus I have developed `filterLargeVCF()` (see **VCF filtration**) in case the user known a little or nothing about linux. However, I suggest to extract the target ranges from the whole VCF or GFF file with in linux software before import them into R if the user is familiar with linux. It will save much time and brainwork if the user have hundred genes or ranges need to be extract from the original file.
+
+## Data input
+
+The first step is library the `geneHapR` packages.
+
+```{r startup, echo=TRUE, message=FALSE, warning=FALSE}
+library(geneHapR)
+```
+
+```{r setups, include=FALSE}
+data("geneHapR_test")
+```
+
+There are two options to conduct a gene haplotype analysis starts from a VCF file or DNA sequcences file. Thus a **VCF** file or **DNA sequences** file is necessary. However, the *GFF*, *phenos* and *accession groups* are strongly recommend for visualization and phenotype associations.
+
+The import functions takes file name/path as input. `import_vcf()` could import VCF file with surfix of ".vcf" and ".vcf.gz". `import_gff()` import file format default as "GFF" and `import_seqs()` file format default as "fasta".
+
+### Import VCF
+
+```{r import vcf, eval=FALSE, include=TRUE}
+# import vcf file
+vcf <- import_vcf("your_vcf_file_path.vcf")
+
+# import gziped vcf file
+vcf <- import_vcf("your_vcf_file_path.vcf.gz")
+```
+
+### Import GFF
+
+```{r import gff, eval=FALSE, include=TRUE}
+# import GFFs
+gff <- import_gff("your_gff_file_path.gff", format = "GFF")
+```
+
+### Import DNA sequences
+
+```{r import DNA seqs, eval=FALSE, include=TRUE}
+# import DNA sequences in fasta format
+seqs <- import_seqs("your_DNA_seq_file_path.fa", format = "fasta")
+```
+
+## Import phenotype and accession group information
+
+```{r import phenotype and accession groups, eval=FALSE, include=TRUE}
+# import phynotype data
+pheno <- import_pheno("your_pheno_file_path.txt")
+pheno
+```
+
+```{r echo=FALSE}
+head(pheno)
+```
+
+```{r import pheno, eval=FALSE}
+
+# import accession group information
+accGroup <- import_pheno("accession_group_file_path.txt")
+```
+
+```{r echo=FALSE}
+head(accGroup)
+```
+
+Be aware that the phenotype and accession group are effectively tables. There are more than one ways to import a table format file with `R`. 
+
+Just **Note** that: 
+a. the accession/individual names located in first column; 
+b. the first row contents phenotype/accession_group names; 
+c. `NA` is allowed, it's not a wise option to replace `NA` by `0`.
+
+eg.
+
+```{r import pheno and accessions_groups, eval=FALSE, include=TRUE}
+# import pheno from space ' ' delimed table
+pheno <- read.table("your_pheno_file_path.csv", header = TRUE, row.names = 1, comment.char = "#")
+
+# import pheno from ',' delimed table
+pheno <- read.csv("your_pheno_file_path.csv", header = TRUE, comment.char = "#")
+```
+
+## Data manipulations
+
+There is a little work need to be done before haplotype calculations: (1) VCF filtration and (2) DNA sequences alignment.
+
+### VCF filtration
+
+There are three modes to filter a `vcfR` object after import VCF into R: a. by position; b. by annotation; c. by both of them.
+
+```{r VCF filtration, eval=FALSE, include=TRUE}
+# filter VCF by position
+vcf_f1 <- filter_vcf(vcf, mode = "POS",
+                     Chr = "scaffold_1",
+                     start = 4300, end = 5890)
+
+# filter VCF by annotation
+vcf_f2 <- filter_vcf(vcf, mode = "type",
+                     gff = gff,
+                     type = "CDS")
+
+# filter VCF by position and annotation
+vcf_f3 <- filter_vcf(vcf, mode = "both",
+                     Chr = "scaffold_1",
+                     start = 4300, end = 5890,
+                     gff = gff,
+                     type = "CDS")
+```
+
+It's a time consuming work to import and manipulate a very large file with R on personal computer. 
+It'll be more efficiency to extract the target ranges from origin VCF with `filterLargeVCF()` before import. 
+If your VCF file is just a few 'MB', this step was not necessary at all.
+
+**Note:** if extract more than one ranges, length of output file names (`VCFout`) must be equal with `Chr` and `POS`.
+
+```{r preprocess large VCF, eval=FALSE, include=TRUE}
+# new VCF file will be saved to disk
+# extract a single gene/range from a large vcf
+filterLargeVCF(VCFin = "Ori.vcf.gz",
+               VCFout = "filtered.vcf.gz",
+               Chr = "scaffold_8",
+               POS = c(19802,24501),
+               override = TRUE)
+
+# extract multi genes/ranges from large vcf
+filterLargeVCF(VCFin = "Ori.vcf.gz",          # surfix should be .vcf.gz or .vcf
+               VCFout = c("filtered1.vcf.gz", # surfix should be .vcf.gz or .vcf
+                          "filtered2.vcf.gz", 
+                          "filtered3.vcf.gz"),
+               Chr = c("scaffold_8",
+                       "scaffold_8",
+                       "scaffold_7"),
+               POS = list(c(19802,24501), 
+                          c(27341,28949),
+                          c(38469,40344)),
+               override = TRUE)               # if TRUE, existed file will be override without warning
+```
+
+### DNA sequences manipulation
+
+The origin DNA sequences must be aligned and trimmed due to haplotype calculation need all sequences have same length. Those operations could be done with `geneHapR`. I still suggest users align and trim DNA sequences with **Mega** software and then save the result as *FASTA* format before import them into R.
+
+```{r DNA alignment and trim, eval=FALSE, message=FALSE, warning=FALSE, include=TRUE}
+# sequences alignment
+seqs <- allignSeqs(seqs, quiet = TRUE)
+
+# sequences trim
+seqs <- trimSeqs(seqs, minFlankFraction = 0.1)
+seqs
+```
+
+## Haplotype calculation
+
+As mentioned before, haplotype could be calculated from VCF or sequences with `vcf2hap()` or `seqs2hap()`. The genotype of most sites should be known and homozygous, still, a few site are unknown or heterozygous due to chromosome variant or error cased by sequencing or SNP calling or gaps or other reasons. It's a hard decision whether to drop accessions/individuals contains heterozygous or unknown sites for every haplotype analysis. Hence, I leave the choice to users.
+
+
+
+Calculate haplotype result from VCF.
+```{r haplotype calculation from vcf, eval=TRUE, include=TRUE, message=FALSE, warning=FALSE}
+hapResult <- vcf2hap(vcf,
+                     hapPrefix = "H",
+                     hyb_remove = TRUE,
+                     na.drop = TRUE)
+hapResult
+```
+
+
+
+Calculate haplotype result from aligned DNA sequences.
+
+```{r haplotype calculation from seqs, eval=FALSE}
+hapResult <- seqs2hap(seqs,
+                      Ref = names(seqs)[1],
+                      hapPrefix = "H",
+                      hyb_remove = TRUE,
+                      na.drop = TRUE,
+                      maxGapsPerSeq = 0.25)
+```
+
+## Adjustment of `hapResult`
+
+Before visualization, there were a few details need to be adjusted.
+eg. add annotations and adjust position of "ATG"
+
+### Add annotations to `hapResult`
+
+While `hapResult` was calculated from `vcfR` object, the **INFO** was taken from `@fix` field. The *VCF INFO* may missing some annotations. or contents format was inappropriate to display. Further more, **INFO** contents nothing if `hapResult` was generated from sequences. Here, we can introduce/replace the origin **INFO** by `addINFO()`.
+
+**Note** that: length of `values` must be equal with number of sites.
+
+Let's see how mant sites contains in the `hapResult`.
+```{r check site numbers}
+# Chech number of sites conclude in hapResult
+sites(hapResult)
+```
+
+Now we replace the old INFO field with new tag named as "PrChange".
+
+```{r replace INFO, eval=TRUE, include=TRUE, message=FALSE, warning=FALSE}
+# add annotations to INFO field
+hapResult <-addINFO(hapResult,
+                     tag = "PrChange",
+                     values = rep(c("C->D", "V->R", "G->N"),3),
+                     replace = TRUE)
+```
+
+Here, we add a tag named as "CDSChange" followed the old INFO.
+
+```{r add INFO, eval=TRUE, include=TRUE, message=FALSE, warning=FALSE}
+# To replace the origin INFO by set 'replace' as TRUE
+hapResult <-addINFO(hapResult,
+                     tag = "CDSChange",
+                     values = rep(c("C->A", "T->C", "G->T"),3),
+                     replace = FALSE)
+```
+
+### Adjust position of "ATG"
+
+This function was only used to adjust the position of "ATG" to 0 and hence convert the gene on negative strand to positive strand.
+
+Be note that: **GFF** and **hapResult** need to adjust position of *ATG* with the same parameters.
+
+```{r ATG position, eval=FALSE}
+# set ATG position as zero in gff
+newgff <- gffSetATGas0(gff = gff, hap = hapResult,
+                       geneID = "test1G0387",
+                       Chr = "scaffold_1",
+                       POS = c(4300, 7910)) 
+
+# set position of ATG as zero in hapResult/hapSummary
+newhap <- hapSetATGas0(gff = gff, hap = hapResult,
+                       geneID = "test1G0387",
+                       Chr = "scaffold_1",
+                       POS = c(4300, 7910))
+```
+
+## `hapResult` summary and visualization
+
+Once we have the `hapResult` object, can we summarize and visualize our `hapResult` by interact with annotations and phenotypes.
+
+### Summary hapResult
+
+Now, we have the `hapResult` object with INFOs we want display in next step.
+The `hap_summary()` function convert the object of `hapResult` class, which is  a long table format, into a short table belong to `hapSummary` class. 
+In `hapResult` each row represent a accession, while each row represents a hap in `hapSummary`.
+
+```{r hapSummary, fig.height=4, fig.width=6, message=FALSE, warning=FALSE, paged.print=FALSE}
+hapSummary <- hap_summary(hapResult)
+hapSummary
+```
+
+### Visualize haplotye as table
+
+Let's see how to visualization of our haplotype results.
+
+At first let's display the `hapSummary` as a table.
+In this table like figure we can see all the variants and their positions, haplotypes and their frequencies.
+
+```{r, fig.height=4, fig.width=6, message=FALSE, warning=FALSE, paged.print=FALSE}
+plotHapTable(hapSummary)
+```
+
+Also we can add an annotation, "CDSChange", to the table by assign the `INFO_tag`.
+It's your responsibility to verify whether the INFO_tag was existed in the INFO field.
+
+```{r, fig.height=4, fig.width=6, message=FALSE, warning=FALSE, paged.print=FALSE}
+# add one annotation
+plotHapTable(hapSummary,
+             hapPrefix = "H",
+             INFO_tag = "CDSChange", 
+             tag_name = "CDS",
+             displayIndelSize = 1, 
+             angle = 45,
+             replaceMultiAllele = TRUE,
+             ALLELE.color = "grey90")
+```
+
+Now let's add another `INFO_tag` named as "PrChange".
+
+```{r , fig.height=4, fig.width=6, message=FALSE, warning=FALSE, paged.print=FALSE}
+# add multi annotation
+plotHapTable(hapSummary,
+             hapPrefix = "H",
+             INFO_tag = c("CDSChange", "PrChange"),
+             displayIndelSize = 1, 
+             angle = 45,
+             replaceMultiAllele = TRUE,
+             ALLELE.color = "grey90")
+```
+
+Parameter `tag_name` was used to replace the character if `INFO_tag` was too long.
+```{r, fig.height=4, fig.width=6, message=FALSE, warning=FALSE, paged.print=FALSE}
+# add multi annotation
+plotHapTable(hapSummary,
+             hapPrefix = "H",
+             INFO_tag = c("CDSChange", "PrChange"),
+             tag_name = c("CDS", "Pr"),
+             displayIndelSize = 1, 
+             angle = 45,
+             replaceMultiAllele = TRUE,
+             ALLELE.color = "grey90")
+```
+
+
+### Display variations on gene model.
+
+I think it's a good idea to figure out where are the variants by marking them on gene model.
+
+```{r display variations on gene model, fig.height=4, fig.width=6, message=FALSE, warning=FALSE, paged.print=FALSE}
+displayVarOnGeneModel(gff,
+                      hapSummary,
+                      Chr = "scaffold_1",
+                      startPOS = 4300, endPOS = 7910,
+                      type = "pin", cex = 0.7,
+                      CDS_h = 0.05, fiveUTR_h = 0.02, threeUTR_h = 0.01)
+```
+
+### `hapNet` calculation and visualization
+
+The `hapNet` could be generated from object of `hapSummary` class.
+The accession group information could be attached in this step.
+
+```{r hapNet}
+hapNet <- get_hapNet(hapSummary,
+                     accGroup = accGroup,
+                     groupName = "Type")
+```
+
+Once we have the `hapNet` object, we can plot it with R.
+
+```{r, fig.height=4, fig.width=6, message=FALSE, warning=FALSE, paged.print=FALSE}
+# plot haploNet
+plotHapNet(hapNet,
+           size = "freq", scale.ratio = 1,  # circle size
+           scale = TRUE,                    # scale circle with 'log10(size + 1)'
+           cex = 0.8,                       # size of hap symbol
+           col.link = 2,                    # link colors
+           link.width = 2,                  # link widths
+           show.mutation = 2,               # mutation types one of c(0,1,2,3)
+           legendPosition = "right")        # legend position
+```
+
+### Phenotype association analysis
+
+Finally, let's see which haplotype has superiority at particular area by interact with phynotype.
+
+Here are two options, merged or separated, to organized the heatmap of p-values and violin plot.
+The figure as an object of `ggplot2`, which means user could add/modified figure elements with `ggplot2`.
+
+Here is an example for merged arrangement:
+
+```{r hapVsPheno merged, fig.height=4, fig.width=10, message=FALSE, warning=FALSE, paged.print=FALSE}
+results <-hapVsPheno(hapResult,
+                     hapPrefix = "H",
+                     title = "This is title",
+                     mergeFigs = TRUE,
+                     pheno = pheno,
+                     phenoName = "GrainWeight.2021",
+                     minAcc = 3)
+plot(results$figs)
+```
+
+
+
+**An example for separated plot:**
+
+```{r hapVsPheno separated, fig.height=4, fig.width=6, message=FALSE, warning=FALSE, paged.print=FALSE}
+results <- hapVsPheno(hap = hapResult,
+                      hapPrefix = "H",
+                      title = "This is title",
+                      pheno = pheno,
+                      phenoName = "GrainWeight.2021",
+                      minAcc = 3,
+                      mergeFigs = FALSE)
+plot(results$fig_pvalue)
+plot(results$fig_Violin)
+```
+
+### Association analysis of multi-phenotypes once a time
+
+I believe the function of `hapVsPhenos()` will be useful when you have a lot of phenotype need to be associated with haplotype results.
+
+Note that: the pheno name will be added between the file name and surfix.  
+
+```{r eval=FALSE}
+hapVsPhenos(hapResult,
+            pheno,
+            outPutSingleFile = TRUE,
+            hapPrefix = "H",
+            title = "Seita.0G000000",
+            file = "mypheno.tiff",
+            width = 12,
+            height = 8,
+            res = 300)
+```

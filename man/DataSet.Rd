@@ -4,6 +4,7 @@
 \name{DataSet}
 \alias{DataSet}
 \alias{gff}
+\alias{seqs}
 \alias{pheno}
 \alias{vcf}
 \alias{accGroup}

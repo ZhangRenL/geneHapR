@@ -15,9 +15,18 @@ hapVsPhenos(hap,
             res = res, ...)
 }
 \arguments{
+\item{hap}{object of "hapResult" class, generate with\code{vcf2hap()} or
+\code{seqs2hap()}}
+
+\item{pheno}{object of "data.frame" class, imported by \code{import_pheno()}}
+
 \item{outPutSingleFile}{\code{TRUE} or \code{FALSE} indicate whether put all figs
 into to each pages of single file or generate multi-files.
 Only worked while file type is pdf}
+
+\item{hapPrefix}{prefix of hapotypes, default as "H"}
+
+\item{title}{a charater which will used for figure title}
 
 \item{file}{the output file name/path. File type could be pdf, png, tiff,
 jpg or bmp. \code{file} will only used for out file name/path directly if file
@@ -33,6 +42,8 @@ will added for each file name/path.}
 \item{res}{The nominal resolution in ppi which will be recorded in the
 bitmap file, if a positive integer. Also used for units other than the
 default, and to convert points to pixels.}
+
+\item{...}{options will pass to ggpubr}
 }
 \description{
 hapVsPhenos

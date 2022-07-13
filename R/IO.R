@@ -194,7 +194,8 @@ import_hap <- function(file, ...) {
         } else if (is.numeric(hap[, ncol(hap) - 1])) {
             colnms <- c(colnms, "freq", "Accession")
         } else {
-            stop("Can't find Please check your input file.")
+            stop("Your file seems like 'hapSummary',
+the 'freq' column (ususlly the last column) contains nonnumeric data.")
         }
         class(hap) <- c("hapSummary", "data.frame")
     } else {
