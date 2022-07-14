@@ -12,7 +12,16 @@
 #'          maxGapsPerSeq = 0.25,
 #'          hapPrefix = "H", ...)
 #' @examples
-#'
+#' \dontrun{
+#' seqs <- allignSeqs(seqs)
+#' seqs <- trimSeqs(seqs,
+#'          minFlankFraction = 0.1)
+#' hapResult <- seqs2hap(seqs,
+#'                       Ref = names(seqs)[1],
+#'                       hyb_remove = TRUE, na.drop = TRUE,
+#'                       maxGapsPerSeq = 0.25,
+#'                       hapPrefix = "H", ...)
+#' }
 #' @importFrom muscle muscle
 #' @importFrom Biostrings letterFrequency width
 #' @importFrom methods as
