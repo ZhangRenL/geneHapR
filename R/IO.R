@@ -250,5 +250,7 @@ write.hap <- function(x, file = file, sep = "\t") {
 
 
 # import pips
+#' @importFrom magrittr `%>%`
+#'
 `%>%` <- magrittr::`%>%`
 `%over%` <- IRanges::`%over%`

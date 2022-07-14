@@ -72,7 +72,7 @@ filterLargeVCF <- function(VCFin = "",
                 stop("'POS' should be a numeric vector")
         }
     if (length(Chr) > 1)
-        if (length(POS) != length(Chr) | class(POS) != "list")
+        if (length(POS) != length(Chr) | ! inherits(POS,"list"))
             stop("'POS' should be a list have length equal with 'Chr'")
 
     # number of conditions and file paths
