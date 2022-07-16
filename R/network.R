@@ -65,12 +65,11 @@ get_hapNet <-
 #' @importFrom graphics legend
 #' @usage
 #' plotHapNet(hapNet,
-#'            size = "freq", scale = TRUE, scale.ratio = 1, cex = 0.8,
+#'            size = "freq", scale = 1, scale.ratio = 1, cex = 0.8,
 #'            col.link = 1, link.width = 1,
 #'            show.mutation = 1,
 #'            backGround = backGround, hapGroup = hapGroup,
-#'            addLegend = TRUE,
-#'            colorLegend = "left", ...)
+#'            legend = FALSE, ...)
 #' @param hapNet an object of class "haploNet"
 #' @param size a numeric vector giving the diameter of the circles
 #'  representing the haplotypes: this is in the same unit than the
@@ -96,16 +95,19 @@ get_hapNet <-
 #' Accession types
 #' @param hapGroup a matrix used to draw pie charts for each haplotype;
 #' its number of rows must be equal to the number of haplotypes
-#' @param addLegend a logical specifying whether to draw the legend,
-#' default as `TRUE`
+#' @param
 #' @param cex character expansion factor relative to current par("cex")
-#' Used for text, and provides the default for pt.cex.
-#' @param scale bool type indicate whether scale the circle size
-#' with 'log10(size + 1)', default as `TRUE`
-#' @param colorLegend indicate where to plot the legend.
-#' Should be one of "bottomright", "bottom", "bottomleft", "left", "topleft",
-#' "top", "topright", "right", "center"
+#' @param scale a numeric indicate the ratio of the scale of the links
+#' representing the number of steps on the scale of the circles
+#' representing the haplotypes or a character one of `c('log10', 'log2')`
+#' indicate the scale method by `log10(size)` or `log2(size)`, respectively.
+#' Default as 1
+#' @param legend a logical specifying whether to draw the legend,
+#' or a vector of length two giving the coordinates where to draw the legend;
+#' `FALSE` by default.
+#' If `TRUE`, the user is asked to click where to draw the legend.
 #' @param ... other parameters will pass to `plot` function
+#' @inheritParams pegas:plot.haploNet
 #' @seealso
 #' \code{\link[geneHapR:hap_summary]{hap_summary()}} and
 #' \code{\link[geneHapR:get_hapNet]{get_hapNet()}}.
@@ -129,25 +131,25 @@ get_hapNet <-
 #' # plot haploNet
 #' plotHapNet(hapNet,
 #'            size = "freq", scale.ratio = 1,  # circle size
-#'            scale = TRUE, # scale circle with 'log10(size + 1)'
+#'            scale = 1, # scale circle with 'log10(size + 1)'
 #'            cex = 1, # size of hap symbol
 #'            col.link = 2, # link colors
 #'            link.width = 2, # link widths
 #'            show.mutation = 2, # mutation types one of c(0,1,2,3)
-#'            colorLegend = "right") # legend position
+#'            legend = "right") # legend position
 #' @export
 plotHapNet <- function(hapNet,
                        size = "freq",
-                       scale = TRUE,
+                       scale = 1,
                        scale.ratio = 1,
                        cex = 0.8,
+                       cex.legend = 0.6,
                        col.link = 1,
                        link.width = 1,
                        show.mutation = 1,
                        backGround = backGround,
                        hapGroup = hapGroup,
-                       sizeLegend = FALSE,
-                       colorLegend = FALSE,
+                       legend = FALSE,
                        ...) {
     if (!inherits(hapNet, "haploNet"))
         stop("'hapNet' must be of 'haploNet' class")
@@ -160,16 +162,20 @@ plotHapNet <- function(hapNet,
         size <- attr(hapNet, "freq")
     else
         if (!is.numeric(size))
-            stop("'size' should be 'freq' or a given vector")
+            stop("'size' should be 'freq' or a numeric vector")
 
-    if (scale)
-        size <- (log10(size + 1) * 10) %/% 1
-
-    if (colorLegend[1]) {
-        if (is.logical(colorLegend)) {
-            cat("You need to click where you want to draw the sizeLegend")
-        }
+    if (is.numeric(scale)){
+        size.sc <- size/scale
+    } else if(scale == "log10"){
+        size.sc <- log10(size + 1)
+    } else if(scale == "log2"){
+        size.sc <- log2(size + 1)
+    } else {
+        warning("size should be one of 'log10' or 'log2' or a numeric, ",
+                "size will reset as 1")
     }
+
+
     if (!is.null(hapGroup)) {
         if (missing(backGround))
             backGround <- rainbow(ncol(hapGroup))
@@ -178,38 +184,15 @@ plotHapNet <- function(hapNet,
             hapNet,
             col.link = col.link,
             threshold = 10,
-            size = size,
-            scale.ratio = scale.ratio,
+            size = size.sc,
             cex = cex,
             show.mutation = show.mutation,
             lwd = link.width,
             bg = backGround,
             pie = hapGroup,
-            legend = sizeLegend,
             ...
         )
 
-
-        if (colorLegend[1]) {
-            if (is.logical(colorLegend)) {
-                cat("Click where you want to draw the colorLegend")
-                xy <- unlist(locator(1))
-                cat("\nThe coordinates x = ", xy[1],
-                    ", y = ", xy[2], " are used\n", sep = "")
-            } else {
-                if (!is.numeric(colorLegend) || length(colorLegend) < 2)
-                    stop("wrong coordinates of colorLegend")
-                xy <- colorLegend
-                }
-
-            legend(
-                x = colorLegend,
-                legend = colnames(hapGroup),
-                fill = backGround,
-                cex = 0.6,
-                ...
-            )
-        }
     } else {
         if (missing(backGround))
             backGround <- "grey90"
@@ -218,17 +201,61 @@ plotHapNet <- function(hapNet,
             hapNet,
             col.link = col.link,
             bg = backGround,
-            size = size,
-            scale.ratio = scale.ratio,
+            size = size.sc,
             cex = cex,
             show.mutation = show.mutation,
             lwd = link.width,
-            legend = sizeLegend,
             ...
         )
     }
-}
 
+    # add legend
+    if(legend[1]){
+        # get position
+        if (is.logical(legend)) {
+            cat("Click where you want to draw the legend (lefttop)")
+            xy <- unlist(locator(1))
+            cat("\nThe coordinates x = ", xy[1],
+                ", y = ", xy[2], " are used\n", sep = "")
+        } else {
+            if (!is.numeric(legend) || length(legend) < 2)
+                stop("wrong coordinates of legend")
+            xy <- legend
+        }
+
+        # draw size legend
+        SZ <- unique(size)
+        SZ.sc <- unique(size.sc)
+
+        if (length(SZ) > 1) {
+            SZ <- unique(c(ceiling(min(SZ)), floor(median(SZ)), ceiling(max(SZ))))
+            SZ.sc <- unique(c(ceiling(min(SZ.sc)), floor(median(SZ.sc)), ceiling(max(SZ.sc))))
+            SHIFT <- max(SZ.sc) * 0.5
+            vspace <- strheight(" ")
+            for (sz.sc in SZ.sc) {
+                seqx <- seq(-sz.sc/2, 0, length.out = 100)
+                seqy <- sqrt((sz.sc/2)^2 - seqx^2)
+                seqx <- seqx + xy[1] + SHIFT
+                seqy <- xy[2] + seqy - SHIFT
+                lines(seqx, seqy)
+                text(seqx[100], seqy[100], SZ[match(sz.sc, SZ.sc)], adj = c(-0.1, 0.5), cex = cex.legend)
+            }
+            xy[2] <- xy[2] - SHIFT - vspace
+        }
+
+        # draw color legend
+        if (!is.null(hapGroup)) {
+            legend(
+                x = xy[1],
+                y = xy[2],
+                legend = colnames(hapGroup),
+                fill = backGround,
+                cex = cex.legend,
+                ...
+            )
+        }
+    }
+}
 
 
 #' @name ashaplotype

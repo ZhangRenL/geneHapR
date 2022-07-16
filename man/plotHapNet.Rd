@@ -5,12 +5,11 @@
 \title{plotHapNet}
 \usage{
 plotHapNet(hapNet,
-           size = "freq", scale = TRUE, scale.ratio = 1, cex = 0.8,
+           size = "freq", scale = 1, scale.ratio = 1, cex = 0.8,
            col.link = 1, link.width = 1,
            show.mutation = 1,
            backGround = backGround, hapGroup = hapGroup,
-           addLegend = TRUE,
-           legendPosition = "left", ...)
+           legend = FALSE, ...)
 }
 \arguments{
 \item{hapNet}{an object of class "haploNet"}
@@ -19,16 +18,18 @@ plotHapNet(hapNet,
 representing the haplotypes: this is in the same unit than the
 links and eventually recycled.}
 
-\item{scale}{bool type indicate whether scale the circle size
-with 'log10(size + 1)', default as \code{TRUE}}
+\item{scale}{a numeric indicate the ratio of the scale of the links
+representing the number of steps on the scale of the circles
+representing the haplotypes or a character one of \code{c('log10', 'log2')}
+indicate the scale method by \code{log10(size)} or \code{log2(size)}, respectively.
+Default as 1}
 
 \item{scale.ratio}{the ratio of the scale of the links representing
 number of steps on the scale of the circles representing the haplotypes.
 It may be needed to give a value greater than one to avoid overlapping
 circles.}
 
-\item{cex}{character expansion factor relative to current par("cex")
-Used for text, and provides the default for pt.cex.}
+\item{cex}{character expansion factor relative to current par("cex")}
 
 \item{col.link}{a character vector specifying the colours of the links;
 eventually recycled.}
@@ -52,12 +53,10 @@ Accession types}
 \item{hapGroup}{a matrix used to draw pie charts for each haplotype;
 its number of rows must be equal to the number of haplotypes}
 
-\item{addLegend}{a logical specifying whether to draw the legend,
-default as \code{TRUE}}
-
-\item{legendPosition}{indicate where to plot the legend.
-Should be one of "bottomright", "bottom", "bottomleft", "left", "topleft",
-"top", "topright", "right", "center"}
+\item{legend}{a logical specifying whether to draw the legend,
+or a vector of length two giving the coordinates where to draw the legend;
+\code{FALSE} by default.
+If \code{TRUE}, the user is asked to click where to draw the legend.}
 
 \item{...}{other parameters will pass to \code{plot} function}
 }
@@ -84,12 +83,12 @@ plot(hapNet)
 # plot haploNet
 plotHapNet(hapNet,
            size = "freq", scale.ratio = 1,  # circle size
-           scale = TRUE, # scale circle with 'log10(size + 1)'
+           scale = 1, # scale circle with 'log10(size + 1)'
            cex = 1, # size of hap symbol
            col.link = 2, # link colors
            link.width = 2, # link widths
            show.mutation = 2, # mutation types one of c(0,1,2,3)
-           legendPosition = "right") # legend position
+           legend = "right") # legend position
 }
 \seealso{
 \code{\link[geneHapR:hap_summary]{hap_summary()}} and
