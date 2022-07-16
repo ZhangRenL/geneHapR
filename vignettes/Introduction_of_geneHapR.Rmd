@@ -367,8 +367,8 @@ Once we have the `hapNet` object, we can plot it with R.
 ```{r, fig.height=4, fig.width=6, message=FALSE, warning=FALSE, paged.print=FALSE}
 # plot haploNet
 plotHapNet(hapNet,
-           size = "freq", scale.ratio = 1,  # circle size
-           scale = TRUE,                    # scale circle with 'log10(size + 1)'
+           size = "freq",                   # circle size
+           scale = "log10",                 # scale circle with 'log10(size + 1)'
            cex = 0.8,                       # size of hap symbol
            col.link = 2,                    # link colors
            link.width = 2,                  # link widths

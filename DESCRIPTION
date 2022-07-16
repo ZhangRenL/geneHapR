@@ -7,8 +7,8 @@ Encoding: UTF-8
 Authors@R: 
   c(person(given = "Zhang", family = "Renliang", email = "zhang_renliang@163.com", role = c("aut", "cre")),
     person(given = "Jia", family = "Guanqing", email = "jiaguanqing@caas.cn", role = c("aut")))
-Version: 0.11.2
-RoxygenNote: 7.2.0
+Version: 0.11.3
+RoxygenNote: 7.1.2
 LazyData: True
 Imports: 
   ape,
