@@ -9,17 +9,20 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-`geneHapR` is a package that designed for one or multi-genes haplotype analysis, visualization and phenotype association.
+`geneHapR` is an R package that designed for gene haplotype statistics, phenotype association and visualization.
 
 ## Preliminaries
 
 Input files frequently present challenges to analysis.
-
 A common problem I encounter is that chromosome names and gene IDs are not standardized among **VCF**, **FASTA** and **GFF** files.
 That means additional work for users with or without R.
 I suggest that reading these files into R, synchronizing the names in R and then proceeding with downstream analyses.
 
-Large **VCF** or **GFF** file is another important consideration when using geneHapR. Usually, the annotation file (GFF) and variants call format (VCF) files are commonly at chromosome or genome level. Thus they may be huge. However, a gene size is range from hundreds to thousands bp. It means the dataset for a gene haplotype analysis is very small portion inside the huge file. Thus I have developed `filterLargeVCF()` (see **VCF filtration**) in case the user known a little or nothing about linux. However, I suggest to extract the target ranges from the whole VCF or GFF file with in linux software before import them into R if the user is familiar with linux. It will save much time and brainwork if the user have hundred genes or ranges need to be extract from the original file.
+Large **VCF** or **GFF** file is another important consideration when using `geneHapR.` 
+Usually, the annotation file (GFF) and variants call format (VCF) files are commonly at chromosome or genome level. 
+Thus those files may be huge. 
+However, a gene size usually range from hundreds to thousands bp.
+It means the dataset for a gene haplotype analysis is very small portion inside the huge file. Thus I have developed `filterLargeVCF()` (see **VCF filtration**) in case the user known a little or nothing about linux. However, I suggest to extract the target ranges from the whole VCF or GFF file with in linux software before import them into R if the user is familiar with linux. It will save much time and brainwork if the user have hundred genes or ranges need to be extract from the original file.
 
 ## Installation
 
