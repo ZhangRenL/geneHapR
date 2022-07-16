@@ -5,11 +5,17 @@
 \title{plotHapNet}
 \usage{
 plotHapNet(hapNet,
-           size = "freq", scale = 1, scale.ratio = 1, cex = 0.8,
-           col.link = 1, link.width = 1,
-           show.mutation = 1,
-           backGround = backGround, hapGroup = hapGroup,
-           legend = FALSE, ...)
+           size = "freq",
+            scale = 1,
+            cex = 0.8,
+            cex.legend = 0.6,
+            col.link = 1,
+            link.width = 1,
+            show.mutation = 1,
+            backGround = backGround,
+            hapGroup = hapGroup,
+            legend = FALSE,
+            ...)
 }
 \arguments{
 \item{hapNet}{an object of class "haploNet"}
@@ -24,12 +30,9 @@ representing the haplotypes or a character one of \code{c('log10', 'log2')}
 indicate the scale method by \code{log10(size)} or \code{log2(size)}, respectively.
 Default as 1}
 
-\item{scale.ratio}{the ratio of the scale of the links representing
-number of steps on the scale of the circles representing the haplotypes.
-It may be needed to give a value greater than one to avoid overlapping
-circles.}
-
 \item{cex}{character expansion factor relative to current par("cex")}
+
+\item{cex.legend}{same as \code{cex}, but for text in legend}
 
 \item{col.link}{a character vector specifying the colours of the links;
 eventually recycled.}
@@ -82,13 +85,13 @@ plot(hapNet)
 
 # plot haploNet
 plotHapNet(hapNet,
-           size = "freq", scale.ratio = 1,  # circle size
-           scale = 1, # scale circle with 'log10(size + 1)'
+           size = "freq",   # circle size
+           scale = "log10", # scale circle with 'log10(size + 1)'
            cex = 1, # size of hap symbol
            col.link = 2, # link colors
            link.width = 2, # link widths
            show.mutation = 2, # mutation types one of c(0,1,2,3)
-           legend = "right") # legend position
+           legend = FALSE) # legend position
 }
 \seealso{
 \code{\link[geneHapR:hap_summary]{hap_summary()}} and

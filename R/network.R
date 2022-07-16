@@ -106,6 +106,11 @@ get_hapNet <-
 #' its number of rows must be equal to the number of haplotypes
 #' @param cex character expansion factor relative to current par("cex")
 #' @param cex.legend same as `cex`, but for text in legend
+#' @param scale a numeric indicate the ratio of the scale of the links
+#' representing the number of steps on the scale of the circles
+#' representing the haplotypes or a character one of `c('log10', 'log2')`
+#' indicate the scale method by `log10(size)` or `log2(size)`, respectively.
+#' Default as 1
 #' @param legend a logical specifying whether to draw the legend,
 #' or a vector of length two giving the coordinates where to draw the legend;
 #' `FALSE` by default.

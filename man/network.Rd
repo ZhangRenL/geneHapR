@@ -44,13 +44,13 @@ plot(hapNet)
 
 # plot haploNet
 plotHapNet(hapNet,
-           size = "freq", scale.ratio = 1,  # circle size
-           scale = 1, # scale circle with 'log10(size + 1)'
+           size = "freq",   # circle size
+           scale = "log10", # scale circle with 'log10(size + 1)'
            cex = 1, # size of hap symbol
            col.link = 2, # link colors
            link.width = 2, # link widths
            show.mutation = 2, # mutation types one of c(0,1,2,3)
-           legend = "right") # legend position
+           legend = FALSE) # legend position
 }
 \references{
 Article{,
