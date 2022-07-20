@@ -26,6 +26,7 @@ Imports:
   IRanges,
   pegas,
   randomcoloR,
+  RCurl,
   reshape2, 
   rlang,
   rtracklayer, 
