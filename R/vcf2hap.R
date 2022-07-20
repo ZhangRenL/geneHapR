@@ -59,7 +59,6 @@
 #' the last column.
 #' @import tidyr
 #' @import vcfR
-#' @import dplyr
 #' @importFrom rlang .data
 #' @importFrom stats na.omit
 #' @export
@@ -73,7 +72,6 @@ vcf2hap <- function(vcf,
                     hyb_remove = TRUE,
                     na.drop = TRUE) {
     requireNamespace('tidyr')
-    requireNamespace('dplyr')
     allS_new <- allS
     options <- c(hapPrefix = hapPrefix)
     if (filter_Chr) {
@@ -211,7 +209,7 @@ vcf2hap_data <- function(vcf,
         names_from = .data$Indiv,
         values_from = .data$gt_GT_alleles
     )
-    hap <- dplyr::select(hap,-c(.data$Key))
+    hap <- hap[, colnames(hap) != "Key"]
     hap <- as.matrix(hap)
     rownames(hap) <- POS
 
@@ -255,7 +253,7 @@ assign_hapID <- function(hap, hapPrefix) {
     hap <- data.frame(hap, check.rows = FALSE, check.names = FALSE)
 
     HapID <- tidyr::unite(hap,
-                          dplyr::matches("[0-9]{1, }"),
+                          tidyr::matches("[0-9]{1, }"),
                           col = "IDs",
                           sep = "")
     HapID <- HapID$IDs

@@ -8,13 +8,12 @@ Maintabner: Zhang Renliang <zhang_renliang@163.com>
 Authors@R: 
   c(person(given = "Zhang", family = "Renliang", email = "zhang_renliang@163.com", role = c("aut", "cre")),
     person(given = "Jia", family = "Guanqing", email = "jiaguanqing@caas.cn", role = c("aut")))
-Version: 0.12.1
+Version: 0.12.2
 RoxygenNote: 7.2.0
 LazyData: True
 Imports: 
   ape,
   Biostrings,
-  dplyr,
   ggpubr, 
   GenomicRanges,
   magrittr,
@@ -25,13 +24,10 @@ Imports:
   IRanges,
   pegas,
   randomcoloR,
-  RCurl,
   reshape2, 
   rlang,
   rtracklayer, 
   trackViewer,
-  rworldmap,
-  rworldxtra,
   stats,
   stringdist,
   stringr, 
