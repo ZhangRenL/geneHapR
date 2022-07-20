@@ -80,7 +80,6 @@ siteFunEff <- function(hap, pheno, phenoNames){
     # results <- cbind(pheno = phenoNames, results)
     return(t(results))
 }
-data <- siteFunEff(hap, pheno)
 
 
 

@@ -36,7 +36,6 @@ getCoordinate.core = function(address, city=NULL,
 }
 
 
-# TODO add examples
 #' @name hapDistribution
 #' @title display geography distribution
 #' @importFrom maps map
@@ -123,7 +122,7 @@ hapDistribution <- function(hap, AccINFO, Acc.col, LON.col, LAT.col, hapNames,
                                                                                                               nameX], y = radius * sin(2 * pi * seq(cumulatProps[sliceNum],
                                                                                                                                                     cumulatProps[sliceNum + 1], length = n)) + dF[locationNum,
                                                                                                                                                                                                   nameY])
-                polygon(c(P$x, dF[locationNum, nameX]), c(P$y, dF[locationNum,
+                graphics::polygon(c(P$x, dF[locationNum, nameX]), c(P$y, dF[locationNum,
                                                                   nameY]), col = zColours[sliceNum])
             }
         }
