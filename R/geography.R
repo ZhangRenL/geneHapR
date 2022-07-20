@@ -4,16 +4,23 @@
 #' @importFrom graphics polygon
 #' @import mapdata
 #' @usage
-#' hapDistribution(hap, AccINFO, Acc.col, LON.col, LAT.col, hapNames,
+#' hapDistribution(hap, AccINFO, LON.col, LAT.col, hapNames,
 #'                 mapRegion = "world", map.package = "maps",
 #'                 zColours = zColours,
 #'                 legend = "leftbottom", symbolSize = 1,
 #'                 maxZVal = 1, oceanCol="white",
 #'                 landCol="grey90", borderCol = "black", cex.legend = 0.8,
 #'                 ...)
+#' @examples
+#' data("geneHapR")
+#' hapResult <- vcf2hap(vcf)
+#' hapDistribution(hapResult,
+#'                 AccINFO = AccINFO,
+#'                 LON.col = "longitude",
+#'                 LAT.col = "latitude")
 #' @param hap an object of `hapResult` class
 #' @param AccINFO a data.frame contains accession information
-#' @param Acc.col,LON.col,LAT.col column names of accession(`Acc.col`),
+#' @param LON.col,LAT.col column names of
 #' longitude(`LON.col`) and latitude(`LAT.col`)
 #' @param hapNames haplotype names used for display
 #' @param legend a keyword specified the position of legend, one of
@@ -29,7 +36,6 @@
 hapDistribution <-
     function(hap,
              AccINFO,
-             Acc.col,
              LON.col,
              LAT.col,
              hapNames,
@@ -60,7 +66,7 @@ hapDistribution <-
         }
 
         # extract geo data
-        AccINFO$Hap <- acc2hap[AccINFO[, Acc.col]]
+        AccINFO$Hap <- acc2hap[row.names(AccINFO)]
         geoData <- AccINFO[, c("Hap", LON.col, LAT.col)]
         geoData$value <- 1
 
