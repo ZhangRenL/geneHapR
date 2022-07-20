@@ -4,10 +4,11 @@ Title: R Packages for Gene Haplotype Analysis
 Description: This packages provides a suite for one or multi-genes haplotype analysis, visualization and phenotype association.
 biocViews: NucleosomePositioning, DataImport
 Encoding: UTF-8
+Maintabner: Zhang Renliang <zhang_renliang@163.com>
 Authors@R: 
   c(person(given = "Zhang", family = "Renliang", email = "zhang_renliang@163.com", role = c("aut", "cre")),
     person(given = "Jia", family = "Guanqing", email = "jiaguanqing@caas.cn", role = c("aut")))
-Version: 0.11.3
+Version: 0.12.1
 RoxygenNote: 7.2.0
 LazyData: True
 Imports: 
@@ -17,6 +18,9 @@ Imports:
   ggpubr, 
   GenomicRanges,
   magrittr,
+  mapchina,
+  mapdata,
+  maps,
   methods,
   muscle,
   IRanges,
@@ -26,6 +30,8 @@ Imports:
   rlang,
   rtracklayer, 
   trackViewer,
+  rworldmap,
+  rworldxtra,
   stats,
   stringdist,
   stringi, 

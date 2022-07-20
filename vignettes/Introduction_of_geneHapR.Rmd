@@ -15,18 +15,19 @@ vignette: >
 
 Input files frequently present challenges to analysis.
 A common problem I encounter is that chromosome names and gene IDs are not standardized among **VCF**, **FASTA** and **GFF** files.
-That means additional work for users with or without R.
-I suggest that reading these files into R, synchronizing the names in R and then proceeding with downstream analyses.
+That means additional work for users.
+I suggest reading these files into R, synchronizing the names and then proceeding with downstream analyses.
 
 Large **VCF** or **GFF** file is another important consideration when using `geneHapR.` 
-Usually, the annotation file (GFF) and variants call format (VCF) files are commonly at chromosome or genome level. 
+Usually, the annotation file (GFF) and variants call format (VCF) files are usually at chromosome or genome level. 
 Thus those files may be huge. 
 However, a gene size usually range from hundreds to thousands bp.
-It means the dataset for a gene haplotype analysis is very small portion inside the huge file. Thus I have developed `filterLargeVCF()` (see **VCF filtration**) in case the user known a little or nothing about linux. However, I suggest to extract the target ranges from the whole VCF or GFF file with in linux software before import them into R if the user is familiar with linux. It will save much time and brainwork if the user have hundred genes or ranges need to be extract from the original file.
+It means the subset for a gene haplotype analysis only occupied a very small portion in the huge file. Import this tiny files rather than huge one will save much of time on personal computer. It's convienient to extract a gene/range from origin files with software in linux. In case the user known a little or nothing about linux, I have developed a function names as `filterLargeVCF()` (see **VCF filtration**) for this purpose.
+
 
 ## Installation
 
-`geneHapR` could be installed from **gitee** (preferred) or **github**.
+`geneHapR` could be installed from **gitee**.
 More information about `geneHapR` could be found at [https://gitee.com/zhangrenl/genehapr](https://gitee.com/zhangrenl/genehapr)
  
 ```{r eval=FALSE}
@@ -34,12 +35,13 @@ devtools::install_git("https://gitee.com/zhangrenl/geneHapR")
 devtools::install_github("zhangrenl/geneHapR")
 ```
 
-`geneHapR` is schemed to submit to CRAN. 
-`geneHapR` has not published yet, if you use `geneHapR` in your study, please contact [Zhang RenLiang (email: zhang_renliang@163.com)](mailto: zhang_renliang@163.com) or [Jia GuanQing (jiaguanqing@caas.cn)](mailto: jiaguanqing@caas.cn)
+`geneHapR` is schemed to submit to CRAN. If accepted, this package could be installed with `install.packages("geneHapR")`.
+`geneHapR` has not published yet, if you use `geneHapR` in your study, please contact [Zhang RenLiang (Maintainer) (email: zhang_renliang@163.com)](mailto: zhang_renliang@163.com) or [Jia GuanQing (jiaguanqing@caas.cn)](mailto: jiaguanqing@caas.cn)
 
 ## Data input
 
 The first step is library the `geneHapR` packages.
+I will use the test data inside this package as an example for how to perform statistics of a gene/range, visualization and phenotype association analysis.
 
 ```{r startup, echo=TRUE, message=FALSE, warning=FALSE}
 library(geneHapR)
@@ -49,7 +51,7 @@ library(geneHapR)
 data("geneHapR_test")
 ```
 
-There are two options to conduct a gene haplotype analysis starts from a VCF file or DNA sequcences file. Thus a **VCF** file or **DNA sequences** file is necessary. However, the *GFF*, *phenos* and *accession groups* are strongly recommend for visualization and phenotype associations.
+There are two options to conduct a gene haplotype analysis starts from a VCF file or DNA sequences file. Thus a **VCF** file or **DNA sequences** file is necessary. However, the *GFF*, *phenos* and *accession groups* are strongly recommend for visualization and phenotype associations.
 
 The import functions takes file name/path as input. `import_vcf()` could import VCF file with surfix of ".vcf" and ".vcf.gz". `import_gff()` import file format default as "GFF" and `import_seqs()` file format default as "fasta".
 

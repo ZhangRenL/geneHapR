@@ -1,3 +1,21 @@
+V 0.12.1
+Fix bugs.
+TODO:
+1. debug seqs2hap
+2. modified ReadMe
+All Functions:
+1.  import/export: vcf, gff, seqs, hapresult
+2.  VCF and sequences manipulation: preprocess big vcf, filter vcf, align and trim sequences
+3.  calculate hap: from sequences or vcfs
+4.  setATGAs0
+5.  add Annotations to INFO field
+6.  Haplotype summary and visualization (hap table and gene modle)
+7.  haploNet calculation and visualization
+8.  Phynotype analysis
+9.  haplotype geography distributions
+10. sites functional effect
+
+
 V 0.11.1
 Fix bugs.
 TODO:
