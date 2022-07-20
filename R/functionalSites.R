@@ -11,12 +11,13 @@
 #' @usage
 #' siteFunEff(hap, pheno, phenoNames)
 #' @examples
-#' data("geneHapR_test)
+#' data("geneHapR_test")
 #' hapResult <- vcf2hap(vcf)
 #'
 #' # calculate site functional effect
 #' funResults <- siteFunEff(hapResult, pheno, names(pheno))
 #' plotSiteFunEff(funResults, facet = FALSE)
+#' @export
 siteFunEff <- function(hap, pheno, phenoNames){
     if(missing(phenoNames)) phenoNames <- names(pheno)
     if(!inherits(hap, "hapResult"))
@@ -84,19 +85,21 @@ siteFunEff <- function(hap, pheno, phenoNames){
 
 
 #' @name siteFunEff
-#' @param data
+#' @param results results of site functional effect analysis
+#' @param facet use facet or not, default as `FALSE`
 #' @inheritParams ggplot2::labs
 #' @inheritParams ggplot2::facet_wrap
 #' @import ggplot2
 #' @importFrom rlang .data
 #' @usage
-#' plotSiteFunEff(data,
+#' plotSiteFunEff(results,
 #'                title = title,
 #'                caption = caption,
 #'                facet = FALSE,
 #'                ...)
-plotSiteFunEff <- function(data, title = title, caption = caption, facet = FALSE, ...){
-    data <- suppressMessages(reshape2::melt(data))
+#' @export
+plotSiteFunEff <- function(results, title = title, caption = caption, facet = FALSE, ...){
+    data <- suppressMessages(reshape2::melt(results))
     colnames(data) <- c("Position", "pheno", "value")
     data$value <- round(data$value, digits = 2)
     p <- ggplot2::ggplot(data = data,

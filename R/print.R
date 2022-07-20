@@ -1,5 +1,4 @@
 # File Checked
-#' @importFrom stringi stri_pad_right
 #' @importFrom tibble tibble
 #' @exportS3Method print hapResult
 print.hapResult <- function(x, ...) {
@@ -24,7 +23,8 @@ print.hapResult <- function(x, ...) {
     cat("\nOptions:")
     for (i in seq_len(length(options))) {
         nn <- paste0(names(options)[i], ":")
-        cat("\n ", stringi::stri_pad_right(nn, 11), " ", sep = "")
+        cat("\n ", stringr::str_pad(nn,width = 11,side = "left"),
+            " ", sep = "")
         cat(options[i])
     }
     cat("\n\n")

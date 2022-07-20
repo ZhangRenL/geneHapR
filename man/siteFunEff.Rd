@@ -7,7 +7,7 @@
 \usage{
 siteFunEff(hap, pheno, phenoNames)
 
-plotSiteFunEff(data,
+plotSiteFunEff(results,
                title = title,
                caption = caption,
                facet = FALSE,
@@ -22,10 +22,14 @@ and row name as accessions.}
 \item{phenoNames}{pheno names used for analysis, if missing,
 will use all pheno names in \code{pheno}}
 
+\item{results}{results of site functional effect analysis}
+
 \item{title}{The text for the title.}
 
 \item{caption}{The text for the caption which will be displayed in the
 bottom-right of the plot by default.}
+
+\item{facet}{use facet or not, default as \code{FALSE}}
 
 \item{...}{A list of new name-value pairs. The name should be an aesthetic.}
 }
@@ -35,4 +39,12 @@ row name as site position
 }
 \description{
 Find site functional effective
+}
+\examples{
+data("geneHapR_test")
+hapResult <- vcf2hap(vcf)
+
+# calculate site functional effect
+funResults <- siteFunEff(hapResult, pheno, names(pheno))
+plotSiteFunEff(funResults, facet = FALSE)
 }

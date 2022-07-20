@@ -4,21 +4,35 @@
 \alias{hapDistribution}
 \title{display geography distribution}
 \usage{
-plothapGeo(hap, AccINFO, Acc.col, LON.col, LAT.col, hapNames,
-           mapRegion = "world", maplevel = "world",
-           zColours = zColours,
-           legend = "leftbottom", symbolSize = 1,
-           barOrient='vert', maxZVal = 1, oceanCol="white",
-           landCol="grey90", borderCol = "black", cex.legend = 0.8,
-           ...)
+hapDistribution(hap, AccINFO, Acc.col, LON.col, LAT.col, hapNames,
+                mapRegion = "world", map.package = "maps",
+                zColours = zColours,
+                legend = "leftbottom", symbolSize = 1,
+                maxZVal = 1, oceanCol="white",
+                landCol="grey90", borderCol = "black", cex.legend = 0.8,
+                ...)
 }
 \arguments{
-\item{mapRegion}{if \code{maplevel} set as "world", a country name from
+\item{hap}{an object of \code{hapResult} class}
+
+\item{AccINFO}{a data.frame contains accession information}
+
+\item{Acc.col, LON.col, LAT.col}{column names of accession(\code{Acc.col}),
+longitude(\code{LON.col}) and latitude(\code{LAT.col})}
+
+\item{hapNames}{haplotype names used for display}
+
+\item{mapRegion}{if \code{map.package} set as "rworldmap", a country name from
 \code{rworldmap::getMap()[['NAME']]} or 'world','africa','oceania','eurasia','uk'
-sets map extents, overrides \code{xlim},\code{ylim}; if \code{maplevel} set as 'country',}
+sets map extents, overrides \code{xlim},\code{ylim}; if \code{map.package} set as 'maps',}
+
+\item{map.package}{which map packages should be used, one of \code{maps} and \code{rworldmap}}
 
 \item{zColours}{colours to apply to the pie section for each attribute
 column}
+
+\item{legend}{a keyword specified the position of legend, one of
+"bottomright", "bottom", "bottomleft", "left", "topleft", "top", "topright", "right" and "center"}
 
 \item{symbolSize}{multiplier of default symbol size}
 
@@ -30,6 +44,8 @@ this can be used to set the scaling the same between multiple plots}
 \item{landCol}{a colour to fill countries}
 
 \item{borderCol}{the colour for country borders}
+
+\item{cex.legend}{character expansion factor for legend relative to current par("cex")}
 
 \item{...}{any extra arguments to points()}
 }
