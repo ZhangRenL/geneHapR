@@ -27,34 +27,39 @@ import_vcf <- function(vcf_file = vcf_file, ...) {
 
 
 # Checked
-#' @name import_pheno
-#' @title imports phenos from file
-#' @usage import_pheno(phenoFile, comment.char = "#", ...)
-#' @description import phenos from table format file
+#' @name import_AccINFO
+#' @title imports accession information from file
+#' @usage
+#' import_AccINFO(file, comment.char = "#",
+#'                check.names = FALSE, row.names = 1, ...)
+#' @description import accession information including phenotype data,
+#' accession group, location from a tab delimed table file
 #' @details
 #' First column should be Accessions;
 #' phenos should begin from second col，
-#' phenoName should located at the first row,
+#' phenoName/group/locations should located at the first row,
 #' If a dot '.' is located in pheno name, then
 #' the part before the dot will be set as y axis name
 #' while the followed will be set as foot of the fig.
 #' @examples
 #' \dontrun{
 #'
-#' pheno <- import_pheno("test.pheno.txt")
+#' pheno <- import_AccINFO("test.pheno.txt")
 #' }
 #' @importFrom utils read.delim
-#' @param phenoFile pheno file path, should be a table separated by tab
+#' @param file file path, this file should be a tab delimed table
 #' @param comment.char comment.char, start with comment.char will be ignored
 #' @param ... parameters will pass to read.delim
+#' @inheritParams utils::read.delim
 #' @export
 #' @return data.frame, Accession names were set as rownames and cols were
 #' named by pheno names
-import_pheno <- function(phenoFile, comment.char = "#", ...) {
+import_AccINFO <- function(file, comment.char = "#",
+                           check.names = FALSE, row.names = 1, ...) {
     phenos <- utils::read.delim(
-        phenoFile,
-        check.names = FALSE,
-        row.names = 1,
+        file,
+        check.names = check.names,
+        row.names = row.names,
         comment.char = comment.char,
         ...
     )

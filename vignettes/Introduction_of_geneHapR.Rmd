@@ -83,7 +83,7 @@ seqs <- import_seqs("your_DNA_seq_file_path.fa", format = "fasta")
 
 ```{r import phenotype and accession groups, eval=FALSE, include=TRUE}
 # import phynotype data
-pheno <- import_pheno("your_pheno_file_path.txt")
+pheno <- import_AccINFO("your_pheno_file_path.txt")
 pheno
 ```
 
@@ -93,8 +93,8 @@ head(pheno)
 
 ```{r import pheno, eval=FALSE}
 
-# import accession group information
-AccINFO <- import_pheno("accession_group_file_path.txt")
+# import accession group/location information
+AccINFO <- import_AccINFO("accession_group_file_path.txt")
 ```
 
 ```{r echo=FALSE}

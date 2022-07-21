@@ -7,7 +7,7 @@
 hapDistribution(hap, AccINFO, LON.col, LAT.col, hapNames,
                 database = "world", regions = ".",
                 zColours = zColours,
-                legend = "leftbottom", symbolSize = 1,
+                legend = TRUE, symbolSize = 1,
                 ratio = 1, cex.legend = 0.8,
                 ...)
 }
