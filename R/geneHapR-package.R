@@ -19,8 +19,9 @@
 #' **AccINFO** provide a data provide accessions information for
 #' pie plot in hapNet visualization, and information for geography distrbution.
 #' @seealso
-#' More documentation for vcfR can be found at repos stored at
-#' \href{https://gitee.com/zhangrenl/genehapr}{gitee} and
-#' \href{https://github.com/zhangrenl/genehapr}{github}
+#' More documentation for vcfR can be found at repos stored at repo of
+#' `zhangrenl/genehapr` hosted at
+#' \href{https://gitee.com/}{gitee} and
+#' \href{https://github.com/}{github}
 #' @keywords internal
 "_PACKAGE"

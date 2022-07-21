@@ -25,29 +25,33 @@ However, a gene size usually range from hundreds to thousands bp.
 It means the subset for a gene haplotype analysis only occupied a very small portion in the huge file. Import this tiny files rather than huge one will save much of time on personal computer. It's convienient to extract a gene/range from origin files with software in linux. In case the user known a little or nothing about linux, I have developed a function names as `filterLargeVCF()` (see **VCF filtration**) for this purpose.
 
 
-## Installation
-
-`geneHapR` could be installed from **gitee**.
-More information about `geneHapR` could be found at [https://gitee.com/zhangrenl/genehapr](https://gitee.com/zhangrenl/genehapr)
- 
-```{r eval=FALSE}
-devtools::install_git("https://gitee.com/zhangrenl/geneHapR")
-devtools::install_github("zhangrenl/geneHapR")
+```{r include=FALSE}
+NOT_CRAN <- identical(tolower(Sys.getenv("NOT_CRAN")), "true")
+knitr::opts_chunk$set(purl = NOT_CRAN)
 ```
+
+## Installation
 
 `geneHapR` is schemed to submit to CRAN. If accepted, this package could be installed with `install.packages("geneHapR")`.
 `geneHapR` has not published yet, if you use `geneHapR` in your study, please contact [Zhang RenLiang (Maintainer) (email: zhang_renliang@163.com)](mailto: zhang_renliang@163.com) or [Jia GuanQing (jiaguanqing@caas.cn)](mailto: jiaguanqing@caas.cn)
+
+ 
+```{r eval=FALSE}
+install.packages("geneHapR")
+```
+
+
 
 ## Data input
 
 The first step is library the `geneHapR` packages.
 I will use the test data inside this package as an example for how to perform statistics of a gene/range, visualization and phenotype association analysis.
 
-```{r startup, echo=TRUE, message=FALSE, warning=FALSE}
+```{r startup, eval=NOT_CRAN, echo=TRUE, message=FALSE, warning=FALSE}
 library(geneHapR)
 ```
 
-```{r setups, include=FALSE}
+```{r setups, eval=NOT_CRAN, include=FALSE}
 data("geneHapR_test")
 ```
 
@@ -87,7 +91,7 @@ pheno <- import_AccINFO("your_pheno_file_path.txt")
 pheno
 ```
 
-```{r echo=FALSE}
+```{r eval=NOT_CRAN, echo=FALSE}
 head(pheno)
 ```
 
@@ -97,7 +101,7 @@ head(pheno)
 AccINFO <- import_AccINFO("accession_group_file_path.txt")
 ```
 
-```{r echo=FALSE}
+```{r eval=NOT_CRAN, echo=FALSE}
 head(AccINFO)
 ```
 
@@ -194,7 +198,7 @@ As mentioned before, haplotype could be calculated from VCF or sequences with `v
 
 
 Calculate haplotype result from VCF.
-```{r haplotype calculation from vcf, eval=TRUE, include=TRUE, message=FALSE, warning=FALSE}
+```{r haplotype calculation from vcf, eval=NOT_CRAN, include=TRUE, message=FALSE, warning=FALSE}
 hapResult <- vcf2hap(vcf,
                      hapPrefix = "H",
                      hyb_remove = TRUE,
@@ -227,14 +231,14 @@ While `hapResult` was calculated from `vcfR` object, the **INFO** was taken from
 **Note** that: length of `values` must be equal with number of sites.
 
 Let's see how mant sites contains in the `hapResult`.
-```{r check site numbers}
+```{r check site numbers, eval=NOT_CRAN}
 # Chech number of sites conclude in hapResult
 sites(hapResult)
 ```
 
 Now we replace the old INFO field with new tag named as "PrChange".
 
-```{r replace INFO, eval=TRUE, include=TRUE, message=FALSE, warning=FALSE}
+```{r replace INFO, eval=NOT_CRAN, include=TRUE, message=FALSE, warning=FALSE}
 # add annotations to INFO field
 hapResult <-addINFO(hapResult,
                      tag = "PrChange",
@@ -244,7 +248,7 @@ hapResult <-addINFO(hapResult,
 
 Here, we add a tag named as "CDSChange" followed the old INFO.
 
-```{r add INFO, eval=TRUE, include=TRUE, message=FALSE, warning=FALSE}
+```{r add INFO, eval=NOT_CRAN, include=TRUE, message=FALSE, warning=FALSE}
 # To replace the origin INFO by set 'replace' as TRUE
 hapResult <-addINFO(hapResult,
                      tag = "CDSChange",
@@ -282,7 +286,7 @@ Now, we have the `hapResult` object with INFOs we want display in next step.
 The `hap_summary()` function convert the object of `hapResult` class, which is  a long table format, into a short table belong to `hapSummary` class. 
 In `hapResult` each row represent a accession, while each row represents a hap in `hapSummary`.
 
-```{r hapSummary, fig.height=4, fig.width=6, message=FALSE, warning=FALSE, paged.print=FALSE}
+```{r hapSummary, eval=NOT_CRAN, fig.height=4, fig.width=6, message=FALSE, warning=FALSE, paged.print=FALSE}
 hapSummary <- hap_summary(hapResult)
 hapSummary
 ```
@@ -294,14 +298,14 @@ Let's see how to visualization of our haplotype results.
 At first let's display the `hapSummary` as a table.
 In this table like figure we can see all the variants and their positions, haplotypes and their frequencies.
 
-```{r, fig.height=4, fig.width=6, message=FALSE, warning=FALSE, paged.print=FALSE}
+```{r, eval=NOT_CRAN, fig.height=4, fig.width=6, message=FALSE, warning=FALSE, paged.print=FALSE}
 plotHapTable(hapSummary)
 ```
 
 Also we can add an annotation, "CDSChange", to the table by assign the `INFO_tag`.
 It's your responsibility to verify whether the INFO_tag was existed in the INFO field.
 
-```{r, fig.height=4, fig.width=6, message=FALSE, warning=FALSE, paged.print=FALSE}
+```{r, eval=NOT_CRAN, fig.height=4, fig.width=6, message=FALSE, warning=FALSE, paged.print=FALSE}
 # add one annotation
 plotHapTable(hapSummary,
              hapPrefix = "H",
@@ -315,7 +319,7 @@ plotHapTable(hapSummary,
 
 Now let's add another `INFO_tag` named as "PrChange".
 
-```{r , fig.height=4, fig.width=6, message=FALSE, warning=FALSE, paged.print=FALSE}
+```{r , eval=NOT_CRAN, fig.height=4, fig.width=6, message=FALSE, warning=FALSE, paged.print=FALSE}
 # add multi annotation
 plotHapTable(hapSummary,
              hapPrefix = "H",
@@ -327,7 +331,7 @@ plotHapTable(hapSummary,
 ```
 
 Parameter `tag_name` was used to replace the character if `INFO_tag` was too long.
-```{r, fig.height=4, fig.width=6, message=FALSE, warning=FALSE, paged.print=FALSE}
+```{r, eval=NOT_CRAN, fig.height=4, fig.width=6, message=FALSE, warning=FALSE, paged.print=FALSE}
 # add multi annotation
 plotHapTable(hapSummary,
              hapPrefix = "H",
@@ -344,7 +348,7 @@ plotHapTable(hapSummary,
 
 I think it's a good idea to figure out where are the variants by marking them on gene model.
 
-```{r display variations on gene model, fig.height=4, fig.width=6, message=FALSE, warning=FALSE, paged.print=FALSE}
+```{r display variations on gene model, eval=NOT_CRAN, fig.height=4, fig.width=6, message=FALSE, warning=FALSE, paged.print=FALSE}
 displayVarOnGeneModel(gff,
                       hapSummary,
                       Chr = "scaffold_1",
@@ -358,7 +362,7 @@ displayVarOnGeneModel(gff,
 The `hapNet` could be generated from object of `hapSummary` class.
 The accession group information could be attached in this step.
 
-```{r hapNet}
+```{r hapNet, eval=NOT_CRAN}
 hapNet <- get_hapNet(hapSummary,
                      AccINFO = AccINFO,
                      groupName = "Type")
@@ -366,7 +370,7 @@ hapNet <- get_hapNet(hapSummary,
 
 Once we have the `hapNet` object, we can plot it with R.
 
-```{r, fig.height=4, fig.width=6, message=FALSE, warning=FALSE, paged.print=FALSE}
+```{r, eval=NOT_CRAN, fig.height=4, fig.width=6, message=FALSE, warning=FALSE, paged.print=FALSE}
 # plot haploNet
 plotHapNet(hapNet,
            size = "freq",                   # circle size
@@ -387,7 +391,7 @@ The figure as an object of `ggplot2`, which means user could add/modified figure
 
 Here is an example for merged arrangement:
 
-```{r hapVsPheno merged, fig.height=4, fig.width=10, message=FALSE, warning=FALSE, paged.print=FALSE}
+```{r hapVsPheno merged, eval=NOT_CRAN, fig.height=4, fig.width=10, message=FALSE, warning=FALSE, paged.print=FALSE}
 results <-hapVsPheno(hapResult,
                      hapPrefix = "H",
                      title = "This is title",
@@ -402,7 +406,7 @@ plot(results$figs)
 
 **An example for separated plot:**
 
-```{r hapVsPheno separated, fig.height=4, fig.width=6, message=FALSE, warning=FALSE, paged.print=FALSE}
+```{r hapVsPheno separated, eval=NOT_CRAN, fig.height=4, fig.width=6, message=FALSE, warning=FALSE, paged.print=FALSE}
 results <- hapVsPheno(hap = hapResult,
                       hapPrefix = "H",
                       title = "This is title",
@@ -440,7 +444,7 @@ Now we get the haplotype result and find a few main haplotypes.
 There is a new question emerged: how did those main haplotypes distributed, are they related to geography?
 
 
-```{r geo distribution, fig.height=4, fig.width=6, message=FALSE, warning=FALSE, paged.print=FALSE}
+```{r geo distribution, eval=NOT_CRAN, fig.height=4, fig.width=6, message=FALSE, warning=FALSE, paged.print=FALSE}
 # library(mapdata)
 # library(maptools)
 hapDistribution(hapResult,

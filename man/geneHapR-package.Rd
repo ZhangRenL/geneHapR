@@ -4,7 +4,7 @@
 \name{geneHapR-package}
 \alias{geneHapR}
 \alias{geneHapR-package}
-\title{geneHapR: R Packages for Gene Haplotype Analysis}
+\title{geneHapR: Gene Haplotype Analysis Using geneHapR}
 \description{
 This packages provides a suite for one or multi-genes haplotype analysis,
 visualizion and phenotypes analysis.
@@ -28,9 +28,10 @@ Several small example \strong{datasets} are included in geneHapR.
 pie plot in hapNet visualization, and information for geography distrbution.
 }
 \seealso{
-More documentation for vcfR can be found at repos stored at
-\href{https://gitee.com/zhangrenl/genehapr}{gitee} and
-\href{https://github.com/zhangrenl/genehapr}{github}
+More documentation for vcfR can be found at repos stored at repo of
+\code{zhangrenl/genehapr} hosted at
+\href{https://gitee.com/}{gitee} and
+\href{https://github.com/}{github}
 }
 \author{
 \strong{Maintainer}: Zhang Renliang \email{zhang_renliang@163.com}

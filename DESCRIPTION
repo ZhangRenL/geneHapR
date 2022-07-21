@@ -1,10 +1,11 @@
 Package: geneHapR
 Type: Package
-Title: R Packages for Gene Haplotype Analysis
-Description: This packages provides a suite for one or multi-genes haplotype analysis, visualization and phenotype association.
+Title: Gene Haplotype Analysis Using geneHapR
+Description: Import genome variants data and perform gene haplotype analysis, 
+  visualization and phenotype association with R.
 biocViews: NucleosomePositioning, DataImport
 Encoding: UTF-8
-Maintabner: Zhang Renliang <zhang_renliang@163.com>
+Maintainer: Zhang Renliang <zhang_renliang@163.com>
 Authors@R: 
   c(person(given = "Zhang", 
            family = "Renliang", 

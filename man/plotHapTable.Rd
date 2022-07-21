@@ -26,8 +26,7 @@ plotHapTable(hapSummary,
 \item{geneName}{used for filter INFO filed of ANN}
 
 \item{INFO_tag}{\code{INFO} was take from
-\href{https://gatk.broadinstitute.org/hc/en-us/articles/360035531692-VCF-Variant-Call-Forma}{\code{VCF}}
-file. The annotations in the INFO field are represented as tag-value
+\strong{VCF} file. The annotations in the INFO field are represented as tag-value
 pairs, where the tag and value are separated by an equal sign, ie '=', and
 pairs are separated by colons, ie ';'.
 For more information please see details.}
@@ -61,13 +60,12 @@ ggplot2 object
 display hap result as a table-like figure
 }
 \details{
-In \href{https://gatk.broadinstitute.org/hc/en-us/articles/360035531692-VCF-Variant-Call-Forma}{\code{VCF}}
-files, the INFO field are represented as tag-value
+In \strong{VCF} files, the INFO field are represented as tag-value
 pairs, where the tag and value are separated by an equal sign, ie '=', and
 pairs are separated by colons, ie ';'.
 
-If hapSummarys were generated from vcf, \code{INFO} is null.
-If hapSummarys were generated from vcf, \code{INFO} were same as in source vcf.
+If hapSummarys were generated from VCF, \code{INFO} is null.
+If hapSummarys were generated from VCF, \code{INFO} were same as in source vcf.
 Some tag-values may contains more than one value separated by
 "|", eg: "ANN" or "snpEFF" added by snpeff or other software. For those
 fields we need specified value of \code{tag_field} and \code{tag_split}, it's suggest

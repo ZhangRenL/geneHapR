@@ -121,13 +121,12 @@ hap_summary <- function(hap,
 #'              ALLELE.color = "grey90")
 #' @description display hap result as a table-like figure
 #' @details
-#' In \href{https://gatk.broadinstitute.org/hc/en-us/articles/360035531692-VCF-Variant-Call-Forma}{\code{VCF}}
-#' files, the INFO field are represented as tag-value
+#' In **VCF** files, the INFO field are represented as tag-value
 #' pairs, where the tag and value are separated by an equal sign, ie '=', and
 #' pairs are separated by colons, ie ';'.
 #'
-#' If hapSummarys were generated from vcf, `INFO` is null.
-#' If hapSummarys were generated from vcf, `INFO` were same as in source vcf.
+#' If hapSummarys were generated from VCF, `INFO` is null.
+#' If hapSummarys were generated from VCF, `INFO` were same as in source vcf.
 #' Some tag-values may contains more than one value separated by
 #' "|", eg: "ANN" or "snpEFF" added by snpeff or other software. For those
 #' fields we need specified value of `tag_field` and `tag_split`, it's suggest
@@ -171,8 +170,7 @@ hap_summary <- function(hap,
 #' default as `TRUE`.
 #' @param geneName used for filter INFO filed of ANN
 #' @param INFO_tag `INFO` was take from
-#' \href{https://gatk.broadinstitute.org/hc/en-us/articles/360035531692-VCF-Variant-Call-Forma}{\code{VCF}}
-#' file. The annotations in the INFO field are represented as tag-value
+#' **VCF** file. The annotations in the INFO field are represented as tag-value
 #' pairs, where the tag and value are separated by an equal sign, ie '=', and
 #' pairs are separated by colons, ie ';'.
 #' For more information please see details.

@@ -36,7 +36,7 @@ import_vcf <- function(vcf_file = vcf_file, ...) {
 #' accession group, location from a tab delimed table file
 #' @details
 #' First column should be Accessions;
-#' phenos should begin from second col，
+#' phenos should begin from second col,
 #' phenoName/group/locations should located at the first row,
 #' If a dot '.' is located in pheno name, then
 #' the part before the dot will be set as y axis name
