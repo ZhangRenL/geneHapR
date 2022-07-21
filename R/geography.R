@@ -2,14 +2,12 @@
 #' @title display geography distribution
 #' @importFrom maps map
 #' @importFrom graphics polygon
-#' @import mapdata
 #' @usage
 #' hapDistribution(hap, AccINFO, LON.col, LAT.col, hapNames,
-#'                 mapRegion = "world", map.package = "maps",
+#'                 database = "world", regions = ".",
 #'                 zColours = zColours,
-#'                 legend = "leftbottom", symbolSize = 1,
-#'                 maxZVal = 1, oceanCol="white",
-#'                 landCol="grey90", borderCol = "black", cex.legend = 0.8,
+#'                 legend = TRUE, symbolSize = 1,
+#'                 ratio = 1, cex.legend = 0.8,
 #'                 ...)
 #' @examples
 #' data("geneHapR")
@@ -17,21 +15,20 @@
 #' hapDistribution(hapResult,
 #'                 AccINFO = AccINFO,
 #'                 LON.col = "longitude",
-#'                 LAT.col = "latitude")
+#'                 LAT.col = "latitude",
+#'                 hapNames = c("H001", "H002", "H003"))
 #' @param hap an object of `hapResult` class
 #' @param AccINFO a data.frame contains accession information
 #' @param LON.col,LAT.col column names of
 #' longitude(`LON.col`) and latitude(`LAT.col`)
 #' @param hapNames haplotype names used for display
+#' @param zColours colours to apply to the pie section for each attribute column
+#' @param symbolSize a numeric specified the symbol size
 #' @param legend a keyword specified the position of legend, one of
 #' "bottomright", "bottom", "bottomleft", "left", "topleft", "top", "topright", "right" and "center"
-#' @param map.package which map packages should be used, one of `maps` and `rworldmap`
 #' @param cex.legend character expansion factor for legend relative to current par("cex")
-#' @param mapRegion if `map.package` set as "rworldmap", a country name from
-#' `rworldmap::getMap()[['NAME']]` or 'world','africa','oceania','eurasia','uk'
-#'  sets map extents, overrides `xlim`,`ylim`; if `map.package` set as 'maps',
-#'
-#' @inheritParams rworldmap::mapPies
+#' @param ratio the ratio of Y to N in the output map, set to 1 as default
+#' @inheritParams maps::map
 #' @export
 hapDistribution <-
     function(hap,
@@ -39,15 +36,12 @@ hapDistribution <-
              LON.col,
              LAT.col,
              hapNames,
-             mapRegion = "world",
-             map.package = "maps",
+             database = "world",
+             regions = ".",
              zColours = zColours,
-             legend = "leftbottom",
+             legend = TRUE,
              symbolSize = 1,
-             maxZVal = 1,
-             oceanCol = "white",
-             landCol = "grey90",
-             borderCol = "black",
+             ratio = 1,
              cex.legend = 0.8,
              ...) {
         hap <- na.omit(hap)
@@ -78,12 +72,11 @@ hapDistribution <-
                 formula = formu,
                 value.var = "value",
                 fun.aggregate = length
-            ) #对数据进行预处理
-        nameX = LON.col
-        nameY = LAT.col
-        ratio <- 1
+            )
+
+
         symbolScale <- 1
-        maps::map(mapRegion, ...)
+        maps::map(database = database, regions = regions, ...)
         for (locationNum in 1:length(dF[, hapNames[1]])) {
             sliceValues <- as.numeric(dF[locationNum, hapNames])
             if (sum(sliceValues, na.rm = TRUE) == 0)
@@ -98,8 +91,9 @@ hapDistribution <-
             radius <- radius * symbolSize
             for (sliceNum in 1:length(sliceValues)) {
                 n <- max(2, floor((
-                    pointsInCircle * (cumulatProps[sliceNum +
-                                                       1] - cumulatProps[sliceNum])
+                    pointsInCircle *
+                        (cumulatProps[sliceNum + 1] -
+                             cumulatProps[sliceNum])
                 )))
                 P <-
                     list(
@@ -107,15 +101,16 @@ hapDistribution <-
                             2 * pi * seq(cumulatProps[sliceNum],
                                          cumulatProps[sliceNum + 1], length = n)
                         ) + dF[locationNum,
-                               nameX],
+                               LON.col],
                         y = radius * sin(
                             2 * pi * seq(cumulatProps[sliceNum],
                                          cumulatProps[sliceNum + 1], length = n)
                         ) + dF[locationNum,
-                               nameY]
+                               LAT.col]
                     )
-                graphics::polygon(c(P$x, dF[locationNum, nameX]), c(P$y, dF[locationNum,
-                                                                            nameY]), col = zColours[sliceNum])
+                graphics::polygon(c(P$x, dF[locationNum, LON.col]),
+                                  c(P$y, dF[locationNum, LAT.col]),
+                                  col = zColours[sliceNum])
             }
         }
 
@@ -123,12 +118,24 @@ hapDistribution <-
         # add legend
         if (legend[1] != FALSE) {
             if (legend[1] == TRUE)
-                legend = "leftbottom"
-            if(length(legend) == 2)
+                legend = "bottomleft"
 
-            legend(legend,
-                   legend = hapNames,
-                   fill = zColours,
-                   cex = cex.legend)
+            if(length(legend) == 1) {
+                legend(legend,
+                       legend = hapNames,
+                       fill = zColours,
+                       cex = cex.legend)
+            } else if(length(legend) == 2) {
+                if(!is.numeric(legend))
+                    stop("'legend' should a TRUE/FALSE indicate wherther plot the legend;
+or keword indicate where to plot the legend;
+or a numeric vector contains x,y coordinate of the legend.")
+                legend(legend[1],
+                       legend[2],
+                       legend = hapNames,
+                       fill = zColours,
+                       cex = cex.legend)
+            }
+
         }
     }

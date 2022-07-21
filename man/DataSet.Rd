@@ -7,7 +7,7 @@
 \alias{seqs}
 \alias{pheno}
 \alias{vcf}
-\alias{accGroup}
+\alias{AccINFO}
 \title{Datasets
 \code{gff} contains a example of gff file used for test of
 visualization mutations on gene model.}
@@ -18,6 +18,7 @@ between different haps
 \code{vcf}, a vcfR object provide a data set for test of \code{seq2hap()}.
 \code{vcf} contains indels, snps, biallelic sites and multiallelic sites.
 
-\code{accGroup} a data.frame defined the group of each accessions
+\code{AccINFO} a data.frame provide addtional information of accessions,
+including accession type, source and location.
 }
 \keyword{datasets}

@@ -4,12 +4,11 @@
 \alias{hapDistribution}
 \title{display geography distribution}
 \usage{
-hapDistribution(hap, AccINFO, Acc.col, LON.col, LAT.col, hapNames,
-                mapRegion = "world", map.package = "maps",
+hapDistribution(hap, AccINFO, LON.col, LAT.col, hapNames,
+                database = "world", regions = ".",
                 zColours = zColours,
                 legend = "leftbottom", symbolSize = 1,
-                maxZVal = 1, oceanCol="white",
-                landCol="grey90", borderCol = "black", cex.legend = 0.8,
+                ratio = 1, cex.legend = 0.8,
                 ...)
 }
 \arguments{
@@ -17,38 +16,60 @@ hapDistribution(hap, AccINFO, Acc.col, LON.col, LAT.col, hapNames,
 
 \item{AccINFO}{a data.frame contains accession information}
 
-\item{Acc.col, LON.col, LAT.col}{column names of accession(\code{Acc.col}),
+\item{LON.col, LAT.col}{column names of
 longitude(\code{LON.col}) and latitude(\code{LAT.col})}
 
 \item{hapNames}{haplotype names used for display}
 
-\item{mapRegion}{if \code{map.package} set as "rworldmap", a country name from
-\code{rworldmap::getMap()[['NAME']]} or 'world','africa','oceania','eurasia','uk'
-sets map extents, overrides \code{xlim},\code{ylim}; if \code{map.package} set as 'maps',}
+\item{database}{
+    character string naming a geographical database, a list of
+    \code{x}, \code{y}, and \code{names} obtained from a previous call to
+    \code{map} or a spatial object of class \code{SpatialPolygons} or \code{SpatialLines}.
+    The string choices include a \code{\link[maps]{world}} map,
+    three USA databases (\code{\link[maps]{usa}}, \code{\link[maps]{state}},
+    \code{\link[maps]{county}}), and more (type \code{help(package='maps')} to see the package index). If the requied database is in a different package that has not been attached, the string may be started with "packagename::". The
+    location of the map databases may be overridden by setting the
+    \code{R_MAP_DATA_DIR} environment variable.
+  }
 
-\item{map.package}{which map packages should be used, one of \code{maps} and \code{rworldmap}}
+\item{regions}{
+    character vector that names the polygons to draw.
+    Each database is composed of a collection of polygons, and each polygon has
+    a unique name.
+    When a region is composed of more than one polygon, the individual polygons
+    have the name of the region, followed by a colon and a qualifier,
+    as in \code{michigan:north} and \code{michigan:south}.
+    Each element of \code{regions} is matched
+    against the polygon names in the database and, according to
+    \code{exact}, a subset is selected for drawing. The regions may also be 
+    defined using (perl) regular expressions. This makes it possible to use 
+    'negative' expressions like \code{"Norway(?!:Svalbard)"}, which means Norway
+    and all islands except Svalbard. All entries are case insensitive.
+    The default selects all polygons in the database.
+  }
 
-\item{zColours}{colours to apply to the pie section for each attribute
-column}
+\item{zColours}{colours to apply to the pie section for each attribute column}
 
 \item{legend}{a keyword specified the position of legend, one of
 "bottomright", "bottom", "bottomleft", "left", "topleft", "top", "topright", "right" and "center"}
 
-\item{symbolSize}{multiplier of default symbol size}
+\item{symbolSize}{a numeric specified the symbol size}
 
-\item{maxZVal}{the attribute value corresponding to the maximum symbol size,
-this can be used to set the scaling the same between multiple plots}
-
-\item{oceanCol}{a colour for the ocean}
-
-\item{landCol}{a colour to fill countries}
-
-\item{borderCol}{the colour for country borders}
+\item{ratio}{the ratio of Y to N in the output map, set to 1 as default}
 
 \item{cex.legend}{character expansion factor for legend relative to current par("cex")}
 
-\item{...}{any extra arguments to points()}
+\item{...}{Extra arguments passed to \code{polygon} or \code{lines}. Of particular interest may be the options \code{border} and\code{lty} that control the color and line type of the polygon borders when \code{fill = TRUE}.}
 }
 \description{
 display geography distribution
+}
+\examples{
+data("geneHapR")
+hapResult <- vcf2hap(vcf)
+hapDistribution(hapResult,
+                AccINFO = AccINFO,
+                LON.col = "longitude",
+                LAT.col = "latitude",
+                hapNames = c("H001", "H002", "H003"))
 }

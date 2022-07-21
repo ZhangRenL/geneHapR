@@ -16,7 +16,8 @@
 #' `seqs2hap()`.
 #' **gff** provide a data set for visualization mutations on gene model.
 #' **pheno** provide a data set for phenotype comparison between haplotypes.
-#' **accGroup** provide a data set for pie plot in hapNet visualization.
+#' **AccINFO** provide a data provide accessions information for
+#' pie plot in hapNet visualization, and information for geography distrbution.
 #' @seealso
 #' More documentation for vcfR can be found at repos stored at
 #' \href{https://gitee.com/zhangrenl/genehapr}{gitee} and

@@ -94,11 +94,11 @@ head(pheno)
 ```{r import pheno, eval=FALSE}
 
 # import accession group information
-accGroup <- import_pheno("accession_group_file_path.txt")
+AccINFO <- import_pheno("accession_group_file_path.txt")
 ```
 
 ```{r echo=FALSE}
-head(accGroup)
+head(AccINFO)
 ```
 
 Be aware that the phenotype and accession group are effectively tables. There are more than one ways to import a table format file with `R`. 
@@ -360,7 +360,7 @@ The accession group information could be attached in this step.
 
 ```{r hapNet}
 hapNet <- get_hapNet(hapSummary,
-                     accGroup = accGroup,
+                     AccINFO = AccINFO,
                      groupName = "Type")
 ```
 
@@ -431,3 +431,23 @@ hapVsPhenos(hapResult,
             height = 8,
             res = 300)
 ```
+
+
+
+## Geography distribution of main haplotypes
+
+Now we get the haplotype result and find a few main haplotypes. 
+There is a new question emerged: how did those main haplotypes distributed, are they related to geography?
+
+
+```{r geo distribution, fig.height=4, fig.width=6, message=FALSE, warning=FALSE, paged.print=FALSE}
+# library(mapdata)
+# library(maptools)
+hapDistribution(hapResult,
+                AccINFO = AccINFO,
+                LON.col = "longitude",
+                LAT.col = "latitude", 
+                hapNames = c("H001", "H002", "H003"), 
+                legend = TRUE)
+```
+

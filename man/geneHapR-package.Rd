@@ -24,7 +24,8 @@ Several small example \strong{datasets} are included in geneHapR.
 \code{seqs2hap()}.
 \strong{gff} provide a data set for visualization mutations on gene model.
 \strong{pheno} provide a data set for phenotype comparison between haplotypes.
-\strong{accGroup} provide a data set for pie plot in hapNet visualization.
+\strong{AccINFO} provide a data provide accessions information for
+pie plot in hapNet visualization, and information for geography distrbution.
 }
 \seealso{
 More documentation for vcfR can be found at repos stored at

@@ -6,9 +6,15 @@ biocViews: NucleosomePositioning, DataImport
 Encoding: UTF-8
 Maintabner: Zhang Renliang <zhang_renliang@163.com>
 Authors@R: 
-  c(person(given = "Zhang", family = "Renliang", email = "zhang_renliang@163.com", role = c("aut", "cre")),
-    person(given = "Jia", family = "Guanqing", email = "jiaguanqing@caas.cn", role = c("aut")))
-Version: 0.12.2
+  c(person(given = "Zhang", 
+           family = "Renliang", 
+           email = "zhang_renliang@163.com", 
+           role = c("aut", "cre")),
+    person(given = "Jia", 
+           family = "Guanqing",
+           email = "jiaguanqing@caas.cn", 
+           role = c("aut")))
+Version: 0.12.3
 RoxygenNote: 7.2.0
 LazyData: True
 Imports: 
@@ -17,7 +23,6 @@ Imports:
   ggpubr, 
   GenomicRanges,
   magrittr,
-  mapdata,
   maps,
   methods,
   muscle,
@@ -39,6 +44,8 @@ Depends:
   ggplot2,
   R (>= 4.0.0)
 Suggests:
+  mapdata,
+  maptools,
   knitr,
   rmarkdown
 License: GPL-3

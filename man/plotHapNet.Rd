@@ -77,8 +77,8 @@ hapSummary <- hap_summary(hap)
 
 # calculate haploNet
 hapNet <- get_hapNet(hapSummary,
-                     accGroup = accGroup, # accession types
-                     groupName = colnames(accGroup)[2])
+                     AccINFO = AccINFO, # accession types
+                     groupName = colnames(AccINFO)[2])
 
 # plot haploNet
 plot(hapNet)

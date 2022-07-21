@@ -48,10 +48,11 @@ NULL
 
 #' Datasets
 #'
-#' `accGroup` a data.frame defined the group of each accessions
+#' `AccINFO` a data.frame provide addtional information of accessions,
+#' including accession type, source and location.
 #'
 #' @name DataSet
-#' @aliases accGroup
+#' @aliases AccINFO
 #' @docType data
 #' @keywords datasets
 NULL
