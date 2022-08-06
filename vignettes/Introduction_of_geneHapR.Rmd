@@ -1,22 +1,22 @@
 ---
-title: "Introduction of geneHapR"
+title: "Introduction of 'geneHapR'"
 author: "Zhang RenLiang"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Introduction of geneHapR}
+  %\VignetteIndexEntry{Introduction of 'geneHapR'}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
 
-`geneHapR` is an R package that designed for gene haplotype statistics, phenotype association and visualization.
+`geneHapR` is an 'R' package that designed for gene haplotype statistics, phenotype association and visualization.
 
 ## Preliminaries
 
 Input files frequently present challenges to analysis.
 A common problem I encounter is that chromosome names and gene IDs are not standardized among **VCF**, **FASTA** and **GFF** files.
 That means additional work for users.
-I suggest reading these files into R, synchronizing the names and then proceeding with downstream analyses.
+I suggest reading these files into 'R', synchronizing the names and then proceeding with downstream analyses.
 
 Large **VCF** or **GFF** file is another important consideration when using `geneHapR.` 
 Usually, the annotation file (GFF) and variants call format (VCF) files are usually at chromosome or genome level. 
@@ -128,7 +128,7 @@ There is a little work need to be done before haplotype calculations: (1) VCF fi
 
 ### VCF filtration
 
-There are three modes to filter a `vcfR` object after import VCF into R: a. by position; b. by annotation; c. by both of them.
+There are three modes to filter a `vcfR` object after import VCF into 'R': a. by position; b. by annotation; c. by both of them.
 
 ```{r VCF filtration, eval=FALSE, include=TRUE}
 # filter VCF by position
@@ -149,7 +149,7 @@ vcf_f3 <- filter_vcf(vcf, mode = "both",
                      type = "CDS")
 ```
 
-It's a time consuming work to import and manipulate a very large file with R on personal computer. 
+It's a time consuming work to import and manipulate a very large file with 'R' on personal computer. 
 It'll be more efficiency to extract the target ranges from origin VCF with `filterLargeVCF()` before import. 
 If your VCF file is just a few 'MB', this step was not necessary at all.
 
@@ -180,7 +180,7 @@ filterLargeVCF(VCFin = "Ori.vcf.gz",          # surfix should be .vcf.gz or .vcf
 
 ### DNA sequences manipulation
 
-The origin DNA sequences must be aligned and trimmed due to haplotype calculation need all sequences have same length. Those operations could be done with `geneHapR`. I still suggest users align and trim DNA sequences with **Mega** software and then save the result as *FASTA* format before import them into R.
+The origin DNA sequences must be aligned and trimmed due to haplotype calculation need all sequences have same length. Those operations could be done with `geneHapR`. I still suggest users align and trim DNA sequences with **Mega** software and then save the result as *FASTA* format before import them into 'R'.
 
 ```{r DNA alignment and trim, eval=FALSE, message=FALSE, warning=FALSE, include=TRUE}
 # sequences alignment
@@ -240,7 +240,7 @@ Now we replace the old INFO field with new tag named as "PrChange".
 
 ```{r replace INFO, eval=NOT_CRAN, include=TRUE, message=FALSE, warning=FALSE}
 # add annotations to INFO field
-hapResult <-addINFO(hapResult,
+hapResult <- addINFO(hapResult,
                      tag = "PrChange",
                      values = rep(c("C->D", "V->R", "G->N"),3),
                      replace = TRUE)
@@ -250,7 +250,7 @@ Here, we add a tag named as "CDSChange" followed the old INFO.
 
 ```{r add INFO, eval=NOT_CRAN, include=TRUE, message=FALSE, warning=FALSE}
 # To replace the origin INFO by set 'replace' as TRUE
-hapResult <-addINFO(hapResult,
+hapResult <- addINFO(hapResult,
                      tag = "CDSChange",
                      values = rep(c("C->A", "T->C", "G->T"),3),
                      replace = FALSE)
@@ -368,7 +368,7 @@ hapNet <- get_hapNet(hapSummary,
                      groupName = "Type")
 ```
 
-Once we have the `hapNet` object, we can plot it with R.
+Once we have the `hapNet` object, we can plot it with 'R'.
 
 ```{r, eval=NOT_CRAN, fig.height=4, fig.width=6, message=FALSE, warning=FALSE, paged.print=FALSE}
 # plot haploNet

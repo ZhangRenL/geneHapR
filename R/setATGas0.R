@@ -1,7 +1,9 @@
-# File Checked
 #' @title Set position of ATG as zero
 #' @name SetATGas0
 #' @description
+#' Set position of ATG as zero in hap result and gff annotation.
+#' The upstream was negative while the gene range and downstream was positive.
+#' @details
 #' Filter hap result and gff annotation according to provided information.
 #' And then set position of ATG as zero in hap result and gff annotation.
 #' The upstream was negative while the gene range and downstream was positive.
@@ -12,34 +14,30 @@
 #' gffSetATGas0(gff = gff, hap = hap,
 #'              geneID = geneID,
 #'              Chr = Chr, POS = c(start, end))
-#' @param gff gff
-#' @param hap hap results
+#' @param gff gene annotations
+#' @param hap object of hapResult or hapSummary class
 #' @param geneID geneID
-#' @param Chr Chrom name
-#' @param POS vector defined by `start` and `end` position
+#' @param Chr Chromsome name
+#' @param POS vector consist with start and end position
 #' @importFrom GenomicRanges strand
 #' @examples
+#' \donttest{
 #' # load example dataset
-#' data("geneHap_test")
+#' data("geneHapR_test")
 #'
-#' # generate hap results
-#' hap <- vcf2hap(vcf)
 #'
 #' # set position of ATG as zero in gff
-#' newgff <- gffSetATGas0(gff = gff, hap = hap,
+#' newgff <- gffSetATGas0(gff = gff, hap = hapResult,
 #'                        geneID = "test1G0387",
 #'                        Chr = "scaffold_1",
 #'                        POS = c(4300, 7910))
 #'
 #' # set position of ATG as zero in hap results
-#' newhap <- hapSetATGas0(gff = gff, hap = hap,
-#'                        geneID = "test1G0387",
-#'                        Chr = "scaffold_1",
-#'                        POS = c(4300, 7910))
-#'
-#' # visualization mutations on gene model with newgff and newhap
-#' displayVarOnGeneModel(gff = newgff, hapSummary = newhap)
-#'
+#' newhapResult <- hapSetATGas0(gff = gff, hap = hapResult,
+#'                              geneID = "test1G0387",
+#'                              Chr = "scaffold_1",
+#'                              POS = c(4300, 7910))
+#' }
 #' @return `gffSetATGas0`: filtered gff with position of ATG was as zero
 #' @seealso
 #' \code{\link[geneHapR:displayVarOnGeneModel]{displayVarOnGeneModel()}}
@@ -65,7 +63,7 @@ gffSetATGas0 <- function(gff = gff,
 #' hapSetATGas0(gff = gff, hap = hap,
 #'              geneID = geneID,
 #'              Chr = Chr, POS = c(start, end))
-#' @return `hapSetATGas0`: hap results only position of ATG was set as zero
+#' @return `hapSetATGas0`: hap results with position of ATG was set as zero
 #' @export
 hapSetATGas0 <- function(gff = gff,
                          hap = hap,

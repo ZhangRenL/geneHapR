@@ -2,7 +2,7 @@
 % Please edit documentation in R/IO.R
 \name{import_hap}
 \alias{import_hap}
-\title{import_hap}
+\title{Import hapResult/hapSummary}
 \usage{
 import_hap(file, ...)
 }
@@ -16,7 +16,7 @@ hapSummary or hapResult
 }
 \description{
 This function could be used for import hap result or hap summary result.
-The type of returned object is decided by hap result format, see details.
+The type of returned object is decided by input file, see details.
 }
 \details{
 The hap result and hap summary result have common features.
@@ -26,7 +26,7 @@ Hap names were in the first column.
 The differences are:
 Hap summary result have a freq column while hap result not.
 Rows represent haplotypes in hap summary result, while rows represent accessions in hap result.
-In addtion, the accessions of each haplotype in hap summary result were separated by ';'.
+In addtion, the accessions of each haplotype in hap summary result were separated by ";".
 }
 \examples{
 \dontrun{

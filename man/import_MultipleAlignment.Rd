@@ -20,10 +20,13 @@ import_MultipleAlignment(filepath, format = "fasta", type = "DNA")
     \code{"clustal"}.
   }
 
-\item{type}{one of 'DNA' and 'Protein'}
+\item{type}{one of "DNA" and "Protein"}
+}
+\value{
+DNAMultipleAlignment
 }
 \description{
-import MultipleAlignment
+import sequences algned results
 }
 \examples{
 \dontrun{

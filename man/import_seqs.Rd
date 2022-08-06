@@ -2,21 +2,23 @@
 % Please edit documentation in R/IO.R
 \name{import_seqs}
 \alias{import_seqs}
-\title{import_seqs}
+\title{import sequences}
 \usage{
 import_seqs(filepath, format = "fasta")
 }
 \arguments{
-\item{filepath}{A character vector containing the path(s) to the file(s)
-to read or write.
+\item{filepath}{A character vector containing the path to the DNA sequences file.
 Reading files in gzip format (which usually have the '.gz' extension) is
 supported.
 \emph{Note} that only DNA supported here.}
 
-\item{format}{Either \code{"fasta"} (the default) or \code{"fastq"}}
+\item{format}{Either "fasta" (the default) or "fastq"}
+}
+\value{
+object of DNAStringSet class
 }
 \description{
-import_seqs
+import DNA sequences in FASTA format
 }
 \examples{
 \dontrun{

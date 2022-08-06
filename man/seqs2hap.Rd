@@ -18,33 +18,38 @@ trimSeqs(seqs,
          minFlankFraction = 0.1)
 }
 \arguments{
-\item{seqs}{DNAStringSet or DNAMultipleAlignment}
+\item{seqs}{object of DNAStringSet or DNAMultipleAlignment class}
 
-\item{Ref}{the reference sequences. Default as the first sequence}
+\item{Ref}{the name of reference sequences.
+Default as the name of the first sequence}
 
-\item{hyb_remove}{whether remove accessions contains hybrid site or not}
+\item{hyb_remove}{whether remove accessions contains hybrid site or not.
+Default as \code{TRUE}}
 
-\item{na.drop}{whether Drop accessions contains "N"
+\item{na.drop}{whether drop sequeces contain "N"
 Default as \code{TRUE}.}
 
 \item{maxGapsPerSeq}{value in \verb{[0, 1]} that indicates the maximum
-fraction of gaps allowed in each seq after alignment. (default is 0.25)
-Seqs with gap percent exceed that will be dropped.}
+fraction of gaps allowed in each seq after alignment (default as 0.25).
+Seqs with gap percent exceed that will be dropped}
 
-\item{hapPrefix}{Prefix of hap names. Default as "H".}
+\item{hapPrefix}{prefix of hap names. Default as "H"}
 
-\item{...}{parameters will pass to muscle::muscle() for DNA multi alignment}
+\item{...}{parameters will pass to \code{muscle::muscle()}}
 
 \item{minFlankFraction}{A value in \verb{[0, 1]} that indicates the minimum
-fraction needed to call a gap in the consensus string (default is 0.1).}
+fraction needed to call a gap in the consensus string (default as 0.1).}
+}
+\value{
+object of hapResult class
 }
 \description{
-generate hap results from seqs
+generate hapResults from aligned and trimed sequences
 
-allign Seqs
+allign imported sequences
 }
 \examples{
-\dontrun{
+\donttest{
 seqs <- allignSeqs(seqs)
 seqs <- trimSeqs(seqs,
          minFlankFraction = 0.1)
@@ -52,12 +57,9 @@ hapResult <- seqs2hap(seqs,
                       Ref = names(seqs)[1],
                       hyb_remove = TRUE, na.drop = TRUE,
                       maxGapsPerSeq = 0.25,
-                      hapPrefix = "H", ...)
+                      hapPrefix = "H")
 }
-\dontrun{
-seqs <- allignSeqs(seqs)
-}
-\dontrun{
+\donttest{
 trimSeqs(seqs,
          minFlankFraction = 0.1)
 }

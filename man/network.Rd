@@ -27,12 +27,10 @@ computes a haplotype network with haplotype summary result
 }
 \examples{
 
+\donttest{
 # load sample datasets
-data("geneHap_test")
-
-# generate haplotype result from vcfR
-hap <- vcf2hap(vcf)
-hapSummary <- hap_summary(hap)
+data("geneHapR_test")
+hapSummary <- hap_summary(hapResult)
 
 # calculate haploNet
 hapNet <- get_hapNet(hapSummary,
@@ -51,6 +49,7 @@ plotHapNet(hapNet,
            link.width = 2, # link widths
            show.mutation = 2, # mutation types one of c(0,1,2,3)
            legend = FALSE) # legend position
+}
 }
 \references{
 Article{,

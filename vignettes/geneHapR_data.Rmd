@@ -1,10 +1,10 @@
 ---
-title: "geneHapR data"
+title: "'geneHapR' data"
 author: "Zhang RenLiang"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{geneHapR data}
+  %\VignetteIndexEntry{'geneHapR' data}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -21,17 +21,17 @@ This file could be supplied in [variant call format (VCF)](https://learn.gencore
 The files hereafter are also recommend for filtration, visualization, and phenotpye association analysis. 
 An annotation file in [General Feature Format (GFF)](https://learn.gencore.bio.nyu.edu/ngs-file-formats/gff3-format/) format stored the annotations for the target species. 
 And another two tables stored phenotype data and individuals grouping information separately, 
-certainly this two table also could be supplied as R object of `data.frame` class.
+certainly this two table also could be supplied as 'R' object of `data.frame` class.
 
 
-### Input data in R
-**VCF file** (variant call format file) imported into R as **vcfR** object.
+### Input data
+**VCF file** (variant call format file) imported into 'R' as **vcfR** object.
 
-**GFF file** (genome annotations) imported into R as **GRanges** object.
+**GFF file** (genome annotations) imported into 'R' as **GRanges** object.
 
-**DNA sequences** (fasta format) imported into R as **DNAStringSet** object.
+**DNA sequences** (fasta format) imported into 'R' as **DNAStringSet** object.
 
-**Phenotype data** and **accession group information** imported into R as **data.frame** objects.
+**Phenotype data** and **accession group information** imported into 'R' as **data.frame** objects.
 
 ## Output/results
 
@@ -58,7 +58,14 @@ The **differences** between `hapResult` and `hapSummary` only lied in **part III
 (a) there is a freq column in `hapSummary` while `hapResult` not; 
 (b) multi-accessions are separated by semicolons in `hapSummary` while one accession in each row of `hapResult`.
 
-```{r Out Put Format1, echo=FALSE, fig.align='center', fig.cap="Cartoon representation of hapResult and hapSummary contents", fig.height=4, fig.width=4}
+```{r include=FALSE}
+NOT_CRAN <- identical(tolower(Sys.getenv("NOT_CRAN")), "true")
+knitr::opts_chunk$set(purl = NOT_CRAN)
+```
+
+
+```{r Out Put Format1, echo=NOT_CRAN, fig.align='center', fig.cap="Cartoon representation of hapResult and hapSummary contents", fig.height=4, fig.width=4}
+oldpar <- par(mfrow = c(1,2))
 par(mar=c(0.1,0.1,0.1,0.1))
 plot(c(0,5),c(0,5), axes = FALSE, type = "n", xlab="", ylab ="", frame.plot = F)
 rect(xleft=0, ybottom=0, xright=0.5, ytop=4.5)
@@ -74,6 +81,6 @@ text(2.25, 3.85, "(CHROM, POS, INFO, ALLELE)", cex=0.8)
 text(2.25, 2, "Genotypes", cex=1)
 text(4.5, 2, "Accessions (freq)", cex=1, srt= 270)
 
-par(mar=c(5,4,4,2))
+par(oldpar)
 ```
 

@@ -1,24 +1,10 @@
-# File Checked
-# Checked
 #' @name vcf2hap
 #' @title generat haps from vcf
-#' @note inhet test
-#' description  generate hap format from vcf.
 #' @description
-#' Generate hap result from `vcfR` object.
+#' Generate hapResult from vcfR object
 #' A simple filter by position was provided in this function,
-#' however it's prefer to filter vcf (`vcfR` object) through
+#' however it's prefer to filter VCF (vcfR object) through
 #' \code{\link[geneHapR:filter_vcf]{filter_vcf()}}.
-#' @details
-#' The class of returned object is `data.frame` class with some
-#' additional `attributes` generated during processing,
-#' such as `options`: options used during generated haplotypes,
-#'  `AccRemoved`: names of removed Accessions due to `NA` or hybrid sites,
-#'  `AccRemain`: names of remained Accessions in haplotype results,
-#'  `AccAll`: names of all Accessions in souce vcf file,
-#'  `freq`: frequency of each haplotype.
-#' Though, only summary view of those `attributes` will be displayed, the full
-#' information could be displayed with `attr(x, "options")` or `attributes(x)`.
 #' @usage
 #' vcf2hap(vcf,
 #'         hapPrefix = "H",
@@ -31,18 +17,18 @@
 #'         na.drop = TRUE)
 #' @author Zhangrenl
 #' @inherit hap_summary examples
-#' @param vcf vcfR object imported by `import_vcf`
-#' @param filter_Chr logical, whether filter vcf by chromosome or not, default
+#' @param vcf vcfR object imported by `import_vcf()`
+#' @param filter_Chr logical, whether filter vcf by chromosome or not. Default
 #' as `FALSE`. If set as `TRUE`, `Chr` is needed
 #' @param filter_POS logical, whether filter vcf by position or not. Default
 #' as `FALSE`. If set as `TRUE`, `startPOS` and `endPOS` are needed
-#' @param hapPrefix Prefix of hap names, default as "H"
+#' @param hapPrefix prefix of hap names, default as "H"
 #' @param hyb_remove whether remove accessions contains hybrid site or not.
 #' Default as `TRUE`
-#' @param na.drop whether drop accessions contains unknown allele site or not
+#' @param na.drop whether remove accessions contains unknown allele site or not
 #' Default as `TRUE`.
 #' @param Chr Chromosome name, needed when `filter_Chr` was set as `TRUE`
-#' @param startPOS,endPOS Start and end position, needed when `filter_POS` was
+#' @param startPOS,endPOS start and end position, needed when `filter_POS` was
 #' set as `TRUE`. In addition, `startPOS` must less than `endPOS`
 #' @seealso
 #' extract genotype from vcf:
@@ -53,10 +39,7 @@
 #' filter vcf according **position** and **annotations**:
 #' \code{\link[geneHapR:filter_vcf]{filter_vcf()}}
 #' @return
-#' `hapResult` object, first four rows are meta information:
-#' `CHR`, `POS`, `INFO`, `ALLELE.`
-#' `Hap` names were located in the first column, `Accessions` were placed at
-#' the last column.
+#' object of hapResult class
 #' @import tidyr
 #' @import vcfR
 #' @importFrom rlang .data
@@ -168,7 +151,7 @@ only one CHROM should be in vcf, consider set 'filter_Chr' as 'TRUE'
 
     # set attributes
     hap <- remove_redundancy_col(hap)
-    class(hap) <- unique(c("hapResult", "data.frame"))
+    class(hap) <- unique(c('hapResult', "data.frame"))
     accAll <- colnames(vcf@gt)[-1]
     attr(hap, "AccAll") <- accAll
     accRemain <- hap$Accession[hap$Accession != ""]

@@ -1,18 +1,17 @@
-# checked
 #' @name filter_vcf_by_gff
 #' @title filter vcf by gff
-#' @description filter vcf by gff annotation or by position or both
+#' @description filter VCF by GFF annotation or by position or both
 #' @usage
 #' filter_vcf(vcf, gff = gff,
 #'            mode = c("POS", "type", "both"),
 #'            Chr = Chr, start = start, end = end,
 #'            type = c("CDS", "exon", "gene", "genome", "custom"),
 #'            cusTyp = c("CDS", "five_prime_UTR", "three_prime_UTR"))
-#' @param vcf object of `vcfR` class, vcf file imported by `import_vcf()`
-#' @param gff object of `GRanges` class, genome annotations imported by
+#' @param vcf object of vcfR class, VCF file imported by `import_vcf()`
+#' @param gff object of GRanges class, genome annotations imported by
 #' `import_gff()`
 #' @param mode filter mode, one of "POS", "type", "both"
-#' @param Chr CHROM name, needed if mode set to "POS" or "both"
+#' @param Chr chromosome name, needed if mode set to "POS" or "both"
 #' @param start start position, needed if mode set to "POS" or "both"
 #' @param end end position, needed if mode set to "POS" or "both"
 #' @param type filter type, needed if mode set to "type" or "both",
@@ -23,8 +22,9 @@
 #' @importFrom IRanges start
 #' @importFrom IRanges `%over%`
 #' @examples
+#' \dontrun{
 #' # filtet hap
-#' data("geneHap_test")
+#' data("geneHapR_test")
 #' vcf_f1 <- filter_vcf(vcf, mode = "POS",
 #'                     Chr = "scaffold_1",
 #'                     start = 4300, end = 5890)
@@ -37,7 +37,8 @@
 #'                     start = 4300, end = 5890,
 #'                     gff = gff,
 #'                     type = "CDS")
-#'
+#' }
+#' @return vcfR
 #' @export
 filter_vcf <- function(vcf,
                        gff = gff,

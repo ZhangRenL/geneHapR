@@ -1,5 +1,7 @@
 #' @name hapDistribution
 #' @title display geography distribution
+#' @description
+#' show distribution of intereted haplotypes on maps
 #' @importFrom maps map
 #' @importFrom graphics polygon
 #' @usage
@@ -10,14 +12,15 @@
 #'                 ratio = 1, cex.legend = 0.8,
 #'                 ...)
 #' @examples
-#' data("geneHapR")
-#' hapResult <- vcf2hap(vcf)
+#' \donttest{
+#' data("geneHapR_test")
 #' hapDistribution(hapResult,
 #'                 AccINFO = AccINFO,
 #'                 LON.col = "longitude",
 #'                 LAT.col = "latitude",
 #'                 hapNames = c("H001", "H002", "H003"))
-#' @param hap an object of `hapResult` class
+#' }
+#' @param hap an object of hapResult class
 #' @param AccINFO a data.frame contains accession information
 #' @param LON.col,LAT.col column names of
 #' longitude(`LON.col`) and latitude(`LAT.col`)
@@ -25,10 +28,12 @@
 #' @param zColours colours to apply to the pie section for each attribute column
 #' @param symbolSize a numeric specified the symbol size
 #' @param legend a keyword specified the position of legend, one of
-#' "bottomright", "bottom", "bottomleft", "left", "topleft", "top", "topright", "right" and "center"
-#' @param cex.legend character expansion factor for legend relative to current par("cex")
+#' "bottomright", "bottom", "bottomleft", "left", "topleft", "top", "topright", "right" and "center";
+#' or a numeric vector of length two contains x,y coordinate of the legend
+#' @param cex.legend character expansion factor for legend relative to current `par("cex")`
 #' @param ratio the ratio of Y to N in the output map, set to 1 as default
 #' @inheritParams maps::map
+#' @return No return value
 #' @export
 hapDistribution <-
     function(hap,
@@ -51,7 +56,7 @@ hapDistribution <-
         if (missing(hapNames))
             hapNames <- hap$Hap
 
-        if (inherits(hap, "hapResult")) {
+        if (inherits(hap, 'hapResult')) {
             acc2hap <- hap[, "Hap"]
             names(acc2hap) = hap[, "Accession"]
         } else if (inherits(hap, "hapSummary")) {
@@ -129,7 +134,7 @@ hapDistribution <-
                 if(!is.numeric(legend))
                     stop("'legend' should a TRUE/FALSE indicate wherther plot the legend;
 or keword indicate where to plot the legend;
-or a numeric vector contains x,y coordinate of the legend.")
+or a numeric vector of length two contains x,y coordinate of the legend.")
                 legend(legend[1],
                        legend[2],
                        legend = hapNames,

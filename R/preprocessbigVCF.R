@@ -1,33 +1,32 @@
 # File Checked
 #' @name filterLargeVCF
-#' @title Pre-process large vcf
+#' @title Pre-process large VCF file(s)
 #' @description
 #' Filter/extract one or multiple gene(s)/range(s) from a large
 #' `*.vcf/*.vcf.gz` file.
 #' @usage
-#'  filterLargeVCF(VCFin = "", VCFout = VCFout,
+#'  filterLargeVCF(VCFin = VCFin, VCFout = VCFout,
 #'                 Chr = Chr, POS = POS, override = TRUE)
 #' @param VCFin Path of input `*.vcf/*.vcf.gz` file.
-#' @param VCFout Path or path vector of output `*.vcf/*.vcf.gz` file.
-#' @param Chr a single `CHROM` name or `CHROM` names vector.
-#' @param POS a vector consist with `start` and `end` position or a list
-#'  with length equal to `Chr`, each element consist with `start` and `end`
-#'  position.
+#' @param VCFout Path(s) of output `*.vcf/*.vcf.gz` file.
+#' @param Chr a single CHROM name or CHROM names vector.
+#' @param POS a vector consist with start and end position or a list
+#'  with length equal to `Chr`.
 #' @param override whether override existed file or not, default as `TRUE`.
 #' @details
-#' This package import vcfs with `vcfR` which is more efficient to
-#' import/manipulate vcf in R. However, import a large vcf file is time and
+#' This package import VCF files with 'vcfR' which is more efficient to
+#' import/manipulate VCF files in 'R'. However, import a large VCF file is time and
 #' memory consuming. It's suggested that filter/extract variants in target
-#' range with `filterLargeVCF`.
+#' range with `filterLargeVCF()`.
 #'
 #' When filter/extract multi genes/ranges, the parameter of `Chr` and `POS`
 #' must have equal length. Results will save to a single file if the user
-#' provide a single file path or save to multiple vcf files when a equal length
+#' provide a single file path or save to multiple VCF file(s) when a equal length
 #' vector consist with file paths is provided.
 #'
-#' However, if you have hundreds gene/ranges need to extract from a very
-#' large VCF, it's prefer to process with other linux tools in a script
-#' on server such as: `vcftools` and `bcftools`.
+#' However, if you have hundreds gene/ranges need to extract from very
+#' large VCF file(s), it's prefer to process with other linux tools in a script
+#' on server, such as: 'vcftools' and 'bcftools'.
 #' @examples
 #' \dontrun{
 #'  # extract a single gene/range from large vcf
@@ -46,10 +45,10 @@
 #'                            c(27341,28949),
 #'                            c(38469,40344)),
 #'                 override = TRUE)
-#'
 #' }
+#' @return No return value
 #' @export
-filterLargeVCF <- function(VCFin = "",
+filterLargeVCF <- function(VCFin = VCFin,
                            VCFout = VCFout,
                            Chr = Chr,
                            POS = POS,

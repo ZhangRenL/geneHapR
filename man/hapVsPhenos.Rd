@@ -15,10 +15,10 @@ hapVsPhenos(hap,
             res = res, ...)
 }
 \arguments{
-\item{hap}{object of "hapResult" class, generate with\code{vcf2hap()} or
+\item{hap}{object of hapResult class, generate with\code{vcf2hap()} or
 \code{seqs2hap()}}
 
-\item{pheno}{object of "data.frame" class, imported by \code{import_pheno()}}
+\item{pheno}{object of data.frame class, imported by \code{import_pheno()}}
 
 \item{outPutSingleFile}{\code{TRUE} or \code{FALSE} indicate whether put all figs
 into to each pages of single file or generate multi-files.
@@ -43,7 +43,10 @@ will added for each file name/path.}
 bitmap file, if a positive integer. Also used for units other than the
 default, and to convert points to pixels.}
 
-\item{...}{options will pass to ggpubr}
+\item{...}{options will pass to \code{ggpubr()}}
+}
+\value{
+No return value
 }
 \description{
 hapVsPhenos
@@ -57,7 +60,7 @@ hapVsPhenos(hap,
             outPutSingleFile = TRUE,
             hapPrefix = "H",
             title = "Seita.0G000000",
-            file = "mypheno.tiff",
+            file = file,
             width = 12,
             height = 8,
             res = 300)

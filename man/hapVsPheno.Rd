@@ -12,12 +12,12 @@ hapVsPheno(hap,
            minAcc = 5, ...)
 }
 \arguments{
-\item{hap}{object of "hapResult" class, generate with\code{vcf2hap()} or
+\item{hap}{object of hapResult class, generate with\code{vcf2hap()} or
 \code{seqs2hap()}}
 
-\item{pheno}{object of "data.frame" class, imported by \code{import_pheno()}}
+\item{pheno}{object of data.frame class, imported by \code{import_pheno()}}
 
-\item{phenoName}{pheno name for plot, should be one column name of \code{pheno}}
+\item{phenoName}{pheno name for plot, should be one column name of pheno}
 
 \item{hapPrefix}{prefix of hapotypes, default as "H"}
 
@@ -30,7 +30,7 @@ plot or not. Default as \code{TRUE}}
 not be compared with others or be ploted. Should not less than 3 due to the
 t-test will meaninglessly. default as 5}
 
-\item{...}{options will pass to ggpubr}
+\item{...}{options will pass to \code{ggpubr()}}
 }
 \value{
 list. A list contains a character vector with Haps were applied
@@ -43,12 +43,16 @@ hapVsPheno
 }
 \examples{
 
-data("geneHap_test")
-hap <- vcf2hap(vcf,hyb_remove = TRUE, na.drop = TRUE)
+\donttest{
+data("geneHapR_test")
+hap <- hapResult
 # plot the figs directly
-hapVsPheno(hap = hap,pheno = pheno,phenoName = "GrainWeight.2021",minAcc = 3)
+hapVsPheno(hap = hap,
+           pheno = pheno,
+           phenoName = "GrainWeight.2021",
+           minAcc = 3)
 
-#do not merge the files
+# do not merge the files
 results <- hapVsPheno(hap = hap,
                       pheno = pheno,
                       phenoName = "GrainWeight.2021",
@@ -56,15 +60,5 @@ results <- hapVsPheno(hap = hap,
                       mergeFigs = FALSE)
 plot(results$fig_pvalue)
 plot(results$fig_Violin)
-
-\dontrun{
-# generate multi figs in a 'for' work folw
-pheno$GrainWeight.2022 = pheno$GrainWeight.2021 + c(1:nrow(pheno))
-for(i in colnames(pheno)){
-    results <- hapVsPheno(hap = hap, pheno = pheno,phenoName = i,minAcc = 3)
-    png(paste0(i,".png"))
-    plot(results$figs)
-dev.off()
-}
 }
 }

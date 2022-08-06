@@ -1,5 +1,3 @@
-# file Checked
-# checked
 #' @name hapVsPheno
 #' @title hapVsPheno
 #' @usage
@@ -11,12 +9,16 @@
 #'            minAcc = 5, ...)
 #' @examples
 #'
-#' data("geneHap_test")
-#' hap <- vcf2hap(vcf,hyb_remove = TRUE, na.drop = TRUE)
+#' \donttest{
+#' data("geneHapR_test")
+#' hap <- hapResult
 #' # plot the figs directly
-#' hapVsPheno(hap = hap,pheno = pheno,phenoName = "GrainWeight.2021",minAcc = 3)
+#' hapVsPheno(hap = hap,
+#'            pheno = pheno,
+#'            phenoName = "GrainWeight.2021",
+#'            minAcc = 3)
 #'
-#' #do not merge the files
+#' # do not merge the files
 #' results <- hapVsPheno(hap = hap,
 #'                       pheno = pheno,
 #'                       phenoName = "GrainWeight.2021",
@@ -24,21 +26,11 @@
 #'                       mergeFigs = FALSE)
 #' plot(results$fig_pvalue)
 #' plot(results$fig_Violin)
-#'
-#' \dontrun{
-#' # generate multi figs in a 'for' work folw
-#' pheno$GrainWeight.2022 = pheno$GrainWeight.2021 + c(1:nrow(pheno))
-#' for(i in colnames(pheno)){
-#'     results <- hapVsPheno(hap = hap, pheno = pheno,phenoName = i,minAcc = 3)
-#'     png(paste0(i,".png"))
-#'     plot(results$figs)
-#' dev.off()
 #' }
-#' }
-#' @param hap object of "hapResult" class, generate with`vcf2hap()` or
+#' @param hap object of hapResult class, generate with`vcf2hap()` or
 #' `seqs2hap()`
-#' @param pheno object of "data.frame" class, imported by `import_pheno()`
-#' @param phenoName pheno name for plot, should be one column name of `pheno`
+#' @param pheno object of data.frame class, imported by `import_pheno()`
+#' @param phenoName pheno name for plot, should be one column name of pheno
 #' @param hapPrefix prefix of hapotypes, default as "H"
 #' @param title a charater which will used for figure title
 #' @param mergeFigs bool type, indicate whether merge the heat map and box
@@ -46,7 +38,7 @@
 #' @param minAcc If observations number of a Hap less than this number will
 #' not be compared with others or be ploted. Should not less than 3 due to the
 #' t-test will meaninglessly. default as 5
-#' @param ... options will pass to ggpubr
+#' @param ... options will pass to `ggpubr()`
 #' @importFrom stats na.omit t.test
 #' @importFrom rlang .data
 #' @export
@@ -101,7 +93,7 @@ hapVsPheno <- function(hap,
     hps <- paste0(names(hps), "(", hps, ")")
     names(hps) <- hpsnm
 
-    # T 检验
+    # T test
     plotHap <- c()
     my_comparisons <- list()
     T.Result <- matrix(nrow = length(hpsnm), ncol = length(hpsnm))
@@ -143,7 +135,7 @@ hapVsPheno <- function(hap,
         # ggplot
 
         if (nrow(T.Result) > 1)  {
-            # 获得矩阵的上三角或下三角
+            # get upper or lower tri
             T.Result[lower.tri(T.Result)] = NA
         }
         melResult <- reshape2::melt(T.Result, na.rm = TRUE)
@@ -193,7 +185,7 @@ hapVsPheno <- function(hap,
     } else
         fig1 <- ggplot2::ggplot() + ggplot2::theme_minimal()
 
-    # 作图，箱线图
+    # boxplot
     data <- phenop[phenop$Hap %in% plotHap,]
     data <- data[order(data$Hap, decreasing = FALSE),]
 
@@ -222,9 +214,9 @@ hapVsPheno <- function(hap,
             add = "boxplot",
             ...
         )
-    fig2 <- fig2 +  # 不要动
+    fig2 <- fig2 +  # do not modify here
         #    stat_compare_means(label.y = max(data[,2]))+
-        # 去掉这行就没有比较了(Kruskal-Wallis test)
+        #    no comparision by remove this line (Kruskal-Wallis test)
         ggplot2::ggtitle(label = title) +
         ggplot2::theme(
             plot.subtitle = ggplot2::element_text(hjust = 0.5),
@@ -259,7 +251,7 @@ hapVsPheno <- function(hap,
 }
 
 
-# checked
+
 #' @name hapVsPhenos
 #' @title hapVsPhenos
 #' @usage
@@ -296,7 +288,7 @@ hapVsPheno <- function(hap,
 #'             outPutSingleFile = TRUE,
 #'             hapPrefix = "H",
 #'             title = "Seita.0G000000",
-#'             file = "mypheno.tiff",
+#'             file = file,
 #'             width = 12,
 #'             height = 8,
 #'             res = 300)
@@ -304,7 +296,7 @@ hapVsPheno <- function(hap,
 #' @importFrom stats na.omit t.test
 #' @import grDevices
 #' @export
-#' @return NULL
+#' @return No return value
 hapVsPhenos <- function(hap,
                         pheno,
                         outPutSingleFile = TRUE,
@@ -315,7 +307,11 @@ hapVsPhenos <- function(hap,
                         height = 8,
                         res = res,
                         ...) {
-    # 表型关联
+#                        filename.prefix = "pheno",
+#                        filename.surfix = "pdf",
+#                        filename.sep = "_",
+
+    # pheno association
     if (missing(hap))
         stop("hap is missing!")
     if (missing(pheno))

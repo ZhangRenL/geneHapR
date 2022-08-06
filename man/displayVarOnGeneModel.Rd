@@ -2,7 +2,7 @@
 % Please edit documentation in R/hapVisualization.R
 \name{displayVarOnGeneModel}
 \alias{displayVarOnGeneModel}
-\title{displayVarOnGeneModel}
+\title{Display Variants on Gene Model}
 \usage{
 displayVarOnGeneModel(gff,
                       hapSummary,
@@ -14,33 +14,36 @@ displayVarOnGeneModel(gff,
 \arguments{
 \item{gff}{gff}
 
-\item{hapSummary}{ouput of hap_summary(), a data.frame consistant
-with 4 metarows: Chr, POS, Allele and ANN, and each genotype of each hap}
+\item{hapSummary}{object of hapSummary class}
 
-\item{Chr}{Chr, it will use the first Chr in the meta rows by default}
+\item{Chr}{the chromsome name.
+If missing, the first element in the hapSummary will be used}
 
-\item{startPOS}{If missing, will use the min position
-in the second meta rows by default}
+\item{startPOS}{If missing, will use the min position in hapSummary}
 
-\item{endPOS}{If missing, will use the max position
-in the second meta rows by default}
+\item{endPOS}{If missing, will use the max position in hapSummary}
 
-\item{type}{character. Could be circle, pie, pin, pie.stack or flag}
+\item{type}{character. Could be "circle", "pie", "pin",
+"pie.stack" or "flag"}
 
-\item{cex}{cex will control the size of circle.}
+\item{cex}{a numeric control the size of circle}
 
-\item{CDS_h, fiveUTR_h, threeUTR_h}{The height of CDS 5'UTR and 3'UTR}
+\item{CDS_h, fiveUTR_h, threeUTR_h}{The height of CDS 5'UTR and 3'UTR
+in gene model}
+}
+\value{
+No return value
 }
 \description{
-displayVarOnGeneModel
+show variants on gene model using hapSummary and gene annotations
 }
 \examples{
-
-data("geneHap_test")
-hap <- vcf2hap(vcf,hyb_remove = TRUE, na.drop = TRUE)
-hapSummary <- hap_summary(hap)
+\donttest{
+data("geneHapR_test")
+hapSummary <- hap_summary(hapResult)
 displayVarOnGeneModel(gff, hapSummary,
-                  startPOS = 4100,
-                  endPOS = 8210,
-                  cex = 0.75)
+                      startPOS = 4100,
+                      endPOS = 8210,
+                      cex = 0.75)
+}
 }

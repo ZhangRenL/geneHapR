@@ -12,14 +12,14 @@ filter_vcf(vcf, gff = gff,
            cusTyp = c("CDS", "five_prime_UTR", "three_prime_UTR"))
 }
 \arguments{
-\item{vcf}{object of \code{vcfR} class, vcf file imported by \code{import_vcf()}}
+\item{vcf}{object of vcfR class, VCF file imported by \code{import_vcf()}}
 
-\item{gff}{object of \code{GRanges} class, genome annotations imported by
+\item{gff}{object of GRanges class, genome annotations imported by
 \code{import_gff()}}
 
 \item{mode}{filter mode, one of "POS", "type", "both"}
 
-\item{Chr}{CHROM name, needed if mode set to "POS" or "both"}
+\item{Chr}{chromosome name, needed if mode set to "POS" or "both"}
 
 \item{start}{start position, needed if mode set to "POS" or "both"}
 
@@ -32,12 +32,16 @@ if \code{type} was set to "custom", then \code{custom_type} is needed.}
 \item{cusTyp}{character vector, custom filter type,
 needed if \code{type} set to "custom"}
 }
+\value{
+vcfR
+}
 \description{
-filter vcf by gff annotation or by position or both
+filter VCF by GFF annotation or by position or both
 }
 \examples{
+\dontrun{
 # filtet hap
-data("geneHap_test")
+data("geneHapR_test")
 vcf_f1 <- filter_vcf(vcf, mode = "POS",
                     Chr = "scaffold_1",
                     start = 4300, end = 5890)
@@ -50,5 +54,5 @@ vcf_f3 <- filter_vcf(vcf, mode = "both",
                     start = 4300, end = 5890,
                     gff = gff,
                     type = "CDS")
-
+}
 }
