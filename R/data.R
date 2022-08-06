@@ -22,6 +22,17 @@ NULL
 
 
 #' Datasets
+#' `hapResult` contains a example of unaligned DNA sequences used for testing
+#'
+#'
+#' @name DataSet
+#' @aliases hapResult
+#' @docType data
+#' @keywords datasets
+NULL
+
+
+#' Datasets
 #'
 #' `pheno` contains a simulated test pheno data used for test of comparison
 #' between different haps

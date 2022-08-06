@@ -2,7 +2,7 @@
 % Please edit documentation in R/IO.R
 \name{import_gff}
 \alias{import_gff}
-\title{import_gff}
+\title{import annotations in GFF format}
 \usage{
 import_gff(gffFile, format = "GFF")
 }
@@ -16,7 +16,7 @@ or "gtf". Default as GFF}
 GRange object
 }
 \description{
-import genome annotations in \code{gff/gff3} format
+import genome annotations in GFF/GFF3 format
 }
 \examples{
 \dontrun{

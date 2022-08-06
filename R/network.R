@@ -121,12 +121,10 @@ get_hapNet <-
 #' \code{\link[geneHapR:get_hapNet]{get_hapNet()}}.
 #' @examples
 #'
+#' \donttest{
 #' # load sample datasets
-#' data("geneHap_test")
-#'
-#' # generate haplotype result from vcfR
-#' hap <- vcf2hap(vcf)
-#' hapSummary <- hap_summary(hap)
+#' data("geneHapR_test")
+#' hapSummary <- hap_summary(hapResult)
 #'
 #' # calculate haploNet
 #' hapNet <- get_hapNet(hapSummary,
@@ -145,6 +143,8 @@ get_hapNet <-
 #'            link.width = 2, # link widths
 #'            show.mutation = 2, # mutation types one of c(0,1,2,3)
 #'            legend = FALSE) # legend position
+#' }
+#' @return No return value
 #' @export
 plotHapNet <- function(hapNet,
                        size = "freq",

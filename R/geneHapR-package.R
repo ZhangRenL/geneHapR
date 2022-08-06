@@ -1,6 +1,6 @@
 #' @description
-#' This packages provides a suite for one or multi-genes haplotype analysis,
-#' visualizion and phenotypes analysis.
+#' This packages provides a suite for gene(s) haplotype analysis,
+#' phenotypes association and visualization of geography distribution.
 #' @details
 #' The haplotype analysis requires sequences such as fasta which could be
 #' import by \link[geneHapR:import_vcf]{import_vcf}
@@ -11,7 +11,7 @@
 #' **Vignettes** (documentation) can be listed with:
 #' `browseVignettes('geneHapR')`.
 #'
-#' Several small example **datasets** are included in geneHapR.
+#' Several small example **datasets** are included in 'geneHapR'.
 #' **vcf** and **seqs** provide a data set for test of `seq2hap()` and
 #' `seqs2hap()`.
 #' **gff** provide a data set for visualization mutations on gene model.

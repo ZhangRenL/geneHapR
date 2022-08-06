@@ -8,29 +8,33 @@
 \usage{
 gffSetATGas0(gff = gff, hap = hap,
              geneID = geneID,
-             Chr = Chr, POS = c(start, end))
+             Chr = Chr, POS = POS)
 
 hapSetATGas0(gff = gff, hap = hap,
              geneID = geneID,
-             Chr = Chr, POS = c(start, end))
+             Chr = Chr, POS = POS)
 }
 \arguments{
-\item{gff}{gff}
+\item{gff}{gene annotations}
 
-\item{hap}{hap results}
+\item{hap}{object of hapResult or hapSummary class}
 
 \item{geneID}{geneID}
 
-\item{Chr}{Chrom name}
+\item{Chr}{Chromsome name}
 
-\item{POS}{vector defined by \code{start} and \code{end} position}
+\item{POS}{vector consist with start and end position}
 }
 \value{
 \code{gffSetATGas0}: filtered gff with position of ATG was as zero
 
-\code{hapSetATGas0}: hap results only position of ATG was set as zero
+\code{hapSetATGas0}: hap results with position of ATG was set as zero
 }
 \description{
+Set position of ATG as zero in hap result and gff annotation.
+The upstream was negative while the gene range and downstream was positive.
+}
+\details{
 Filter hap result and gff annotation according to provided information.
 And then set position of ATG as zero in hap result and gff annotation.
 The upstream was negative while the gene range and downstream was positive.
@@ -39,27 +43,23 @@ The upstream was negative while the gene range and downstream was positive.
 The site in hap result exceed the selected range will be \strong{dropped}.
 }
 \examples{
+\donttest{
 # load example dataset
-data("geneHap_test")
+data("geneHapR_test")
 
-# generate hap results
-hap <- vcf2hap(vcf)
 
 # set position of ATG as zero in gff
-newgff <- gffSetATGas0(gff = gff, hap = hap,
+newgff <- gffSetATGas0(gff = gff, hap = hapResult,
                        geneID = "test1G0387",
                        Chr = "scaffold_1",
                        POS = c(4300, 7910))
 
 # set position of ATG as zero in hap results
-newhap <- hapSetATGas0(gff = gff, hap = hap,
-                       geneID = "test1G0387",
-                       Chr = "scaffold_1",
-                       POS = c(4300, 7910))
-
-# visualization mutations on gene model with newgff and newhap
-displayVarOnGeneModel(gff = newgff, hapSummary = newhap)
-
+newhapResult <- hapSetATGas0(gff = gff, hap = hapResult,
+                             geneID = "test1G0387",
+                             Chr = "scaffold_1",
+                             POS = c(4300, 7910))
+}
 }
 \seealso{
 \code{\link[geneHapR:displayVarOnGeneModel]{displayVarOnGeneModel()}}

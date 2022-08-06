@@ -5,6 +5,7 @@
 \alias{DataSet}
 \alias{gff}
 \alias{seqs}
+\alias{hapResult}
 \alias{pheno}
 \alias{vcf}
 \alias{AccINFO}

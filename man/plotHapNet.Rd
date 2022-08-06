@@ -63,17 +63,18 @@ If \code{TRUE}, the user is asked to click where to draw the legend.}
 
 \item{...}{other parameters will pass to \code{plot} function}
 }
+\value{
+No return value
+}
 \description{
 plotHapNet
 }
 \examples{
 
+\donttest{
 # load sample datasets
-data("geneHap_test")
-
-# generate haplotype result from vcfR
-hap <- vcf2hap(vcf)
-hapSummary <- hap_summary(hap)
+data("geneHapR_test")
+hapSummary <- hap_summary(hapResult)
 
 # calculate haploNet
 hapNet <- get_hapNet(hapSummary,
@@ -92,6 +93,7 @@ plotHapNet(hapNet,
            link.width = 2, # link widths
            show.mutation = 2, # mutation types one of c(0,1,2,3)
            legend = FALSE) # legend position
+}
 }
 \seealso{
 \code{\link[geneHapR:hap_summary]{hap_summary()}} and

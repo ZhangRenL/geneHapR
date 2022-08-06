@@ -14,34 +14,34 @@ sites(hap)
 \arguments{
 \item{hap}{object of \code{hapResult} or \code{hapSummary} class}
 
-\item{tag}{tag names. Usually is a single word used before "="}
+\item{tag}{tag names, usually is a single word used before "="}
 
 \item{values}{annotation for each site.
-Length of values must be equal with sites in hap result}
+Length of values must be equal with sites in hapResult}
 
-\item{replace}{whether replace origin INFOs in hap result or not.
+\item{replace}{whether replace origin INFOs in hapResult or not.
 Default as FALSE}
 
 \item{sep}{a character string to separate the terms.  Not
     \code{\link[base]{NA_character_}}.}
 }
+\value{
+object of hapSummary or hapResult class with added/replaced INFOs
+}
 \description{
-add annotations to \code{INFO} fields used for \code{plotHapTable()}
-
-add annotations to \code{INFO} fields used for \code{plotHapTable()}
+add annotations to INFO fields used for \code{plotHapTable()}
 }
 \examples{
-\dontrun{
-data("geneHap_test")
-hap <- vcf2hap(vcf)
+\donttest{
+data("geneHapR_test")
 
 # length of values must be equal with number of sites in hap result
 values <- paste0("newInfo",c(1:9))
-hap <- addINFO(hap, tag = "new", values = values, replace = TRUE)
+hapResult <- addINFO(hapResult, tag = "new", values = values, replace = TRUE)
 }
-\dontrun{
+\donttest{
 # check how many sites were concluded in hapResult/hapSummary
-sites(hap)
+sites(hapResult)
 }
 }
 \seealso{

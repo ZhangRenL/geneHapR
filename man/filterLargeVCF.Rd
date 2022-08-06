@@ -2,42 +2,44 @@
 % Please edit documentation in R/preprocessbigVCF.R
 \name{filterLargeVCF}
 \alias{filterLargeVCF}
-\title{Pre-process large vcf}
+\title{Pre-process large VCF file(s)}
 \usage{
-filterLargeVCF(VCFin = "", VCFout = VCFout,
+filterLargeVCF(VCFin = VCFin, VCFout = VCFout,
                 Chr = Chr, POS = POS, override = TRUE)
 }
 \arguments{
 \item{VCFin}{Path of input \verb{*.vcf/*.vcf.gz} file.}
 
-\item{VCFout}{Path or path vector of output \verb{*.vcf/*.vcf.gz} file.}
+\item{VCFout}{Path(s) of output \verb{*.vcf/*.vcf.gz} file.}
 
-\item{Chr}{a single \code{CHROM} name or \code{CHROM} names vector.}
+\item{Chr}{a single CHROM name or CHROM names vector.}
 
-\item{POS}{a vector consist with \code{start} and \code{end} position or a list
-with length equal to \code{Chr}, each element consist with \code{start} and \code{end}
-position.}
+\item{POS}{a vector consist with start and end position or a list
+with length equal to \code{Chr}.}
 
 \item{override}{whether override existed file or not, default as \code{TRUE}.}
+}
+\value{
+No return value
 }
 \description{
 Filter/extract one or multiple gene(s)/range(s) from a large
 \verb{*.vcf/*.vcf.gz} file.
 }
 \details{
-This package import vcfs with \code{vcfR} which is more efficient to
-import/manipulate vcf in R. However, import a large vcf file is time and
+This package import VCF files with 'vcfR' which is more efficient to
+import/manipulate VCF files in 'R'. However, import a large VCF file is time and
 memory consuming. It's suggested that filter/extract variants in target
-range with \code{filterLargeVCF}.
+range with \code{filterLargeVCF()}.
 
 When filter/extract multi genes/ranges, the parameter of \code{Chr} and \code{POS}
 must have equal length. Results will save to a single file if the user
-provide a single file path or save to multiple vcf files when a equal length
+provide a single file path or save to multiple VCF file(s) when a equal length
 vector consist with file paths is provided.
 
-However, if you have hundreds gene/ranges need to extract from a very
-large VCF, it's prefer to process with other linux tools in a script
-on server such as: \code{vcftools} and \code{bcftools}.
+However, if you have hundreds gene/ranges need to extract from very
+large VCF file(s), it's prefer to process with other linux tools in a script
+on server, such as: 'vcftools' and 'bcftools'.
 }
 \examples{
 \dontrun{
@@ -57,6 +59,5 @@ on server such as: \code{vcftools} and \code{bcftools}.
                            c(27341,28949),
                            c(38469,40344)),
                 override = TRUE)
-
 }
 }

@@ -2,16 +2,20 @@
 % Please edit documentation in R/IO.R
 \name{write.hap}
 \alias{write.hap}
-\title{save hap results on disk}
+\title{save hap results to disk}
 \usage{
 write.hap(x, file = file, sep = "\t")
 }
 \arguments{
-\item{x}{objec of \code{haplotypes} or \code{hapSummary} class}
+\item{x}{objec of hapResult or hapSummary class}
 
-\item{file}{file path, where to save the hap result}
+\item{file}{file path, where to save the hap result/summary}
 
-\item{sep}{the field separator string. Values within each row of x are separated by this string.}
+\item{sep}{the field separator string. Values within each row of x are separated by this string.
+Default as "\verb{\\t}"}
+}
+\value{
+No return value
 }
 \description{
 This function will write hap result into a txt file.
@@ -24,7 +28,7 @@ Hap names were in the first column.
 The differences are:
 Hap summary result have a freq column while hap result not.
 Rows represent haplotypes in hap summary result, while rows represent accessions in hap result.
-In addtion, the accessions of each haplotype in hap summary result were separated by ';'.
+In addtion, the accessions of each haplotype in hap summary result were separated by ";".
 }
 \examples{
 \dontrun{

@@ -17,41 +17,40 @@ plotHapTable(hapSummary,
              ALLELE.color = "grey90")
 }
 \arguments{
-\item{hapSummary}{hapSummary}
+\item{hapSummary}{object of hapSummary class}
 
-\item{hapPrefix}{hapPrefix}
+\item{hapPrefix}{prefix of haplotype names. Default as "H"}
 
-\item{title}{mainTitle}
+\item{title}{the main title of the final figure}
 
-\item{geneName}{used for filter INFO filed of ANN}
+\item{geneName}{character, will be used for filter INFO filed of ANN}
 
-\item{INFO_tag}{\code{INFO} was take from
-\strong{VCF} file. The annotations in the INFO field are represented as tag-value
-pairs, where the tag and value are separated by an equal sign, ie '=', and
-pairs are separated by colons, ie ';'.
+\item{INFO_tag}{The annotations in the INFO field are represented as tag-value
+pairs, where the tag and value are separated by an equal sign, ie "=", and
+pairs are separated by colons, ie ";".
 For more information please see details.}
 
 \item{tag_split}{usually, the value of tag-value contains one information.
-However, if a tag contains more than one fields, eg \code{ANN}, then \code{tag_split} is
-needed. When \code{INFO_tag} was set as \code{ANN} or \code{SNPEFF}, \code{tag_split} will be set
+However, if a tag contains more than one fields, eg "ANN", then \code{tag_split} is
+needed. When \code{INFO_tag} was set as "ANN" or "SNPEFF", \code{tag_split} will be set
 as "|" by default, see details.}
 
 \item{tag_field}{integer, if a tag-value contains more than one fields,
 user need to specified which field should be display. If \code{tag_field} set as
-\code{0}, the whole contents will be displayed. Default as \code{0}.}
+0, the whole contents will be displayed. Default as 0.}
 
 \item{tag_name}{tag name is displayed in Hap figure. If \code{tag_name} is
 missing, will take the value of \code{INFO_tag}.}
 
-\item{displayIndelSize}{display indels with max size of displayIndelSize,
-If set as 0, all indels will convert into 'i*'.}
+\item{displayIndelSize}{display indels with max size of \code{displayIndelSize},
+If set as 0, all indels will convert into "i*" of which "i" represents "indel".}
 
-\item{angle}{angle of coordinate, should be one of 0, 45 and 90}
+\item{angle}{the angle of coordinates, should be one of 0, 45 and 90}
 
-\item{replaceMultiAllele}{whether to replace \code{MultiAllele} with 'T*',
+\item{replaceMultiAllele}{whether to replace MultiAllele with "T*",
 default as \code{TRUE}.}
 
-\item{ALLELE.color}{ALLELE.color, default is grey90}
+\item{ALLELE.color}{the color of ALLELE row, default as "grey90"}
 }
 \value{
 ggplot2 object
@@ -61,18 +60,19 @@ display hap result as a table-like figure
 }
 \details{
 In \strong{VCF} files, the INFO field are represented as tag-value
-pairs, where the tag and value are separated by an equal sign, ie '=', and
-pairs are separated by colons, ie ';'.
+pairs, where the tag and value are separated by an equal sign, ie "=", and
+pairs are separated by colons, ie ";".
 
-If hapSummarys were generated from VCF, \code{INFO} is null.
-If hapSummarys were generated from VCF, \code{INFO} were same as in source vcf.
+If hapSummarys were generated from sequences, INFO row is null.
+If hapSummarys were generated from VCF, INFO was take from the INFO column
+in the source VCF file.
 Some tag-values may contains more than one value separated by
-"|", eg: "ANN" or "snpEFF" added by snpeff or other software. For those
-fields we need specified value of \code{tag_field} and \code{tag_split}, it's suggest
-specified the value of \code{tag_name} for display in figure.
+"|", eg: "ANN" or "snpEFF" added by 'snpeff' or other software. For those
+fields we need specified value of \code{tag_field = "ANN"} and \code{tag_split = "[\\|]"},
+it's suggest specified the value of \code{tag_name} for display in figure.
 
-\code{snpeff}, a toolbox for genetic variant annotation and functional effect
-prediction, will add annotations to "INFO" filed in vcf file under a tag
+'snpeff', a toolbox for genetic variant annotation and functional effect
+prediction, will add annotations to INFO filed in VCF file under a tag
 named as "ANN". The annotations contains several fields separated by "|".
 eg:
 \enumerate{
@@ -91,9 +91,8 @@ eg:
 ... ...
 }
 
-However, the \code{INFO} in hap results may missing annotations that we need.
-In this case, we can custom INFOs in hapSummarys with \code{addINFO()} or
-\code{replaceINFO()}.
+However, the INFO in hapResults may missing annotations that we need.
+In this case, we can custom INFOs in hapSummarys with \code{addINFO()}.
 Once the needed annotations were included in hap results, we can display
 them with \code{plotHapTable()} by specify the value of \code{INFO_tag}.
 }

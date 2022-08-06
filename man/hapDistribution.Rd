@@ -12,7 +12,7 @@ hapDistribution(hap, AccINFO, LON.col, LAT.col, hapNames,
                 ...)
 }
 \arguments{
-\item{hap}{an object of \code{hapResult} class}
+\item{hap}{an object of hapResult class}
 
 \item{AccINFO}{a data.frame contains accession information}
 
@@ -51,25 +51,30 @@ longitude(\code{LON.col}) and latitude(\code{LAT.col})}
 \item{zColours}{colours to apply to the pie section for each attribute column}
 
 \item{legend}{a keyword specified the position of legend, one of
-"bottomright", "bottom", "bottomleft", "left", "topleft", "top", "topright", "right" and "center"}
+"bottomright", "bottom", "bottomleft", "left", "topleft", "top", "topright", "right" and "center";
+or a numeric vector of length two contains x,y coordinate of the legend}
 
 \item{symbolSize}{a numeric specified the symbol size}
 
 \item{ratio}{the ratio of Y to N in the output map, set to 1 as default}
 
-\item{cex.legend}{character expansion factor for legend relative to current par("cex")}
+\item{cex.legend}{character expansion factor for legend relative to current \code{par("cex")}}
 
 \item{...}{Extra arguments passed to \code{polygon} or \code{lines}. Of particular interest may be the options \code{border} and\code{lty} that control the color and line type of the polygon borders when \code{fill = TRUE}.}
 }
+\value{
+No return value
+}
 \description{
-display geography distribution
+show distribution of intereted haplotypes on maps
 }
 \examples{
-data("geneHapR")
-hapResult <- vcf2hap(vcf)
+\donttest{
+data("geneHapR_test")
 hapDistribution(hapResult,
                 AccINFO = AccINFO,
                 LON.col = "longitude",
                 LAT.col = "latitude",
                 hapNames = c("H001", "H002", "H003"))
+}
 }

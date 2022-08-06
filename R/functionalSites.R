@@ -12,7 +12,6 @@
 #' siteFunEff(hap, pheno, phenoNames)
 #' @examples
 #' data("geneHapR_test")
-#' hapResult <- vcf2hap(vcf)
 #'
 #' # calculate site functional effect
 #' funResults <- siteFunEff(hapResult, pheno, names(pheno))

@@ -1,11 +1,8 @@
-# File Checked
-
-# Checked
 #' @name import_vcf
 #' @title import vcf from file
 #' @author Zhangrenl
 #' @usage import_vcf(vcf_file = vcf_file, ...)
-#' @description Read and files in the `*.vcf` structured text format,
+#' @description import *.vcf structured text format,
 #' as well as the compressed `*.vcf.gz` format.
 #' @examples
 #' \dontrun{
@@ -13,8 +10,8 @@
 #' vcf <- import_vcf(file = "test.vcf.gz")
 #' }
 #' @importFrom vcfR read.vcfR
-#' @param vcf_file file path of vcf
-#' @param ... pass to vcfR::read.vcfR
+#' @param vcf_file file path of VCF file
+#' @param ... pass to `vcfR::read.vcfR()`
 #' @usage import_vcf(vcf_file = vcf_file, ...)
 #' @export
 #' @seealso
@@ -26,7 +23,6 @@ import_vcf <- function(vcf_file = vcf_file, ...) {
 }
 
 
-# Checked
 #' @name import_AccINFO
 #' @title imports accession information from file
 #' @usage
@@ -36,11 +32,11 @@ import_vcf <- function(vcf_file = vcf_file, ...) {
 #' accession group, location from a tab delimed table file
 #' @details
 #' First column should be Accessions;
-#' phenos should begin from second col,
+#' phenos/accession information should begin from second column,
 #' phenoName/group/locations should located at the first row,
 #' If a dot '.' is located in pheno name, then
 #' the part before the dot will be set as y axis name
-#' while the followed will be set as foot of the fig.
+#' and the latter will be set as foot when plot figures.
 #' @examples
 #' \dontrun{
 #'
@@ -48,12 +44,10 @@ import_vcf <- function(vcf_file = vcf_file, ...) {
 #' }
 #' @importFrom utils read.delim
 #' @param file file path, this file should be a tab delimed table
-#' @param comment.char comment.char, start with comment.char will be ignored
-#' @param ... parameters will pass to read.delim
 #' @inheritParams utils::read.delim
 #' @export
-#' @return data.frame, Accession names were set as rownames and cols were
-#' named by pheno names
+#' @return data.frame, Accession names were set as rownames and columns were
+#' named by pheno/info names
 import_AccINFO <- function(file, comment.char = "#",
                            check.names = FALSE, row.names = 1, ...) {
     phenos <- utils::read.delim(
@@ -67,10 +61,10 @@ import_AccINFO <- function(file, comment.char = "#",
 }
 
 
-# Checked
+
 #' @name import_gff
-#' @title  import_gff
-#' @description import genome annotations in `gff/gff3` format
+#' @title  import annotations in GFF format
+#' @description import genome annotations in GFF/GFF3 format
 #' @usage import_gff(gffFile, format = "GFF")
 #' @examples
 #' \dontrun{
@@ -88,29 +82,31 @@ import_gff <- function(gffFile, format = "GFF") {
 }
 
 
-# Checked
+
 #' @name import_seqs
-#' @title  import_seqs
+#' @title  import sequences
+#' @description import DNA sequences in FASTA format
 #' @usage import_seqs(filepath, format = "fasta")
 #' @examples
 #' \dontrun{
 #'    geneSeqs <- import_seqs(filepath = "fastaFilePath", format = "fasta")
 #' }
-#' @param filepath A character vector containing the path(s) to the file(s)
-#' to read or write.
+#' @param filepath A character vector containing the path to the DNA sequences file.
 #' Reading files in gzip format (which usually have the '.gz' extension) is
 #' supported.
 #' *Note* that only DNA supported here.
-#' @param format Either \code{"fasta"} (the default) or \code{"fastq"}
+#' @param format Either "fasta" (the default) or "fastq"
+#' @return object of DNAStringSet class
 #' @export
 import_seqs <- function(filepath, format = "fasta") {
     Biostrings::readDNAStringSet(filepath = filepath, format = format)
 }
 
 
-# Checked
+
 #' @name import_MultipleAlignment
 #' @title import MultipleAlignment
+#' @description import sequences algned results
 #' @usage import_MultipleAlignment(filepath, format = "fasta", type = "DNA")
 #' @examples
 #' \dontrun{
@@ -121,8 +117,9 @@ import_seqs <- function(filepath, format = "fasta") {
 #'                                         format = "fasta",
 #'                                          type = "Protein")
 #' }
-#' @param type one of 'DNA' and 'Protein'
+#' @param type one of "DNA" and "Protein"
 #' @inheritParams Biostrings::readDNAMultipleAlignment
+#' @return DNAMultipleAlignment
 #' @export
 import_MultipleAlignment <- function(filepath,
                                      format = "fasta",
@@ -144,11 +141,11 @@ import_MultipleAlignment <- function(filepath,
 
 # Checked
 #' @name import_hap
-#' @title  import_hap
+#' @title  Import hapResult/hapSummary
 #' @usage import_hap(file, ...)
 #' @description
 #' This function could be used for import hap result or hap summary result.
-#' The type of returned object is decided by hap result format, see details.
+#' The type of returned object is decided by input file, see details.
 #' @details
 #' The hap result and hap summary result have common features.
 #'   The common features of these two types are:
@@ -157,7 +154,7 @@ import_MultipleAlignment <- function(filepath,
 #'   The differences are:
 #'     Hap summary result have a freq column while hap result not.
 #'     Rows represent haplotypes in hap summary result, while rows represent accessions in hap result.
-#'     In addtion, the accessions of each haplotype in hap summary result were separated by ';'.
+#'     In addtion, the accessions of each haplotype in hap summary result were separated by ";".
 #' @examples
 #' \dontrun{
 #'
@@ -192,7 +189,7 @@ import_hap <- function(file, ...) {
     colnms <- c("Hap", POS)
     if (ncol(hap) - length(POS) == 2) {
         colnms <- c(colnms, "Accession")
-        class(hap) <- c("hapResult", "data.frame")
+        class(hap) <- c('hapResult', "data.frame")
     } else if (ncol(hap) - length(POS) == 3) {
         if (is.numeric(hap[, ncol(hap)])) {
             colnms <- c(colnms, "Accession", "freq")
@@ -216,8 +213,8 @@ the 'freq' column (ususlly the last column) contains nonnumeric data.")
 }
 
 
-# Checked
-#' @title save hap results on disk
+
+#' @title save hap results to disk
 #' @name write.hap
 #' @usage write.hap(x, file = file, sep = "\t")
 #' @description
@@ -228,9 +225,11 @@ the 'freq' column (ususlly the last column) contains nonnumeric data.")
 #'
 #' write.hap(hap, file = "hap.txt")
 #' }
-#' @param x objec of `haplotypes` or `hapSummary` class
-#' @param file file path, where to save the hap result
+#' @param x objec of hapResult or hapSummary class
+#' @param file file path, where to save the hap result/summary
 #' @param sep the field separator string. Values within each row of x are separated by this string.
+#' Default as "`\t`"
+#' @return No return value
 #' @export
 write.hap <- function(x, file = file, sep = "\t") {
     nc <- ncol(x)

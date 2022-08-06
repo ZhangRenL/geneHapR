@@ -1,30 +1,28 @@
-# file Checked
-# Checked
 #' @name addINFO
 #' @title Summary hap results
-#' @description add annotations to `INFO` fields used for `plotHapTable()`
+#' @description add annotations to INFO fields used for `plotHapTable()`
 #' @usage
 #' addINFO(hap,
 #'         tag = "", values = values,
 #'         replace = FALSE, sep = ";")
 #' @examples
-#' \dontrun{
-#' data("geneHap_test")
-#' hap <- vcf2hap(vcf)
+#' \donttest{
+#' data("geneHapR_test")
 #'
 #' # length of values must be equal with number of sites in hap result
 #' values <- paste0("newInfo",c(1:9))
-#' hap <- addINFO(hap, tag = "new", values = values, replace = TRUE)
+#' hapResult <- addINFO(hapResult, tag = "new", values = values, replace = TRUE)
 #' }
 #' @seealso
 #' \code{\link[geneHapR:plotHapTable]{plotHapTable()}}
-#' @param hap object of `hapResult` or `hapSummary` class
-#' @param tag tag names. Usually is a single word used before "="
+#' @param hap object of hapResult or hapSummary class
+#' @param tag tag names, usually is a single word used before "="
 #' @param values annotation for each site.
-#' Length of values must be equal with sites in hap result
-#' @param replace whether replace origin INFOs in hap result or not.
+#' Length of values must be equal with sites in hapResult
+#' @param replace whether replace origin INFOs in hapResult or not.
 #' Default as FALSE
 #' @inheritParams base::paste
+#' @return object of hapSummary or hapResult class with added/replaced INFOs
 #' @export
 addINFO <- function(hap,
                     tag = "",
@@ -73,14 +71,12 @@ addINFO <- function(hap,
 }
 
 #' @name addINFO
-#' @title Summary hap results
-#' @description add annotations to `INFO` fields used for `plotHapTable()`
 #' @usage
 #' sites(hap)
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' # check how many sites were concluded in hapResult/hapSummary
-#' sites(hap)
+#' sites(hapResult)
 #' }
 #' @seealso
 #' \code{\link[geneHapR:plotHapTable]{plotHapTable()}}

@@ -10,7 +10,9 @@ import_AccINFO(file, comment.char = "#",
 \arguments{
 \item{file}{file path, this file should be a tab delimed table}
 
-\item{comment.char}{comment.char, start with comment.char will be ignored}
+\item{comment.char}{character: a character vector of length one
+    containing a single character or an empty string.  Use \code{""} to
+    turn off the interpretation of comments altogether.}
 
 \item{check.names}{logical.  If \code{TRUE} then the names of the
     variables in the data frame are checked to ensure that they are
@@ -33,11 +35,11 @@ import_AccINFO(file, comment.char = "#",
     to be \sQuote{automatic} (and not preserved by \code{\link{as.matrix}}).
   }
 
-\item{...}{parameters will pass to read.delim}
+\item{...}{Further arguments to be passed to \code{read.table}.}
 }
 \value{
-data.frame, Accession names were set as rownames and cols were
-named by pheno names
+data.frame, Accession names were set as rownames and columns were
+named by pheno/info names
 }
 \description{
 import accession information including phenotype data,
@@ -45,11 +47,11 @@ accession group, location from a tab delimed table file
 }
 \details{
 First column should be Accessions;
-phenos should begin from second col,
+phenos/accession information should begin from second column,
 phenoName/group/locations should located at the first row,
 If a dot '.' is located in pheno name, then
 the part before the dot will be set as y axis name
-while the followed will be set as foot of the fig.
+and the latter will be set as foot when plot figures.
 }
 \examples{
 \dontrun{

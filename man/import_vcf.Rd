@@ -9,15 +9,15 @@ import_vcf(vcf_file = vcf_file, ...)
 import_vcf(vcf_file = vcf_file, ...)
 }
 \arguments{
-\item{vcf_file}{file path of vcf}
+\item{vcf_file}{file path of VCF file}
 
-\item{...}{pass to vcfR::read.vcfR}
+\item{...}{pass to \code{vcfR::read.vcfR()}}
 }
 \value{
 vcfR object
 }
 \description{
-Read and files in the \verb{*.vcf} structured text format,
+import *.vcf structured text format,
 as well as the compressed \verb{*.vcf.gz} format.
 }
 \examples{

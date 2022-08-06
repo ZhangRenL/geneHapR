@@ -1,10 +1,6 @@
-# TODO
-# 1. add  align fuhnction
-# 2. add  trim function
-# 3. modified seqs2hap function
 #' @name seqs2hap
 #' @title generate hap results from seqs
-#' @description generate hap results from seqs
+#' @description generate hapResults from aligned and trimed sequences
 #' @usage
 #' seqs2hap(seqs,
 #'          Ref = names(seqs)[1],
@@ -12,7 +8,7 @@
 #'          maxGapsPerSeq = 0.25,
 #'          hapPrefix = "H", ...)
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' seqs <- allignSeqs(seqs)
 #' seqs <- trimSeqs(seqs,
 #'          minFlankFraction = 0.1)
@@ -20,21 +16,25 @@
 #'                       Ref = names(seqs)[1],
 #'                       hyb_remove = TRUE, na.drop = TRUE,
 #'                       maxGapsPerSeq = 0.25,
-#'                       hapPrefix = "H", ...)
+#'                       hapPrefix = "H")
 #' }
 #' @importFrom muscle muscle
 #' @importFrom Biostrings letterFrequency width
 #' @importFrom methods as
-#' @param seqs DNAStringSet or DNAMultipleAlignment
-#' @param Ref the reference sequences. Default as the first sequence
-#' @param hapPrefix Prefix of hap names. Default as "H".
+#' @param seqs object of DNAStringSet or DNAMultipleAlignment class
+#' @param Ref the name of reference sequences.
+#' Default as the name of the first sequence
+#' @param hapPrefix prefix of hap names. Default as "H"
 #' @param maxGapsPerSeq value in `[0, 1]` that indicates the maximum
-#' fraction of gaps allowed in each seq after alignment. (default is 0.25)
-#' Seqs with gap percent exceed that will be dropped.
-#' @param hyb_remove whether remove accessions contains hybrid site or not
-#' @param na.drop whether Drop accessions contains "N"
+#' fraction of gaps allowed in each seq after alignment (default as 0.25).
+#' Seqs with gap percent exceed that will be dropped
+#' @param hyb_remove whether remove accessions contains hybrid site or not.
+#' Default as `TRUE`
+#' @param na.drop whether drop sequeces contain "N"
 #' Default as `TRUE`.
 #' @inherit hap_summary examples
+#' @return
+#' object of hapResult class
 #' @export
 seqs2hap <- function(seqs,
                      Ref = names(seqs)[1],
@@ -103,7 +103,7 @@ seqs2hap <- function(seqs,
     hap <- remove_redundancy_col(hap)
 
     # set attributes
-    class(hap) <- unique(c("hapResult", "data.frame"))
+    class(hap) <- unique(c('hapResult', "data.frame"))
     attr(hap, "AccAll") <- accAll
     accRemain <- hap$Accession[hap$Accession != ""]
     attr(hap, "AccRemain") <- accRemain
@@ -116,15 +116,11 @@ seqs2hap <- function(seqs,
     return(hap)
 }
 
-# Checked
+
 #' @name seqs2hap
-#' @description allign Seqs
+#' @description allign imported sequences
 #' @usage allignSeqs(seqs, ...)
-#' @param ... parameters will pass to muscle::muscle() for DNA multi alignment
-#' @examples
-#' \dontrun{
-#' seqs <- allignSeqs(seqs)
-#' }
+#' @param ... parameters will pass to `muscle::muscle()`
 #' @seealso
 #' \code{\link[muscle:muscle]{muscle::muscle()}}
 #' @export
@@ -140,13 +136,13 @@ allignSeqs <- function(seqs, ...) {
 #' trimSeqs(seqs,
 #'          minFlankFraction = 0.1)
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' trimSeqs(seqs,
 #'          minFlankFraction = 0.1)
 #' }
 #' @importFrom Biostrings as.matrix
 #' @param minFlankFraction A value in `[0, 1]` that indicates the minimum
-#' fraction needed to call a gap in the consensus string (default is 0.1).
+#' fraction needed to call a gap in the consensus string (default as 0.1).
 trimSeqs <- function(seqs,
                      minFlankFraction = 0.1) {
     mseqs <- Biostrings::as.matrix(seqs)
