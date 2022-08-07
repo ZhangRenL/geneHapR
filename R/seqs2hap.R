@@ -136,9 +136,8 @@ allignSeqs <- function(seqs, ...) {
 #' trimSeqs(seqs,
 #'          minFlankFraction = 0.1)
 #' @examples
-#' \donttest{
-#' trimSeqs(seqs,
-#'          minFlankFraction = 0.1)
+#' \dontrun{
+#' trimSeqs(seqs, minFlankFraction = 0.1)
 #' }
 #' @importFrom Biostrings as.matrix
 #' @param minFlankFraction A value in `[0, 1]` that indicates the minimum

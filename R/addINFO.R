@@ -6,13 +6,13 @@
 #'         tag = "", values = values,
 #'         replace = FALSE, sep = ";")
 #' @examples
-#' \donttest{
+#'
 #' data("geneHapR_test")
 #'
 #' # length of values must be equal with number of sites in hap result
 #' values <- paste0("newInfo",c(1:9))
 #' hapResult <- addINFO(hapResult, tag = "new", values = values, replace = TRUE)
-#' }
+#'
 #' @seealso
 #' \code{\link[geneHapR:plotHapTable]{plotHapTable()}}
 #' @param hap object of hapResult or hapSummary class

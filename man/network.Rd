@@ -27,11 +27,7 @@ computes a haplotype network with haplotype summary result
 }
 \examples{
 
-\donttest{
-# load sample datasets
-data("geneHapR_test")
-hapSummary <- hap_summary(hapResult)
-
+\dontrun{
 # calculate haploNet
 hapNet <- get_hapNet(hapSummary,
                      AccINFO = AccINFO, # accession types

@@ -11,11 +11,13 @@
 #' @usage
 #' siteFunEff(hap, pheno, phenoNames)
 #' @examples
+#' \donttest{
 #' data("geneHapR_test")
 #'
 #' # calculate site functional effect
 #' funResults <- siteFunEff(hapResult, pheno, names(pheno))
 #' plotSiteFunEff(funResults, facet = FALSE)
+#' }
 #' @export
 siteFunEff <- function(hap, pheno, phenoNames){
     if(missing(phenoNames)) phenoNames <- names(pheno)

@@ -43,17 +43,15 @@ hapVsPheno
 }
 \examples{
 
-\donttest{
-data("geneHapR_test")
-hap <- hapResult
+\dontrun{
 # plot the figs directly
-hapVsPheno(hap = hap,
+hapVsPheno(hap = hapResult,
            pheno = pheno,
            phenoName = "GrainWeight.2021",
            minAcc = 3)
 
 # do not merge the files
-results <- hapVsPheno(hap = hap,
+results <- hapVsPheno(hap = hapResult,
                       pheno = pheno,
                       phenoName = "GrainWeight.2021",
                       minAcc = 3,

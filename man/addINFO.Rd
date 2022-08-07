@@ -32,13 +32,13 @@ object of hapSummary or hapResult class with added/replaced INFOs
 add annotations to INFO fields used for \code{plotHapTable()}
 }
 \examples{
-\donttest{
+
 data("geneHapR_test")
 
 # length of values must be equal with number of sites in hap result
 values <- paste0("newInfo",c(1:9))
 hapResult <- addINFO(hapResult, tag = "new", values = values, replace = TRUE)
-}
+
 \donttest{
 # check how many sites were concluded in hapResult/hapSummary
 sites(hapResult)

@@ -41,9 +41,11 @@ row name as site position
 Find site functional effective
 }
 \examples{
+\donttest{
 data("geneHapR_test")
 
 # calculate site functional effect
 funResults <- siteFunEff(hapResult, pheno, names(pheno))
 plotSiteFunEff(funResults, facet = FALSE)
+}
 }

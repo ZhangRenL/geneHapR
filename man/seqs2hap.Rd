@@ -59,9 +59,8 @@ hapResult <- seqs2hap(seqs,
                       maxGapsPerSeq = 0.25,
                       hapPrefix = "H")
 }
-\donttest{
-trimSeqs(seqs,
-         minFlankFraction = 0.1)
+\dontrun{
+trimSeqs(seqs, minFlankFraction = 0.1)
 }
 }
 \seealso{

@@ -121,11 +121,7 @@ get_hapNet <-
 #' \code{\link[geneHapR:get_hapNet]{get_hapNet()}}.
 #' @examples
 #'
-#' \donttest{
-#' # load sample datasets
-#' data("geneHapR_test")
-#' hapSummary <- hap_summary(hapResult)
-#'
+#' \dontrun{
 #' # calculate haploNet
 #' hapNet <- get_hapNet(hapSummary,
 #'                      AccINFO = AccINFO, # accession types
