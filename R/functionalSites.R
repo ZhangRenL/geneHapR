@@ -1,4 +1,4 @@
-#' @name siteFunEff
+#' @name siteEff
 #' @title Find site functional effective
 #' @param hap object of "hapResult" class
 #' @param pheno phenotype data, with column names as pheno name
@@ -9,14 +9,14 @@
 #'  row name as site position
 #' @importFrom stats t.test
 #' @usage
-#' siteFunEff(hap, pheno, phenoNames)
+#' siteEff(hap, pheno, phenoNames)
 #' @examples
 #' \donttest{
 #' data("geneHapR_test")
 #'
 #' # calculate site functional effect
-#' funResults <- siteFunEff(hapResult, pheno, names(pheno))
-#' plotSiteFunEff(funResults, facet = FALSE)
+#' funResults <- siteEff(hapResult, pheno, names(pheno))
+#' plotsiteEff(funResults, facet = FALSE)
 #' }
 #' @export
 siteEff <- function(hap, pheno, phenoNames){
@@ -86,7 +86,7 @@ siteEff <- function(hap, pheno, phenoNames){
 
 
 
-#' @name siteFunEff
+#' @name siteEff
 #' @param results results of site functional effect analysis
 #' @param facet use facet or not, default as `FALSE`
 #' @inheritParams ggplot2::labs
@@ -94,11 +94,11 @@ siteEff <- function(hap, pheno, phenoNames){
 #' @import ggplot2
 #' @importFrom rlang .data
 #' @usage
-#' plotSiteFunEff(results,
-#'                title = title,
-#'                caption = caption,
-#'                facet = FALSE,
-#'                ...)
+#' plotSiteEff(results,
+#'             title = title,
+#'             caption = caption,
+#'             facet = FALSE,
+#'             ...)
 #' @export
 plotSiteEff <- function(results, title = title, caption = caption, facet = FALSE, ...){
     data <- suppressMessages(reshape2::melt(results))
