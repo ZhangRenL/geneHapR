@@ -27,7 +27,10 @@ computes a haplotype network with haplotype summary result
 }
 \examples{
 
-\dontrun{
+\donttest{
+data("geneHapR_test")
+hapSummary <- hap_summary(hapResult)
+
 # calculate haploNet
 hapNet <- get_hapNet(hapSummary,
                      AccINFO = AccINFO, # accession types
@@ -48,24 +51,10 @@ plotHapNet(hapNet,
 }
 }
 \references{
-Article{,
-title = {The stringdist package for approximate string matching},
-author = {M.P.J. {van der Loo}},
-year = {2014},
-journal = {The {R} {J}ournal},
-volume = {6},
-issue = {1},
-url = {https://CRAN.R-project.org/package=stringdist},
-pages = {111-122},
-}
-Article{,
-title = {pegas: an {R} package for population genetics with an integrated--modular approach},
-author = {E. Paradis},
-journal = {Bioinformatics},
-year = {2010},
-volume = {26},
-pages = {419-420},
-}
+Mark P.J. van der Loo (2014)
+\url{doi:10.32614/RJ-2014-011};
+
+E. Paradis (2010) \url{doi:10.1093/bioinformatics/btp696}
 }
 \seealso{
 \code{\link[geneHapR:plotHapNet]{plotHapNet()}} and

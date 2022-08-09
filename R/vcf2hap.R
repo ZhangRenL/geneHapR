@@ -16,7 +16,9 @@
 #'         hyb_remove = TRUE,
 #'         na.drop = TRUE)
 #' @author Zhangrenl
-#' @inherit hap_summary examples
+#' @examples
+#' data("geneHapR_test")
+#' hapResult <- vcf2hap(vcf)
 #' @param vcf vcfR object imported by `import_vcf()`
 #' @param filter_Chr logical, whether filter vcf by chromosome or not. Default
 #' as `FALSE`. If set as `TRUE`, `Chr` is needed

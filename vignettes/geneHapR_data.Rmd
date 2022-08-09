@@ -58,15 +58,8 @@ The **differences** between `hapResult` and `hapSummary` only lied in **part III
 (a) there is a freq column in `hapSummary` while `hapResult` not; 
 (b) multi-accessions are separated by semicolons in `hapSummary` while one accession in each row of `hapResult`.
 
-```{r include=FALSE}
-NOT_CRAN <- identical(tolower(Sys.getenv("NOT_CRAN")), "true")
-knitr::opts_chunk$set(purl = NOT_CRAN)
-```
 
-
-```{r Out Put Format1, echo=NOT_CRAN, fig.align='center', fig.cap="Cartoon representation of hapResult and hapSummary contents", fig.height=4, fig.width=4,include=FALSE}
-oldmar <- par()$mar
-par(mar=c(0.1,0.1,0.1,0.1))
+```{r Out Put Format1, echo=FALSE, fig.align='center', fig.cap="Cartoon representation of hapResult and hapSummary contents", fig.height=4, fig.width=6}
 plot(c(0,5),c(0,5), axes = FALSE, type = "n", xlab="", ylab ="", frame.plot = F)
 rect(xleft=0, ybottom=0, xright=0.5, ytop=4.5)
 rect(xleft=0.5, ybottom=3.5, xright=4, ytop=4.5)
@@ -80,7 +73,5 @@ text(2.25, 4.15, "Sites information", cex=1)
 text(2.25, 3.85, "(CHROM, POS, INFO, ALLELE)", cex=0.8)
 text(2.25, 2, "Genotypes", cex=1)
 text(4.5, 2, "Accessions (freq)", cex=1, srt= 270)
-
-par(mar = oldmar)
 ```
 

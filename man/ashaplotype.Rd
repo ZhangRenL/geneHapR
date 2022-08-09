@@ -20,3 +20,9 @@ convert \code{hapSummary} or \code{hapResult} class into \code{haplotype} class 
 It's not advised for \code{hapSummary} or \code{hapResult} with indels, due to indels will
 convert to SNPs with equal length of each indel.
 }
+\examples{
+data("geneHapR_test")
+hap <- as.haplotype(hapResult)
+hapSummary <- hap_summary(hapResult)
+hap <- as.haplotype(hapSummary)
+}

@@ -32,11 +32,6 @@
 #'                        Chr = "scaffold_1",
 #'                        POS = c(4300, 7910))
 #'
-#' # set position of ATG as zero in hap results
-#' newhapResult <- hapSetATGas0(gff = gff, hap = hapResult,
-#'                              geneID = "test1G0387",
-#'                              Chr = "scaffold_1",
-#'                              POS = c(4300, 7910))
 #' }
 #' @return `gffSetATGas0`: filtered gff with position of ATG was as zero
 #' @seealso
@@ -63,6 +58,14 @@ gffSetATGas0 <- function(gff = gff,
 #' hapSetATGas0(gff = gff, hap = hap,
 #'              geneID = geneID,
 #'              Chr = Chr, POS = POS)
+#' @examples
+#' data("geneHapR_test")
+#'
+#' # set position of ATG as zero in hap results
+#' newhapResult <- hapSetATGas0(gff = gff, hap = hapResult,
+#'                              geneID = "test1G0387",
+#'                              Chr = "scaffold_1",
+#'                              POS = c(4300, 7910))
 #' @return `hapSetATGas0`: hap results with position of ATG was set as zero
 #' @export
 hapSetATGas0 <- function(gff = gff,

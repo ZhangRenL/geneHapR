@@ -221,10 +221,13 @@ the 'freq' column (ususlly the last column) contains nonnumeric data.")
 #' This function will write hap result into a txt file.
 #' @inherit import_hap details
 #' @examples
-#' \dontrun{
 #'
-#' write.hap(hap, file = "hap.txt")
-#' }
+#' data("geneHapR_test")
+#'
+#' oriDir <- getwd()
+#' setwd(tempdir())
+#' write.hap(hapResult, file = "hapResult.txt")
+#' setwd(oriDir)
 #' @param x objec of hapResult or hapSummary class
 #' @param file file path, where to save the hap result/summary
 #' @param sep the field separator string. Values within each row of x are separated by this string.
@@ -255,6 +258,6 @@ write.hap <- function(x, file = file, sep = "\t") {
 
 # import pips
 #' @importFrom magrittr `%>%`
-#'
+#' @importFrom IRanges `%over%`
 `%>%` <- magrittr::`%>%`
 `%over%` <- IRanges::`%over%`

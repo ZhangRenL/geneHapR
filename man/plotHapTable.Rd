@@ -97,48 +97,8 @@ Once the needed annotations were included in hap results, we can display
 them with \code{plotHapTable()} by specify the value of \code{INFO_tag}.
 }
 \examples{
-\dontrun{
-
-#### 1. generate hap result from vcf file ####
-# imoprt vcf data
-vcf <- import_vcf("myVcfFile.vcf.gz")
-
-# calculate hap result with vcfR
-hap <- vcf2hap(vcf, hyb_remove = TRUE, na.drop =TRUE)
-
-
-#### 2. calculate hap from DNA seqs ####
-# import DNA seqs from fasta file
-seqs <- import_seqs("myseq.fa", format = "fasta")
-
-# aline multi-seqs
-aliedSeqs <- allignSeqs(seqs)
-
-# trim alined seqs
-trimedSeqs <- trimSeqs(seqs,
-                       minFlankFraction = 0.1)
-
-# calculate hap result with trimed seqs
-hap <- seqs2hap(trimedSeqs,
-                Ref = names(seqs)[1],
-                hyb_remove = TRUE,
-                maxGapsPerSeq = 0.25,
-                hapPrefix = "H")
-
-
-
-#### 3. summary and visualizatiion ####
-# summary hap result for plot hap table
-hapSummary <- hap_summary(hap)
-
-# plot hap table
-plotHapTable(hapSummary)
-
-# user could change/add themes, title, ...
-p <- plotHapTable(hapSummary)
-p + ggplot2::theme_classic()
-p + ggplot2::labs(title = "new title")
-}
+data("geneHapR_test")
+plotHapTable(hapResult)
 }
 \seealso{
 \code{\link[geneHapR:addINFO]{addINFO()}}

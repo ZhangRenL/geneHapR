@@ -43,7 +43,8 @@ hapVsPheno
 }
 \examples{
 
-\dontrun{
+\donttest{
+data("geneHapR_test")
 # plot the figs directly
 hapVsPheno(hap = hapResult,
            pheno = pheno,

@@ -9,7 +9,8 @@
 #'            minAcc = 5, ...)
 #' @examples
 #'
-#' \dontrun{
+#' \donttest{
+#' data("geneHapR_test")
 #' # plot the figs directly
 #' hapVsPheno(hap = hapResult,
 #'            pheno = pheno,
@@ -253,44 +254,53 @@ hapVsPheno <- function(hap,
 #' @name hapVsPhenos
 #' @title hapVsPhenos
 #' @usage
-#' hapVsPhenos(hap,
-#'             pheno,
-#'             outPutSingleFile = TRUE,
-#'             hapPrefix = "H",
-#'             title = "Seita.0G000000",
-#'             file = file,
-#'             width = 12,
-#'             height = 8,
-#'             res = res, ...)
+#' hapVsPhenos(hap, pheno,
+#'          outPutSingleFile = TRUE,
+#'          hapPrefix = "H",
+#'          title = "Seita.0G000000",
+#'          width = 12,
+#'          height = 8,
+#'          res = res,
+#'          compression = "lzw",
+#'          filename.prefix = filename.prefix,
+#'          filename.surfix = "pdf",
+#'          filename.sep = "_",
+#'          ...)
 #' @param outPutSingleFile `TRUE` or `FALSE` indicate whether put all figs
 #' into to each pages of single file or generate multi-files.
 #' Only worked while file type is pdf
-#' @param file the output file name/path. File type could be pdf, png, tiff,
-#' jpg or bmp. `file` will only used for out file name/path directly if file
-#' type is "pdf" and `outPutSingleFile` set as `TRUE`. Otherwise the pheno names
-#' will added for each file name/path.
 #' @param width manual option for determining the output file width in inches.
 #' (default: 12)
 #' @param height manual option for determining the output file height in inches.
 #' (default: 8)
 #' @param res The nominal resolution in ppi which will be recorded in the
 #' bitmap file, if a positive integer. Also used for units other than the
-#' default, and to convert points to pixels.
+#' default, and to convert points to pixels
+#' @inheritParams grDevices::tiff
+#' @param filename.prefix,filename.surfix,filename.sep
+#' if multi files generated, file names will be formed by
+#' prefix `filename.prefix`, a seperate charcter `filename.sep`,
+#' pheno name, a dot and surfix `filename.surfix`,
+#' and file type was decide by `filename.surfix`;
+#' if single file was generated, file name will be formed by
+#' prefix `filename.prefix`, a dot and surfix `filename.surfix`
 #' @inheritParams hapVsPheno
 #' @examples
+#' data("geneHapR_test")
 #'
-#' \dontrun{
+#' oriDir <- getwd()
+#' setwd(tempdir())
 #' # analysis all pheno in the data.frame of pheno
-#' hapVsPhenos(hap,
+#' hapVsPhenos(hapResult,
 #'             pheno,
 #'             outPutSingleFile = TRUE,
 #'             hapPrefix = "H",
 #'             title = "Seita.0G000000",
-#'             file = file,
+#'             filename.prefix = "test",
 #'             width = 12,
 #'             height = 8,
 #'             res = 300)
-#' }
+#' setwd(oriDir)
 #' @importFrom stats na.omit t.test
 #' @import grDevices
 #' @export
@@ -300,40 +310,44 @@ hapVsPhenos <- function(hap,
                         outPutSingleFile = TRUE,
                         hapPrefix = "H",
                         title = "Seita.0G000000",
-                        file = file,
                         width = 12,
                         height = 8,
                         res = res,
+                        compression = "lzw",
+                        filename.prefix = filename.prefix,
+                        filename.surfix = "pdf",
+                        filename.sep = "_",
                         ...) {
-#                        filename.prefix = "pheno",
-#                        filename.surfix = "pdf",
-#                        filename.sep = "_",
 
     # pheno association
     if (missing(hap))
         stop("hap is missing!")
+
     if (missing(pheno))
         stop("pheno is missing!")
-    if (missing(file))
-        stop("Error: Output file name/path is missing!")
 
-    surFix <- getSurFix(file)
-    if (!surFix %in% c("pdf", "png", "tif", "tiff", "jpg", "jpeg", "bmp"))
+    if(missing(filename.prefix))
+        stop("filename.prefix is missing!")
+
+    if (!filename.surfix %in% c("pdf", "png", "tif", "tiff", "jpg", "jpeg", "bmp"))
         stop("The file type should be one of pdf, png, tiff, jpg and bmp")
-    if (surFix != "pdf")
+
+    if (filename.surfix != "pdf")
         outPutSingleFile <- FALSE
 
-    probe <- ifelse(surFix == "pdf",
+    probe <- ifelse(filename.surfix == "pdf",
                     ifelse(outPutSingleFile,
                            TRUE,
                            FALSE),
                     FALSE)
     if (probe) {
+        filename <- paste0(filename.prefix,".",filename.surfix)
         message("
         File type is pdf and 'outPutSingleFile' set as TRUE,
         all figs will plot in ",
-                file)
-        pdf(file, width = width, height = height)
+                filename)
+        pdf(filename, width = width, height = height)
+        on.exit(dev.off())
     }
     if (!is.data.frame(pheno))
         stop("pheno should be a data.frame object")
@@ -343,10 +357,13 @@ hapVsPhenos <- function(hap,
     steps <- 0
     for (phenoName in phenoNames) {
         if (!probe) {
-            file <- stringr::str_remove(file, paste0(".", surFix))
-            filename <- paste0(file, "_", phenoName, ".", surFix)
+            filename <- paste0(filename.prefix,
+                               filename.sep,
+                               phenoName,
+                               ".",
+                               filename.surfix)
             switch(
-                surFix,
+                filename.surfix,
                 "pdf" = pdf(filename, width = width, height = height),
                 "png" = png(
                     filename = filename,
@@ -381,14 +398,16 @@ hapVsPhenos <- function(hap,
                     width = width,
                     height = height,
                     units = "in",
-                    res = res
+                    res = res,
+                    compression = compression
                 ),
                 "tiff" = tiff(
                     filename = filename,
                     width = width,
                     height = height,
                     units = "in",
-                    res = res
+                    res = res,
+                    compression = compression
                 )
             )
         }
@@ -400,29 +419,26 @@ hapVsPhenos <- function(hap,
                 ";\tphynotype: ",
                 phenoName, appendLF = FALSE)
         cat("\tfile: ", filename, "\n", sep = "")
-        resulti <- hapVsPheno(
-            hap = hap,
-            pheno = pheno,
-            phenoName = phenoName,
-            hapPrefix = hapPrefix,
-            title = title,
-            mergeFigs = TRUE,
-            ...
-        )
 
-        plot(resulti$figs)
+        resulti <- try(hapVsPheno(hap = hap,
+                                  pheno = pheno,
+                                  phenoName = phenoName,
+                                  hapPrefix = hapPrefix,
+                                  title = title,
+                                  mergeFigs = TRUE,
+                                  ...))
+        if(!inherits(resulti, "try-error")) plot(resulti$figs) else resulti
         if (!probe)
             dev.off()
+        resulti <- NULL
     }
-    if (probe)
-        dev.off()
 }
 
 
-getSurFix <- function(Name) {
-    parts <- strsplit(Name, ".", fixed = TRUE,)
-    lparth <- length(parts[[1]])
-    surFix <- parts[[1]][lparth]
-    surFix <- stringr::str_to_lower(surFix)
-    return(surFix)
-}
+# getSurFix <- function(Name) {
+#     parts <- strsplit(Name, ".", fixed = TRUE,)
+#     lparth <- length(parts[[1]])
+#     surFix <- parts[[1]][lparth]
+#     surFix <- stringr::str_to_lower(surFix)
+#     return(surFix)
+# }

@@ -22,7 +22,7 @@
 #' @importFrom IRanges start
 #' @importFrom IRanges `%over%`
 #' @examples
-#' \dontrun{
+#'
 #' # filtet hap
 #' data("geneHapR_test")
 #' vcf_f1 <- filter_vcf(vcf, mode = "POS",
@@ -37,7 +37,7 @@
 #'                     start = 4300, end = 5890,
 #'                     gff = gff,
 #'                     type = "CDS")
-#' }
+#'
 #' @return vcfR
 #' @export
 filter_vcf <- function(vcf,
@@ -67,15 +67,16 @@ filter_vcf <- function(vcf,
     if (mode == "type" | mode == "both") {
         if (missing(gff))
             stop("gff is missing!")
-        if (type == "custom")
-            type <- cusTyp
         if (length(type) != 1)
             stop('Type must be one of c("CDS", "exon", "gene", "genome", "custom")')
-        if (type == "genome") {
+        if (type == "custom")
+            type <- cusTyp
+        if ("genome" %in% type) {
             gff <- gff
         } else {
             gff <- gff[gff$type %in% type]
         }
+
         if (missing(Chr))
             Chr <- vcfR::getCHROM(vcf)[1]
         POS <- vcfR::getPOS(vcf)

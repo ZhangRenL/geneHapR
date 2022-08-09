@@ -39,10 +39,11 @@ data("geneHapR_test")
 values <- paste0("newInfo",c(1:9))
 hapResult <- addINFO(hapResult, tag = "new", values = values, replace = TRUE)
 
-\donttest{
+data("geneHapR_test")
+
 # check how many sites were concluded in hapResult/hapSummary
 sites(hapResult)
-}
+
 }
 \seealso{
 \code{\link[geneHapR:plotHapTable]{plotHapTable()}}

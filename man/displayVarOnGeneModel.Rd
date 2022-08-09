@@ -16,7 +16,7 @@ displayVarOnGeneModel(gff,
 
 \item{hapSummary}{object of hapSummary class}
 
-\item{Chr}{the chromsome name.
+\item{Chr}{the chromosome name.
 If missing, the first element in the hapSummary will be used}
 
 \item{startPOS}{If missing, will use the min position in hapSummary}

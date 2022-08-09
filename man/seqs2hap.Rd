@@ -50,6 +50,7 @@ allign imported sequences
 }
 \examples{
 \donttest{
+data("geneHapR_test")
 seqs <- allignSeqs(seqs)
 seqs <- trimSeqs(seqs,
          minFlankFraction = 0.1)
@@ -58,9 +59,6 @@ hapResult <- seqs2hap(seqs,
                       hyb_remove = TRUE, na.drop = TRUE,
                       maxGapsPerSeq = 0.25,
                       hapPrefix = "H")
-}
-\dontrun{
-trimSeqs(seqs, minFlankFraction = 0.1)
 }
 }
 \seealso{

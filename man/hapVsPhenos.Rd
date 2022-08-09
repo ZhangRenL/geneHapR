@@ -4,15 +4,18 @@
 \alias{hapVsPhenos}
 \title{hapVsPhenos}
 \usage{
-hapVsPhenos(hap,
-            pheno,
-            outPutSingleFile = TRUE,
-            hapPrefix = "H",
-            title = "Seita.0G000000",
-            file = file,
-            width = 12,
-            height = 8,
-            res = res, ...)
+hapVsPhenos(hap, pheno,
+         outPutSingleFile = TRUE,
+         hapPrefix = "H",
+         title = "Seita.0G000000",
+         width = 12,
+         height = 8,
+         res = res,
+         compression = "lzw",
+         filename.prefix = filename.prefix,
+         filename.surfix = "pdf",
+         filename.sep = "_",
+         ...)
 }
 \arguments{
 \item{hap}{object of hapResult class, generate with\code{vcf2hap()} or
@@ -28,11 +31,6 @@ Only worked while file type is pdf}
 
 \item{title}{a charater which will used for figure title}
 
-\item{file}{the output file name/path. File type could be pdf, png, tiff,
-jpg or bmp. \code{file} will only used for out file name/path directly if file
-type is "pdf" and \code{outPutSingleFile} set as \code{TRUE}. Otherwise the pheno names
-will added for each file name/path.}
-
 \item{width}{manual option for determining the output file width in inches.
 (default: 12)}
 
@@ -41,9 +39,29 @@ will added for each file name/path.}
 
 \item{res}{The nominal resolution in ppi which will be recorded in the
 bitmap file, if a positive integer. Also used for units other than the
-default, and to convert points to pixels.}
+default, and to convert points to pixels}
 
-\item{...}{options will pass to \code{ggpubr()}}
+\item{compression}{the type of compression to be used.  Ignored for
+     \code{type = "quartz"}.}
+
+\item{filename.prefix, filename.surfix, filename.sep}{if multi files generated, file names will be formed by
+prefix \code{filename.prefix}, a seperate charcter \code{filename.sep},
+pheno name, a dot and surfix \code{filename.surfix},
+and file type was decide by \code{filename.surfix};
+if single file was generated, file name will be formed by
+prefix \code{filename.prefix}, a dot and surfix \code{filename.surfix}}
+
+\item{...}{for \code{type = "Xlib"} only, additional arguments to
+    the underlying \code{\link[grDevices]{X11}} device such as \code{fonts} or
+     \code{family}.
+
+    For types \code{"cairo"} and \code{"quartz"}, the \code{family}
+    argument can be supplied.  See the \sQuote{Cairo fonts}
+    section in the help for \code{\link[grDevices]{X11}}.
+    
+    For type \code{"cairo"}, the \code{symbolfamily}
+    argument can be supplied.  See \code{\link[grDevices]{X11.options}}.
+  }
 }
 \value{
 No return value
@@ -52,17 +70,19 @@ No return value
 hapVsPhenos
 }
 \examples{
+data("geneHapR_test")
 
-\dontrun{
+oriDir <- getwd()
+setwd(tempdir())
 # analysis all pheno in the data.frame of pheno
-hapVsPhenos(hap,
+hapVsPhenos(hapResult,
             pheno,
             outPutSingleFile = TRUE,
             hapPrefix = "H",
             title = "Seita.0G000000",
-            file = file,
+            filename.prefix = "test",
             width = 12,
             height = 8,
             res = 300)
-}
+setwd(oriDir)
 }

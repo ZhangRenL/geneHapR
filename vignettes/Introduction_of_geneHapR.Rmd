@@ -9,14 +9,14 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-`geneHapR` is an 'R' package that designed for gene haplotype statistics, phenotype association and visualization.
+`geneHapR` is designed for gene haplotype statistics, phenotype association and visualization.
 
 ## Preliminaries
 
 Input files frequently present challenges to analysis.
 A common problem I encounter is that chromosome names and gene IDs are not standardized among **VCF**, **FASTA** and **GFF** files.
 That means additional work for users.
-I suggest reading these files into 'R', synchronizing the names and then proceeding with downstream analyses.
+I suggest reading these files into R, synchronizing the names and then proceeding with downstream analyses.
 
 Large **VCF** or **GFF** file is another important consideration when using `geneHapR.` 
 Usually, the annotation file (GFF) and variants call format (VCF) files are usually at chromosome or genome level. 

@@ -9,6 +9,7 @@
 #'          hapPrefix = "H", ...)
 #' @examples
 #' \donttest{
+#' data("geneHapR_test")
 #' seqs <- allignSeqs(seqs)
 #' seqs <- trimSeqs(seqs,
 #'          minFlankFraction = 0.1)
@@ -130,18 +131,14 @@ allignSeqs <- function(seqs, ...) {
 
 
 
-#' @export
 #' @name seqs2hap
 #' @usage
 #' trimSeqs(seqs,
 #'          minFlankFraction = 0.1)
-#' @examples
-#' \dontrun{
-#' trimSeqs(seqs, minFlankFraction = 0.1)
-#' }
 #' @importFrom Biostrings as.matrix
 #' @param minFlankFraction A value in `[0, 1]` that indicates the minimum
 #' fraction needed to call a gap in the consensus string (default as 0.1).
+#' @export
 trimSeqs <- function(seqs,
                      minFlankFraction = 0.1) {
     mseqs <- Biostrings::as.matrix(seqs)
@@ -178,63 +175,62 @@ Please consider elevate 'minFlankFraction' OR align and trim seqs manually"
 
 
 # return data.frame,
-seq2hap_data <-
-    function(seqs,
-             allS_new = allS_new,
-             RefSeq = RefSeq) {
-        # get refSeq trimed length
-        Ref <- names(RefSeq)
-        aRefSeq <- as(seqs, "DNAStringSet")[Ref]
-        aRefSeq <- stringr::str_remove_all(aRefSeq, "-")
-        range <- stringr::str_locate(as.character(RefSeq), aRefSeq)
-        trimedLen <- range[1, "start"] - 1
+seq2hap_data <- function(seqs,
+                         allS_new = allS_new,
+                         RefSeq = RefSeq) {
+    # get refSeq trimed length
+    Ref <- names(RefSeq)
+    aRefSeq <- as(seqs, "DNAStringSet")[Ref]
+    aRefSeq <- stringr::str_remove_all(aRefSeq, "-")
+    range <- stringr::str_locate(as.character(RefSeq), aRefSeq)
+    trimedLen <- range[1, "start"] - 1
 
-        # convert DNAset into matrix
-        RefSeq <- as.matrix(RefSeq)
-        mseqs <- as.matrix(seqs)
-        mRef <- mseqs[Ref, ]
+    # convert DNAset into matrix
+    RefSeq <- as.matrix(RefSeq)
+    mseqs <- as.matrix(seqs)
+    mRef <- mseqs[Ref, ]
 
-        # deal with indels
-        newmseqs <-
-            matrix(
-                nrow = nrow(mseqs),
-                ncol = 0,
-                dimnames = list(rownames(mseqs))
-            )
-        POS <- c()
-        n <- 1
-        for (i in seq_len(ncol(mseqs))) {
-            if (!"-" %in% mseqs[, i]) {
-                newmseqs <- cbind(newmseqs, mseqs[, i])
-                POS <- c(POS, n)
-            } else {
-                newmseqs[, ncol(newmseqs)] = paste0(newmseqs[, ncol(newmseqs)], mseqs[, i])
-            }
-            if (mRef[i] != "-")
-                n <- n + 1
+    # deal with indels
+    newmseqs <-
+        matrix(
+            nrow = nrow(mseqs),
+            ncol = 0,
+            dimnames = list(rownames(mseqs))
+        )
+    POS <- c()
+    n <- 1
+    for (i in seq_len(ncol(mseqs))) {
+        if (!"-" %in% mseqs[, i]) {
+            newmseqs <- cbind(newmseqs, mseqs[, i])
+            POS <- c(POS, n)
+        } else {
+            newmseqs[, ncol(newmseqs)] = paste0(newmseqs[, ncol(newmseqs)], mseqs[, i])
         }
-        colnames(newmseqs) <- POS
-
-        # remove redudant cols
-        probe <- apply(newmseqs, 2, function(x)
-            length(unique(x)))
-        newmseqs <- newmseqs[, probe != 1]
-
-        # remove "-"
-        newmseqs[, ] <- stringr::str_remove_all(newmseqs, "-")
-
-        # update allSite information
-        ALLELE <-
-            apply(newmseqs, 2, function(x)
-                paste(unique(x), collapse = ","))
-        ALLELE <- stringr::str_replace(ALLELE, ",", "/")
-        for (i in unique(ALLELE)) {
-            ALi <- unlist(strsplit(i, "/"))
-            allS_new <- update_allS(allS_new = allS_new,
-                                    REF = ALi[1],
-                                    ALT = ALi[2])
-        }
-
-
-        return(list(hap = newmseqs, allS_new = allS_new))
+        if (mRef[i] != "-")
+            n <- n + 1
     }
+    colnames(newmseqs) <- POS
+
+    # remove redudant cols
+    probe <- apply(newmseqs, 2, function(x)
+        length(unique(x)))
+    newmseqs <- newmseqs[, probe != 1]
+
+    # remove "-"
+    newmseqs[, ] <- stringr::str_remove_all(newmseqs, "-")
+
+    # update allSite information
+    ALLELE <-
+        apply(newmseqs, 2, function(x)
+            paste(unique(x), collapse = ","))
+    ALLELE <- stringr::str_replace(ALLELE, ",", "/")
+    for (i in unique(ALLELE)) {
+        ALi <- unlist(strsplit(i, "/"))
+        allS_new <- update_allS(allS_new = allS_new,
+                                REF = ALi[1],
+                                ALT = ALi[2])
+    }
+
+
+    return(list(hap = newmseqs, allS_new = allS_new))
+}

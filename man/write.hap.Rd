@@ -31,8 +31,11 @@ Rows represent haplotypes in hap summary result, while rows represent accessions
 In addtion, the accessions of each haplotype in hap summary result were separated by ";".
 }
 \examples{
-\dontrun{
 
-write.hap(hap, file = "hap.txt")
-}
+data("geneHapR_test")
+
+oriDir <- getwd()
+setwd(tempdir())
+write.hap(hapResult, file = "hapResult.txt")
+setwd(oriDir)
 }

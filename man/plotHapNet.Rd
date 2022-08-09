@@ -71,7 +71,10 @@ plotHapNet
 }
 \examples{
 
-\dontrun{
+\donttest{
+data("geneHapR_test")
+hapSummary <- hap_summary(hapResult)
+
 # calculate haploNet
 hapNet <- get_hapNet(hapSummary,
                      AccINFO = AccINFO, # accession types

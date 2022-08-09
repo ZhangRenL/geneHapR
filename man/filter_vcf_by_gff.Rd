@@ -39,7 +39,7 @@ vcfR
 filter VCF by GFF annotation or by position or both
 }
 \examples{
-\dontrun{
+
 # filtet hap
 data("geneHapR_test")
 vcf_f1 <- filter_vcf(vcf, mode = "POS",
@@ -54,5 +54,5 @@ vcf_f3 <- filter_vcf(vcf, mode = "both",
                     start = 4300, end = 5890,
                     gff = gff,
                     type = "CDS")
-}
+
 }

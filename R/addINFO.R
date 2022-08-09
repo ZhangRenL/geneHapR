@@ -74,10 +74,11 @@ addINFO <- function(hap,
 #' @usage
 #' sites(hap)
 #' @examples
-#' \donttest{
+#' data("geneHapR_test")
+#'
 #' # check how many sites were concluded in hapResult/hapSummary
 #' sites(hapResult)
-#' }
+#'
 #' @seealso
 #' \code{\link[geneHapR:plotHapTable]{plotHapTable()}}
 #' @param hap object of `hapResult` or `hapSummary` class

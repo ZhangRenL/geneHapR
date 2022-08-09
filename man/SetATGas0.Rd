@@ -54,12 +54,14 @@ newgff <- gffSetATGas0(gff = gff, hap = hapResult,
                        Chr = "scaffold_1",
                        POS = c(4300, 7910))
 
+}
+data("geneHapR_test")
+
 # set position of ATG as zero in hap results
 newhapResult <- hapSetATGas0(gff = gff, hap = hapResult,
                              geneID = "test1G0387",
                              Chr = "scaffold_1",
                              POS = c(4300, 7910))
-}
 }
 \seealso{
 \code{\link[geneHapR:displayVarOnGeneModel]{displayVarOnGeneModel()}}

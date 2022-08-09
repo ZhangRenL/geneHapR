@@ -16,7 +16,7 @@ Authors@R:
            email = "jiaguanqing@caas.cn", 
            role = c("aut")))
 Version: 1.0.7
-RoxygenNote: 7.2.0
+RoxygenNote: 7.1.2
 LazyData: True
 Imports: 
   ape,
@@ -29,7 +29,6 @@ Imports:
   muscle,
   IRanges,
   pegas,
-  randomcoloR,
   reshape2, 
   rlang,
   rtracklayer, 
