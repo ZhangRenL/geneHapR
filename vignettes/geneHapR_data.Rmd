@@ -64,8 +64,8 @@ knitr::opts_chunk$set(purl = NOT_CRAN)
 ```
 
 
-```{r Out Put Format1, echo=NOT_CRAN, fig.align='center', fig.cap="Cartoon representation of hapResult and hapSummary contents", fig.height=4, fig.width=4}
-oldpar <- par(mfrow = c(1,2))
+```{r Out Put Format1, echo=NOT_CRAN, fig.align='center', fig.cap="Cartoon representation of hapResult and hapSummary contents", fig.height=4, fig.width=4,include=FALSE}
+oldmar <- par()$mar
 par(mar=c(0.1,0.1,0.1,0.1))
 plot(c(0,5),c(0,5), axes = FALSE, type = "n", xlab="", ylab ="", frame.plot = F)
 rect(xleft=0, ybottom=0, xright=0.5, ytop=4.5)
@@ -81,6 +81,6 @@ text(2.25, 3.85, "(CHROM, POS, INFO, ALLELE)", cex=0.8)
 text(2.25, 2, "Genotypes", cex=1)
 text(4.5, 2, "Accessions (freq)", cex=1, srt= 270)
 
-par(oldpar)
+par(mar = oldmar)
 ```
 

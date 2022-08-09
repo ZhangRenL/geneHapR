@@ -19,7 +19,7 @@
 #' plotSiteFunEff(funResults, facet = FALSE)
 #' }
 #' @export
-siteFunEff <- function(hap, pheno, phenoNames){
+siteEff <- function(hap, pheno, phenoNames){
     if(missing(phenoNames)) phenoNames <- names(pheno)
     if(!inherits(hap, "hapResult"))
         stop("hap should be object of 'hapResult' class")
@@ -40,6 +40,7 @@ siteFunEff <- function(hap, pheno, phenoNames){
 
     # processing
     for(phynoname in phenoNames){
+        cat("\n\t", phynoname)
         res <- c()
         for(pos in POS){
 
@@ -99,7 +100,7 @@ siteFunEff <- function(hap, pheno, phenoNames){
 #'                facet = FALSE,
 #'                ...)
 #' @export
-plotSiteFunEff <- function(results, title = title, caption = caption, facet = FALSE, ...){
+plotSiteEff <- function(results, title = title, caption = caption, facet = FALSE, ...){
     data <- suppressMessages(reshape2::melt(results))
     colnames(data) <- c("Position", "pheno", "value")
     data$value <- round(data$value, digits = 2)
