@@ -86,6 +86,7 @@ siteEff <- function(hap, pheno, phenoNames){
 
 
 
+
 #' @title plotEff
 #' @name plotEff
 #' @importFrom graphics par strwidth rect points
