@@ -17,6 +17,8 @@
 #' # calculate site functional effect
 #' siteEFF <- siteEff(hapResult, pheno, names(pheno))
 #' plotEff(siteEFF, gff = gff, Chr = "scaffold_1")
+#' siteEFF <- siteEff(hapResult, pheno, names(pheno))
+#' plotEff(siteEFF, gff = gff, Chr = "scaffold_1")
 #' }
 #' @export
 siteEff <- function(hap, pheno, phenoNames){
