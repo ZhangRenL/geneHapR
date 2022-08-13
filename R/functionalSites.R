@@ -15,8 +15,13 @@
 #' data("geneHapR_test")
 #'
 #' # calculate site functional effect
+<<<<<<< HEAD
 #' siteEFF <- siteEff(hapResult, pheno, names(pheno))
 #' plotEff(siteEFF, gff = gff, Chr = "scaffold_1")
+=======
+#' funResults <- siteEff(hapResult, pheno, names(pheno))
+#' plotsiteEff(funResults, facet = FALSE)
+>>>>>>> 7323c0b52485ca127f27378662070166f17a3345
 #' }
 #' @export
 siteEff <- function(hap, pheno, phenoNames){
@@ -86,6 +91,7 @@ siteEff <- function(hap, pheno, phenoNames){
 
 
 
+<<<<<<< HEAD
 #' @title plotEff
 #' @name plotEff
 #' @importFrom graphics par strwidth rect points
@@ -117,6 +123,21 @@ siteEff <- function(hap, pheno, phenoNames){
 #' @param markMutants whether mark mutants on gene model, default as `TRUE`
 #' @param mutants.col color of lines which mark mutants
 #' @param mutants.type a vector of line types
+=======
+#' @name siteEff
+#' @param results results of site functional effect analysis
+#' @param facet use facet or not, default as `FALSE`
+#' @inheritParams ggplot2::labs
+#' @inheritParams ggplot2::facet_wrap
+#' @import ggplot2
+#' @importFrom rlang .data
+#' @usage
+#' plotSiteEff(results,
+#'             title = title,
+#'             caption = caption,
+#'             facet = FALSE,
+#'             ...)
+>>>>>>> 7323c0b52485ca127f27378662070166f17a3345
 #' @export
 plotEff <- function(siteEff, gff = gff,
                     Chr = Chr, start = start, end = end,
