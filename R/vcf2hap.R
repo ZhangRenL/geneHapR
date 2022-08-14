@@ -1,5 +1,5 @@
 #' @name vcf2hap
-#' @title generat haps from vcf
+#' @title Generat Haps from VCF
 #' @description
 #' Generate hapResult from vcfR object
 #' A simple filter by position was provided in this function,

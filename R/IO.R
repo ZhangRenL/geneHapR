@@ -1,5 +1,5 @@
 #' @name import_vcf
-#' @title import vcf from file
+#' @title Import VCF from File
 #' @author Zhangrenl
 #' @usage import_vcf(vcf_file = vcf_file, ...)
 #' @description import *.vcf structured text format,
@@ -24,7 +24,7 @@ import_vcf <- function(vcf_file = vcf_file, ...) {
 
 
 #' @name import_AccINFO
-#' @title imports accession information from file
+#' @title Import Accession Information from File
 #' @usage
 #' import_AccINFO(file, comment.char = "#",
 #'                check.names = FALSE, row.names = 1, ...)
@@ -63,7 +63,7 @@ import_AccINFO <- function(file, comment.char = "#",
 
 
 #' @name import_gff
-#' @title  import annotations in GFF format
+#' @title Import Annotations from GFF Format File
 #' @description import genome annotations in GFF/GFF3 format
 #' @usage import_gff(gffFile, format = "GFF")
 #' @examples
@@ -84,7 +84,7 @@ import_gff <- function(gffFile, format = "GFF") {
 
 
 #' @name import_seqs
-#' @title  import sequences
+#' @title Import Sequences
 #' @description import DNA sequences in FASTA format
 #' @usage import_seqs(filepath, format = "fasta")
 #' @examples
@@ -105,7 +105,7 @@ import_seqs <- function(filepath, format = "fasta") {
 
 
 #' @name import_MultipleAlignment
-#' @title import MultipleAlignment
+#' @title Import MultipleAlignment Result
 #' @description import sequences algned results
 #' @usage import_MultipleAlignment(filepath, format = "fasta", type = "DNA")
 #' @examples
@@ -141,7 +141,7 @@ import_MultipleAlignment <- function(filepath,
 
 # Checked
 #' @name import_hap
-#' @title  Import hapResult/hapSummary
+#' @title Import hapResult/hapSummary
 #' @usage import_hap(file, ...)
 #' @description
 #' This function could be used for import hap result or hap summary result.
@@ -214,7 +214,7 @@ the 'freq' column (ususlly the last column) contains nonnumeric data.")
 
 
 
-#' @title save hap results to disk
+#' @title Save Haplotype Results to Disk
 #' @name write.hap
 #' @usage write.hap(x, file = file, sep = "\t")
 #' @description

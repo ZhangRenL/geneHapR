@@ -1,5 +1,5 @@
 #' @name hap_summary
-#' @title Summary hap results
+#' @title Summary Hap Results
 #' @description
 #' A function used for summarize hapResult to visualization and calculation.
 #' @note
@@ -200,55 +200,61 @@ plotHapTable <- function(hapSummary,
             unique()
         notes <- paste0("i", seq_len(length(allIndel)))
         names(notes) <- allIndel
-        m <-
-            paste(names(notes),
-                  "->",
-                  notes,
-                  collapse = "; ",
-                  sep = "")
-        message("Indel replcements are:\n", m)
+        if(!is.na(names(notes)[1])){
+            m <- paste(names(notes),
+                       "->",
+                       notes,
+                       collapse = "; ",
+                       sep = "")
+            message("Indel replcements are:\n", m)
 
-        # replace Indels by notes
-        hps[hps %in% allIndel] <- notes[hps[hps %in% allIndel]]
-        for (i in seq_len(length(ALLELE))) {
-            if (probe_indel[i]) {
-                ALi <- ALLELE[i]
-                ALi <- unlist(stringr::str_split(ALi, "[,/]"))
-                p <- ALi %in% names(notes)
-                ALi[p] <- notes[ALi[p]]
-                ALi <- paste(ALi, collapse = ",")
-                ALi <- stringr::str_replace(ALi, ",", "/")
-                ALLELE[i] <- ALi
+            # replace Indels by notes
+            hps[hps %in% allIndel] <- notes[hps[hps %in% allIndel]]
+            for (i in seq_len(length(ALLELE))) {
+                if (probe_indel[i]) {
+                    ALi <- ALLELE[i]
+                    ALi <- unlist(stringr::str_split(ALi, "[,/]"))
+                    p <- ALi %in% names(notes)
+                    ALi[p] <- notes[ALi[p]]
+                    ALi <- paste(ALi, collapse = ",")
+                    ALi <- stringr::str_replace(ALi, ",", "/")
+                    ALLELE[i] <- ALi
+                }
             }
+            # set footi
+            footi <- paste(notes,
+                           names(notes),
+                           sep = ":",
+                           collapse = "; ")
         }
-        # set footi
-        footi <-
-            paste(notes,
-                  names(notes),
-                  sep = ":",
-                  collapse = "; ")
     }
 
     # replace multiallele title
     footT <- ""
     # set multiallele foots
-    if (replaceMultiAllele & TRUE %in% probe_mula) {
+    if (replaceMultiAllele & (TRUE %in% probe_mula)) {
         rept <- ALLELE[probe_mula]
         noteT <- paste0("T", seq_len(length(rept)))
         names(noteT) <- ALLELE[probe_mula]
         ALLELE[probe_mula] <- noteT
-        footT <-
-            paste(noteT,
-                  names(noteT),
-                  sep = ":",
-                  collapse = "; ")
+
+        if(! is.na(names(noteT)[1]))
+            footT <- paste(noteT,
+                           names(noteT),
+                           sep = ":",
+                           collapse = "; ")
+
     }
 
-    if (nchar(footi) > 0 & nchar(footT) > 0)
+    if (nchar(footi) > 0 & nchar(footT) > 0) {
         foot <- paste(footT, footi, sep = "\n")
-    else
-        foot <- paste0(footT, footi)
-
+    } else {
+        if(nchar(footi) == 0 & nchar(footT) == 0){
+            foot <- ""
+        } else {
+            foot <- paste0(footT, footi)
+        }
+    }
     hps <- rbind(ALLELE, hps)
     # Add extra information
     if (! missing(INFO_tag)) {

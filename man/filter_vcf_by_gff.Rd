@@ -3,7 +3,7 @@
 \name{filter_vcf_by_gff}
 \alias{filter_vcf_by_gff}
 \alias{filter_vcf}
-\title{filter vcf by gff}
+\title{Filter VCF by GFF}
 \usage{
 filter_vcf(vcf, gff = gff,
            mode = c("POS", "type", "both"),

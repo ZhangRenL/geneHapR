@@ -3,7 +3,7 @@
 \name{addINFO}
 \alias{addINFO}
 \alias{sites}
-\title{Summary hap results}
+\title{Add Infomation to Haplotype Results}
 \usage{
 addINFO(hap,
         tag = "", values = values,

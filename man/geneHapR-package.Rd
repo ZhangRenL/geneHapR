@@ -4,7 +4,7 @@
 \name{geneHapR-package}
 \alias{geneHapR}
 \alias{geneHapR-package}
-\title{geneHapR: Gene Haplotype Analysis Using geneHapR}
+\title{Gene Haplotype Statistics, Pheno Associations, and Visualization}
 \description{
 This packages provides a suite for gene(s) haplotype analysis,
 phenotypes association and visualization of geography distribution.
@@ -14,7 +14,7 @@ The haplotype analysis requires sequences such as fasta which could be
 import by \link[geneHapR:import_vcf]{import_vcf}
 
 \strong{A complete list of functions} can be displayed with:
-\code{library(help = geneHapR)}.
+\code{library(help = 'geneHapR')}.
 
 \strong{Vignettes} (documentation) can be listed with:
 \code{browseVignettes('geneHapR')}.
@@ -28,10 +28,7 @@ Several small example \strong{datasets} are included in 'geneHapR'.
 pie plot in hapNet visualization, and information for geography distrbution.
 }
 \seealso{
-More documentation for vcfR can be found at repos stored at repo of
-\code{zhangrenl/genehapr} hosted at
-\href{https://gitee.com/}{gitee} and
-\href{https://github.com/}{github}
+
 }
 \author{
 \strong{Maintainer}: Zhang Renliang \email{zhang_renliang@163.com}

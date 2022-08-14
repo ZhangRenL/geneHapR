@@ -6,16 +6,18 @@
 \usage{
 plotHapNet(hapNet,
            size = "freq",
-            scale = 1,
-            cex = 0.8,
-            cex.legend = 0.6,
-            col.link = 1,
-            link.width = 1,
-            show.mutation = 1,
-            backGround = backGround,
-            hapGroup = hapGroup,
-            legend = FALSE,
-            ...)
+           scale = 1,
+           cex = 0.8,
+           cex.legend = 0.6,
+           col.link = 1,
+           link.width = 1,
+           show.mutation = 1,
+           backGround = backGround,
+           hapGroup = hapGroup,
+           legend = FALSE,
+           main = main,
+           labels = TRUE,
+           ...)
 }
 \arguments{
 \item{hapNet}{an object of class "haploNet"}
@@ -60,6 +62,12 @@ its number of rows must be equal to the number of haplotypes}
 or a vector of length two giving the coordinates where to draw the legend;
 \code{FALSE} by default.
 If \code{TRUE}, the user is asked to click where to draw the legend.}
+
+\item{main}{The main title (on top) using font, size (character
+    expansion) and color \code{par(c("font.main", "cex.main", "col.main"))}.}
+
+\item{labels}{a logical specifying whether to identify the haplotypes
+with their labels (default as TRUE)}
 
 \item{...}{other parameters will pass to \code{plot} function}
 }

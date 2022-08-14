@@ -2,13 +2,14 @@
 % Please edit documentation in R/geography.R
 \name{hapDistribution}
 \alias{hapDistribution}
-\title{display geography distribution}
+\title{Display of Geography Distribution}
 \usage{
 hapDistribution(hap, AccINFO, LON.col, LAT.col, hapNames,
                 database = "world", regions = ".",
                 zColours = zColours,
                 legend = TRUE, symbolSize = 1,
                 ratio = 1, cex.legend = 0.8,
+                lwd.pie = 1,
                 ...)
 }
 \arguments{
@@ -59,6 +60,8 @@ or a numeric vector of length two contains x,y coordinate of the legend}
 \item{ratio}{the ratio of Y to N in the output map, set to 1 as default}
 
 \item{cex.legend}{character expansion factor for legend relative to current \code{par("cex")}}
+
+\item{lwd.pie}{line width of the pies}
 
 \item{...}{Extra arguments passed to \code{polygon} or \code{lines}. Of particular interest may be the options \code{border} and\code{lty} that control the color and line type of the polygon borders when \code{fill = TRUE}.}
 }

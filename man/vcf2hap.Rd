@@ -2,7 +2,7 @@
 % Please edit documentation in R/vcf2hap.R
 \name{vcf2hap}
 \alias{vcf2hap}
-\title{generat haps from vcf}
+\title{Generat Haps from VCF}
 \usage{
 vcf2hap(vcf,
         hapPrefix = "H",

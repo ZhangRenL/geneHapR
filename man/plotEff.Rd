@@ -9,7 +9,8 @@ plotEff(siteEff, gff = gff,
         showType = c("five_prime_UTR", "CDS", "three_prime_UTR"),
         CDS.height = 1, cex = 0.1, col = col, pch = 20,
         title = title, legend.cex = 0.8, legend.ncol = legend.ncol,
-        markMutants = TRUE, mutants.col = 1, mutants.type = 1)
+        markMutants = TRUE, mutants.col = 1, mutants.type = 1,
+        ylab = expression("-log"[10]~italic(p)~"Value"))
 }
 \arguments{
 \item{siteEff}{matrix, column name are pheno names and row name are site position}
@@ -47,6 +48,8 @@ range: \verb{[0,1]}}
 \item{mutants.col}{color of lines which mark mutants}
 
 \item{mutants.type}{a vector of line types}
+
+\item{ylab}{character, yaxis label}
 }
 \description{
 plotEff

@@ -2,7 +2,7 @@
 % Please edit documentation in R/IO.R
 \name{import_AccINFO}
 \alias{import_AccINFO}
-\title{imports accession information from file}
+\title{Import Accession Information from File}
 \usage{
 import_AccINFO(file, comment.char = "#",
                check.names = FALSE, row.names = 1, ...)

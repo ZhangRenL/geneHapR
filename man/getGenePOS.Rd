@@ -2,7 +2,7 @@
 % Please edit documentation in R/getGenePOS.R
 \name{getGenePOS}
 \alias{getGenePOS}
-\title{getGenePOS}
+\title{Get Gene Position}
 \usage{
 getGenePOS(gff= gff,
            geneID = geneID,
@@ -23,7 +23,7 @@ defalt is Parent}
 named vectors contains start, end and strand
 }
 \description{
-getGenePOS
+Get Gene Position
 }
 \examples{
 data("geneHapR_test")

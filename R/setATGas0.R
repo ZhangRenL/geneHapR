@@ -1,4 +1,4 @@
-#' @title Set position of ATG as zero
+#' @title Set Position of ATG as Zero
 #' @name SetATGas0
 #' @description
 #' Set position of ATG as zero in hap result and gff annotation.

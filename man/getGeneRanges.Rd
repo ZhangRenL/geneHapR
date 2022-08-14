@@ -2,7 +2,7 @@
 % Please edit documentation in R/getGenePOS.R
 \name{getGeneRanges}
 \alias{getGeneRanges}
-\title{getGeneRanges}
+\title{Get Gene Ranges}
 \usage{
 getGeneRanges(gff= gff,
              geneID = geneID,
@@ -23,7 +23,7 @@ defalt is Parent}
 GRanges
 }
 \description{
-getGeneRanges
+Get Gene Ranges
 }
 \examples{
 data("geneHapR_test")

@@ -2,7 +2,7 @@
 % Please edit documentation in R/preprocessbigVCF.R
 \name{filterLargeVCF}
 \alias{filterLargeVCF}
-\title{Pre-process large VCF file(s)}
+\title{Pre-process of Large VCF File(s)}
 \usage{
 filterLargeVCF(VCFin = VCFin, VCFout = VCFout,
                 Chr = Chr, POS = POS, override = TRUE)

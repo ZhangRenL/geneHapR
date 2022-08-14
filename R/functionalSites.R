@@ -1,5 +1,5 @@
 #' @name siteEff
-#' @title Find site functional effective
+#' @title Calculation of Sites Effective
 #' @param hap object of "hapResult" class
 #' @param pheno phenotype data, with column names as pheno name
 #' and row name as accessions.
@@ -15,8 +15,6 @@
 #' data("geneHapR_test")
 #'
 #' # calculate site functional effect
-#' siteEFF <- siteEff(hapResult, pheno, names(pheno))
-#' plotEff(siteEFF, gff = gff, Chr = "scaffold_1")
 #' siteEFF <- siteEff(hapResult, pheno, names(pheno))
 #' plotEff(siteEFF, gff = gff, Chr = "scaffold_1")
 #' }
@@ -98,7 +96,8 @@ siteEff <- function(hap, pheno, phenoNames){
 #'         showType = c("five_prime_UTR", "CDS", "three_prime_UTR"),
 #'         CDS.height = 1, cex = 0.1, col = col, pch = 20,
 #'         title = title, legend.cex = 0.8, legend.ncol = legend.ncol,
-#'         markMutants = TRUE, mutants.col = 1, mutants.type = 1)
+#'         markMutants = TRUE, mutants.col = 1, mutants.type = 1,
+#'         ylab = expression("-log"[10]~italic(p)~"Value"))
 #' @inherit siteEff examples
 #' @param siteEff matrix, column name are pheno names and row name are site position
 #' @param gff gff
@@ -120,13 +119,15 @@ siteEff <- function(hap, pheno, phenoNames){
 #' @param markMutants whether mark mutants on gene model, default as `TRUE`
 #' @param mutants.col color of lines which mark mutants
 #' @param mutants.type a vector of line types
+#' @param ylab character, yaxis label
 #' @export
 plotEff <- function(siteEff, gff = gff,
                     Chr = Chr, start = start, end = end,
                     showType = c("five_prime_UTR", "CDS", "three_prime_UTR"),
                     CDS.height = 1, cex = 0.1, col = col, pch = 20,
                     title = title, legend.cex = 0.8, legend.ncol = legend.ncol,
-                    markMutants = TRUE, mutants.col = 1, mutants.type = 1){
+                    markMutants = TRUE, mutants.col = 1, mutants.type = 1,
+                    ylab = expression("-log"[10]~italic(p)~"Value")){
     EFF <- as.matrix(siteEff)
     POS <- suppressWarnings(as.numeric(row.names(EFF)))
 
@@ -207,7 +208,7 @@ plotEff <- function(siteEff, gff = gff,
     plot(x = POS[1], y = EFF[1,1], type = "n",
          xlim = c(start, end), ylim = c(0, max(EFF)),
          col = 3, cex = 0.5,
-         xaxt = "n", xlab = "", ylab = expression("-log"[10]~italic(p)~"Value"))
+         xaxt = "n", xlab = "", ylab = ylab)
     cols <- rainbow(length(POS))
 
     if(missing(col)) col <- seq_len(nrow(EFF)) else

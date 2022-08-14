@@ -2,7 +2,7 @@
 % Please edit documentation in R/IO.R
 \name{import_vcf}
 \alias{import_vcf}
-\title{import vcf from file}
+\title{Import VCF from File}
 \usage{
 import_vcf(vcf_file = vcf_file, ...)
 

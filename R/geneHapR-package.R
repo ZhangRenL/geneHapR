@@ -1,3 +1,4 @@
+#' @title Gene Haplotype Statistics, Pheno Associations, and Visualization
 #' @description
 #' This packages provides a suite for gene(s) haplotype analysis,
 #' phenotypes association and visualization of geography distribution.
@@ -6,7 +7,7 @@
 #' import by \link[geneHapR:import_vcf]{import_vcf}
 #'
 #' **A complete list of functions** can be displayed with:
-#' `library(help = geneHapR)`.
+#' `library(help = 'geneHapR')`.
 #'
 #' **Vignettes** (documentation) can be listed with:
 #' `browseVignettes('geneHapR')`.
@@ -19,9 +20,7 @@
 #' **AccINFO** provide a data provide accessions information for
 #' pie plot in hapNet visualization, and information for geography distrbution.
 #' @seealso
-#' More documentation for vcfR can be found at repos stored at repo of
-#' `zhangrenl/genehapr` hosted at
-#' \href{https://gitee.com/}{gitee} and
-#' \href{https://github.com/}{github}
+# More documentation for 'geneHapR' could be found at repos under
+# \href{https://gitee.com/zhangrenl}{gitee}
 #' @keywords internal
 "_PACKAGE"

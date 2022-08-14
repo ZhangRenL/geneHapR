@@ -1,5 +1,5 @@
 #' @name hapDistribution
-#' @title display geography distribution
+#' @title Display of Geography Distribution
 #' @description
 #' show distribution of intereted haplotypes on maps
 #' @importFrom maps map
@@ -10,6 +10,7 @@
 #'                 zColours = zColours,
 #'                 legend = TRUE, symbolSize = 1,
 #'                 ratio = 1, cex.legend = 0.8,
+#'                 lwd.pie = 1,
 #'                 ...)
 #' @examples
 #' \donttest{
@@ -32,6 +33,7 @@
 #' or a numeric vector of length two contains x,y coordinate of the legend
 #' @param cex.legend character expansion factor for legend relative to current `par("cex")`
 #' @param ratio the ratio of Y to N in the output map, set to 1 as default
+#' @param lwd.pie line width of the pies
 #' @inheritParams maps::map
 #' @return No return value
 #' @export
@@ -48,6 +50,7 @@ hapDistribution <-
              symbolSize = 1,
              ratio = 1,
              cex.legend = 0.8,
+             lwd.pie = 1,
              ...) {
         hap <- na.omit(hap)
         if (missing(zColours))
@@ -115,7 +118,8 @@ hapDistribution <-
                     )
                 graphics::polygon(c(P$x, dF[locationNum, LON.col]),
                                   c(P$y, dF[locationNum, LAT.col]),
-                                  col = zColours[sliceNum])
+                                  col = zColours[sliceNum],
+                                  lwd = lwd.pie)
             }
         }
 

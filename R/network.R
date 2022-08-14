@@ -1,5 +1,5 @@
 #' @name network
-#' @title generate haplotype net relationshop with haplotype result
+#' @title Generate Haplotype Net Relationshop with Haplotype Result
 #' @description computes a haplotype network with haplotype summary result
 #' @seealso
 #' \code{\link[geneHapR:plotHapNet]{plotHapNet()}} and
@@ -7,7 +7,8 @@
 #' @usage
 #' get_hapNet(hapSummary,
 #'            AccINFO = AccINFO,
-#'            groupName = groupName)
+#'            groupName = groupName,
+#'            na.label = "Unknown")
 #' @inherit plotHapNet examples
 #' @importFrom pegas haploNet
 #' @importFrom stringdist stringdist
@@ -22,12 +23,14 @@
 #' Or you can supplied a hap_group mattrix with `plot(hapNet, pie = hap_group)`.
 #' @param groupName the group name used for pie plot,
 #' should be in `AccINFO` column names, default as the first column name
+#' @param na.label the label of `NA`s
 #' @return haplonet class
 #' @export
 get_hapNet <-
     function(hapSummary,
              AccINFO = AccINFO,
-             groupName = groupName) {
+             groupName = groupName,
+             na.label = "Unknown") {
         if (!inherits(hapSummary, "hapSummary"))
             stop("'hapSummary' should be of 'hapSummary' class")
         d <- getStringDist(hapSummary)
@@ -37,7 +40,8 @@ get_hapNet <-
                 groupName <- colnames(AccINFO)[1]
             hapGroup <- getHapGroup(hapSummary,
                                     AccINFO = AccINFO,
-                                    groupName = groupName)
+                                    groupName = groupName,
+                                    na.label = na.label)
             attr(hapNet, "hapGroup") <- hapGroup
         }
         return(hapNet)
@@ -51,16 +55,18 @@ get_hapNet <-
 #' @usage
 #' plotHapNet(hapNet,
 #'            size = "freq",
-#'             scale = 1,
-#'             cex = 0.8,
-#'             cex.legend = 0.6,
-#'             col.link = 1,
-#'             link.width = 1,
-#'             show.mutation = 1,
-#'             backGround = backGround,
-#'             hapGroup = hapGroup,
-#'             legend = FALSE,
-#'             ...)
+#'            scale = 1,
+#'            cex = 0.8,
+#'            cex.legend = 0.6,
+#'            col.link = 1,
+#'            link.width = 1,
+#'            show.mutation = 1,
+#'            backGround = backGround,
+#'            hapGroup = hapGroup,
+#'            legend = FALSE,
+#'            main = main,
+#'            labels = TRUE,
+#'            ...)
 #' @param hapNet an object of class "haploNet"
 #' @param size a numeric vector giving the diameter of the circles
 #'  representing the haplotypes: this is in the same unit than the
@@ -98,7 +104,11 @@ get_hapNet <-
 #' or a vector of length two giving the coordinates where to draw the legend;
 #' `FALSE` by default.
 #' If `TRUE`, the user is asked to click where to draw the legend.
+#' @param labels a logical specifying whether to identify the haplotypes
+#'  with their labels (default as TRUE)
 #' @param ... other parameters will pass to `plot` function
+#' @inheritParams graphics::title
+#' @importFrom graphics title
 #' @seealso
 #' \code{\link[geneHapR:hap_summary]{hap_summary()}} and
 #' \code{\link[geneHapR:get_hapNet]{get_hapNet()}}.
@@ -139,6 +149,8 @@ plotHapNet <- function(hapNet,
                        backGround = backGround,
                        hapGroup = hapGroup,
                        legend = FALSE,
+                       main = main,
+                       labels = TRUE,
                        ...) {
     if (!inherits(hapNet, "haploNet"))
         stop("'hapNet' must be of 'haploNet' class")
@@ -179,6 +191,7 @@ plotHapNet <- function(hapNet,
             lwd = link.width,
             bg = backGround,
             pie = hapGroup,
+            labels = labels,
             ...
         )
 
@@ -194,6 +207,7 @@ plotHapNet <- function(hapNet,
             cex = cex,
             show.mutation = show.mutation,
             lwd = link.width,
+            labels = labels,
             ...
         )
     }
@@ -212,13 +226,27 @@ plotHapNet <- function(hapNet,
             xy <- legend
         }
 
-        # draw size legend
+        # add size legend
         SZ <- unique(size)
         SZ.sc <- unique(size.sc)
 
         if (length(SZ) > 1) {
-            SZ <- unique(c(ceiling(min(SZ)), floor(median(SZ)), ceiling(max(SZ))))
-            SZ.sc <- unique(c(ceiling(min(SZ.sc)), floor(median(SZ.sc)), ceiling(max(SZ.sc))))
+            # calculate size legend
+            SZ.sc.50 <- (min(SZ.sc) + max(SZ.sc)) * 0.5
+            SZ.sc.25 <- (min(SZ.sc) + SZ.sc.50) * 0.5
+            SZ.sc.75 <- (SZ.sc.50 + max(SZ.sc)) * 0.5
+            SZ.sc <- unique(c(min(SZ.sc),
+                              SZ.sc.25,
+                              SZ.sc.50,
+                              SZ.sc.75,
+                              max(SZ.sc)))
+            if(is.numeric(scale)) SZ <- SZ.sc * scale else
+                SZ <- switch (scale,
+                              "log10" = 10^SZ.sc - 1,
+                              "log2" = 2^SZ.sc - 1)
+            SZ <- ceiling(SZ)
+
+            # plot size legend
             SHIFT <- max(SZ.sc) * 0.5
             vspace <- strheight(" ")
             for (sz.sc in SZ.sc) {
@@ -232,7 +260,7 @@ plotHapNet <- function(hapNet,
             xy[2] <- xy[2] - SHIFT - vspace
         }
 
-        # draw color legend
+        # add color legend
         if (!is.null(hapGroup)) {
             legend(
                 x = xy[1],
@@ -244,6 +272,10 @@ plotHapNet <- function(hapNet,
             )
         }
     }
+
+    # Add title
+    if(!missing(main))
+        title(main = main)
 }
 
 
@@ -376,12 +408,25 @@ getStringDist <- function(hapSummary) {
 
 getHapGroup <- function(hap,
                         AccINFO = AccINFO,
-                        groupName = groupName) {
+                        groupName = groupName,
+                        na.label = na.label) {
     # get indvidual group number of each hap
-    hap2acc <- attr(hap, "hap2acc")
-    acc2hap <- names(hap2acc)
-    names(acc2hap) <- hap2acc
-    AccINFO$Hap <- acc2hap[rownames(AccINFO)]
-    with(AccINFO[, c("Hap", groupName)],
-         table(hap = AccINFO$Hap, group = AccINFO[, groupName]))
+    accs.hap <- attr(hap, "hap2acc")
+    accs.info <- row.names(AccINFO)
+    probe <- accs.hap %in% accs.info
+    haps <- names(accs.hap)
+    infos <- AccINFO[accs.hap, groupName]
+    infos[is.na(infos)] <- na.label
+    acc.infos <- data.frame(Hap = haps, Type = infos)
+    if(FALSE %in% probe){
+        l <- table(probe)["FALSE"]
+        l <- ifelse(l >= 3, 3, l)
+        warning(table(probe)["FALSE"],
+                 " accession(s) not in 'AccINFO', eg: ",
+                 paste(accs.hap[!probe][seq_len(l)], collapse = ", "))
+        message("Type of those accessions will be assigned ", na.label)
+    }
+
+    with(acc.infos,
+         table(hap = acc.infos$Hap, group = acc.infos$Type))
 }
