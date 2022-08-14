@@ -2,7 +2,7 @@
 % Please edit documentation in R/IO.R
 \name{write.hap}
 \alias{write.hap}
-\title{save hap results to disk}
+\title{Save Haplotype Results to Disk}
 \usage{
 write.hap(x, file = file, sep = "\t")
 }

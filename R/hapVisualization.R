@@ -1,5 +1,5 @@
 #' @name hap_summary
-#' @title Summary hap results
+#' @title Summary Hap Results
 #' @description
 #' A function used for summarize hapResult to visualization and calculation.
 #' @note

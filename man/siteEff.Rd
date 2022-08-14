@@ -2,7 +2,7 @@
 % Please edit documentation in R/functionalSites.R
 \name{siteEff}
 \alias{siteEff}
-\title{Find site functional effective}
+\title{Calculation of Sites Effective}
 \usage{
 siteEff(hap, pheno, phenoNames)
 }
@@ -20,7 +20,7 @@ matrix, with column name are pheno names and
 row name are site position
 }
 \description{
-Find site functional effective
+Calculation of Sites Effective
 }
 \examples{
 \donttest{

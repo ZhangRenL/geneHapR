@@ -2,7 +2,7 @@
 % Please edit documentation in R/geography.R
 \name{hapDistribution}
 \alias{hapDistribution}
-\title{display geography distribution}
+\title{Display of Geography Distribution}
 \usage{
 hapDistribution(hap, AccINFO, LON.col, LAT.col, hapNames,
                 database = "world", regions = ".",

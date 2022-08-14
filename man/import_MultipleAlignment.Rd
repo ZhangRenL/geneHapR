@@ -2,7 +2,7 @@
 % Please edit documentation in R/IO.R
 \name{import_MultipleAlignment}
 \alias{import_MultipleAlignment}
-\title{import MultipleAlignment}
+\title{Import MultipleAlignment Result}
 \usage{
 import_MultipleAlignment(filepath, format = "fasta", type = "DNA")
 }

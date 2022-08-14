@@ -2,7 +2,7 @@
 % Please edit documentation in R/hapVisualization.R
 \name{hap_summary}
 \alias{hap_summary}
-\title{Summary hap results}
+\title{Summary Hap Results}
 \usage{
 hap_summary(hap,
             hapPrefix = "H",

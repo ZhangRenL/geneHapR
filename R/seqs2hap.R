@@ -1,5 +1,5 @@
 #' @name seqs2hap
-#' @title generate hap results from seqs
+#' @title Generate Hap Results from Seqs
 #' @description generate hapResults from aligned and trimed sequences
 #' @usage
 #' seqs2hap(seqs,

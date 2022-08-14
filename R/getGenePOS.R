@@ -1,4 +1,5 @@
-#' @title getGenePOS
+#' @title Get Gene Position
+#' @name getGenePOS
 #' @export
 #' @usage
 #' getGenePOS(gff= gff,
@@ -55,7 +56,8 @@ getGenePOS <- function(gff = gff,
 }
 
 
-#' @title getGeneRanges
+#' @title Get Gene Ranges
+#' @name getGeneRanges
 #' @param gff imported gff
 #' @param geneID target geneID
 #' @param type vector consist with one or more types in gff

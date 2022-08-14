@@ -2,7 +2,7 @@
 % Please edit documentation in R/IO.R
 \name{import_seqs}
 \alias{import_seqs}
-\title{import sequences}
+\title{Import Sequences}
 \usage{
 import_seqs(filepath, format = "fasta")
 }

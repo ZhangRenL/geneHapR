@@ -1,5 +1,5 @@
 #' @name hapDistribution
-#' @title display geography distribution
+#' @title Display of Geography Distribution
 #' @description
 #' show distribution of intereted haplotypes on maps
 #' @importFrom maps map

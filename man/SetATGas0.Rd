@@ -4,7 +4,7 @@
 \alias{SetATGas0}
 \alias{gffSetATGas0}
 \alias{hapSetATGas0}
-\title{Set position of ATG as zero}
+\title{Set Position of ATG as Zero}
 \usage{
 gffSetATGas0(gff = gff, hap = hap,
              geneID = geneID,

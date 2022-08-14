@@ -3,7 +3,7 @@
 \name{network}
 \alias{network}
 \alias{get_hapNet}
-\title{generate haplotype net relationshop with haplotype result}
+\title{Generate Haplotype Net Relationshop with Haplotype Result}
 \usage{
 get_hapNet(hapSummary,
            AccINFO = AccINFO,

@@ -1,6 +1,6 @@
 Package: geneHapR
 Type: Package
-Title: Gene Haplotype Analysis Using geneHapR
+Title: a Suit for Gene Haplotype Statistics, Phenotype Association and Visualization 
 Description: Import genome variants data and perform gene haplotype analysis, 
   visualization and phenotype association with R.
 biocViews: NucleosomePositioning, DataImport
@@ -15,8 +15,8 @@ Authors@R:
            family = "Guanqing",
            email = "jiaguanqing@caas.cn", 
            role = c("aut")))
-Version: 1.0.7
-RoxygenNote: 7.1.2
+Version: 1.0.8
+RoxygenNote: 7.2.0
 LazyData: True
 Imports: 
   ape,

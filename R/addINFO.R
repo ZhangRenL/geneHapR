@@ -1,5 +1,5 @@
 #' @name addINFO
-#' @title Summary hap results
+#' @title Add Infomation to Haplotype Results
 #' @description add annotations to INFO fields used for `plotHapTable()`
 #' @usage
 #' addINFO(hap,

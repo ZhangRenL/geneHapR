@@ -1,5 +1,5 @@
 #' @name filter_vcf_by_gff
-#' @title filter vcf by gff
+#' @title Filter VCF by GFF
 #' @description filter VCF by GFF annotation or by position or both
 #' @usage
 #' filter_vcf(vcf, gff = gff,

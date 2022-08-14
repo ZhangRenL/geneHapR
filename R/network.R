@@ -1,5 +1,5 @@
 #' @name network
-#' @title generate haplotype net relationshop with haplotype result
+#' @title Generate Haplotype Net Relationshop with Haplotype Result
 #' @description computes a haplotype network with haplotype summary result
 #' @seealso
 #' \code{\link[geneHapR:plotHapNet]{plotHapNet()}} and

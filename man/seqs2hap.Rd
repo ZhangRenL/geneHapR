@@ -4,7 +4,7 @@
 \alias{seqs2hap}
 \alias{allignSeqs}
 \alias{trimSeqs}
-\title{generate hap results from seqs}
+\title{Generate Hap Results from Seqs}
 \usage{
 seqs2hap(seqs,
          Ref = names(seqs)[1],

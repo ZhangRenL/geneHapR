@@ -1,6 +1,6 @@
 # File Checked
 #' @name filterLargeVCF
-#' @title Pre-process large VCF file(s)
+#' @title Pre-process of Large VCF File(s)
 #' @description
 #' Filter/extract one or multiple gene(s)/range(s) from a large
 #' `*.vcf/*.vcf.gz` file.

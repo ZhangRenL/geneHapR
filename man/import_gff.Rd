@@ -2,7 +2,7 @@
 % Please edit documentation in R/IO.R
 \name{import_gff}
 \alias{import_gff}
-\title{import annotations in GFF format}
+\title{Import Annotations from GFF Format File}
 \usage{
 import_gff(gffFile, format = "GFF")
 }

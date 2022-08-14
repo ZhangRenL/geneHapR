@@ -1,5 +1,5 @@
 #' @name siteEff
-#' @title Find site functional effective
+#' @title Calculation of Sites Effective
 #' @param hap object of "hapResult" class
 #' @param pheno phenotype data, with column names as pheno name
 #' and row name as accessions.
@@ -15,8 +15,6 @@
 #' data("geneHapR_test")
 #'
 #' # calculate site functional effect
-#' siteEFF <- siteEff(hapResult, pheno, names(pheno))
-#' plotEff(siteEFF, gff = gff, Chr = "scaffold_1")
 #' siteEFF <- siteEff(hapResult, pheno, names(pheno))
 #' plotEff(siteEFF, gff = gff, Chr = "scaffold_1")
 #' }
