@@ -28,7 +28,8 @@ Several small example \strong{datasets} are included in 'geneHapR'.
 pie plot in hapNet visualization, and information for geography distrbution.
 }
 \seealso{
-
+More documentation for 'geneHapR' could be found at repos under
+\href{https://gitee.com/zhangrenl}{gitee}
 }
 \author{
 \strong{Maintainer}: Zhang Renliang \email{zhang_renliang@163.com}

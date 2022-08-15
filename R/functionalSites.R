@@ -67,7 +67,7 @@ siteEff <- function(hap, pheno, phenoNames){
                         if(inherits(pij, "htest")){
                             pij <- pij$p.value
                         } else {
-                            pij <- 1
+                            pij <- NA
                         }
                         p <- c(p, pij)
                     }
@@ -95,7 +95,7 @@ siteEff <- function(hap, pheno, phenoNames){
 #'         Chr = Chr, start = start, end = end,
 #'         showType = c("five_prime_UTR", "CDS", "three_prime_UTR"),
 #'         CDS.height = 1, cex = 0.1, col = col, pch = 20,
-#'         title = title, legend.cex = 0.8, legend.ncol = legend.ncol,
+#'         main = main, legend.cex = 0.8, legend.ncol = legend.ncol,
 #'         markMutants = TRUE, mutants.col = 1, mutants.type = 1,
 #'         ylab = expression("-log"[10]~italic(p)~"Value"))
 #' @inherit siteEff examples
@@ -113,7 +113,7 @@ siteEff <- function(hap, pheno, phenoNames){
 #' \code{\link[graphics:points]{points()}}
 #' @param pch vector controls points type, see
 #' \code{\link[graphics:par]{par()}}
-#' @param title main title
+#' @param main main title
 #' @param legend.cex a numeric control the legend size
 #' @param legend.ncol the number of columns in which to set the legend items
 #' @param markMutants whether mark mutants on gene model, default as `TRUE`
@@ -125,7 +125,7 @@ plotEff <- function(siteEff, gff = gff,
                     Chr = Chr, start = start, end = end,
                     showType = c("five_prime_UTR", "CDS", "three_prime_UTR"),
                     CDS.height = 1, cex = 0.1, col = col, pch = 20,
-                    title = title, legend.cex = 0.8, legend.ncol = legend.ncol,
+                    main = main, legend.cex = 0.8, legend.ncol = legend.ncol,
                     markMutants = TRUE, mutants.col = 1, mutants.type = 1,
                     ylab = expression("-log"[10]~italic(p)~"Value")){
     EFF <- as.matrix(siteEff)
@@ -206,7 +206,7 @@ plotEff <- function(siteEff, gff = gff,
     # set of par and plot frame
     par(fig = c(0,1,fig.h + 0.01, 1), mar = par.mar, new = TRUE)
     plot(x = POS[1], y = EFF[1,1], type = "n",
-         xlim = c(start, end), ylim = c(0, max(EFF)),
+         xlim = c(start, end), ylim = c(0, max(EFF, na.rm = TRUE)),
          col = 3, cex = 0.5,
          xaxt = "n", xlab = "", ylab = ylab)
     cols <- rainbow(length(POS))
@@ -225,6 +225,10 @@ plotEff <- function(siteEff, gff = gff,
                cex = cex, col = col[i], pch = pch[i])
     }
 
+    # add title
+    if(!missing(main))
+        title(main = main)
+
     # markMutants
     if(markMutants){
         par.mar <- oldPar.mar
@@ -238,8 +242,4 @@ plotEff <- function(siteEff, gff = gff,
                   col = mutants.col, lty = mutants.type)
         }
     }
-
-    # add title
-    if(!missing(title))
-        title(main = title)
 }

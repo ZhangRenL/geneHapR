@@ -8,7 +8,7 @@ plotEff(siteEff, gff = gff,
         Chr = Chr, start = start, end = end,
         showType = c("five_prime_UTR", "CDS", "three_prime_UTR"),
         CDS.height = 1, cex = 0.1, col = col, pch = 20,
-        title = title, legend.cex = 0.8, legend.ncol = legend.ncol,
+        main = main, legend.cex = 0.8, legend.ncol = legend.ncol,
         markMutants = TRUE, mutants.col = 1, mutants.type = 1,
         ylab = expression("-log"[10]~italic(p)~"Value"))
 }
@@ -37,7 +37,7 @@ range: \verb{[0,1]}}
 \item{pch}{vector controls points type, see
 \code{\link[graphics:par]{par()}}}
 
-\item{title}{main title}
+\item{main}{main title}
 
 \item{legend.cex}{a numeric control the legend size}
 

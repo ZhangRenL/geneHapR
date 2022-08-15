@@ -16,7 +16,7 @@ Authors@R:
            email = "jiaguanqing@caas.cn", 
            role = c("aut")))
 Version: 1.0.8
-RoxygenNote: 7.1.2
+RoxygenNote: 7.2.0
 LazyData: True
 Imports: 
   ape,

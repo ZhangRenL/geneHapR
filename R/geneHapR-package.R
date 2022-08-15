@@ -20,7 +20,7 @@
 #' **AccINFO** provide a data provide accessions information for
 #' pie plot in hapNet visualization, and information for geography distrbution.
 #' @seealso
-# More documentation for 'geneHapR' could be found at repos under
-# \href{https://gitee.com/zhangrenl}{gitee}
+#' More documentation for 'geneHapR' could be found at repos under
+#' \href{https://gitee.com/zhangrenl}{gitee}
 #' @keywords internal
 "_PACKAGE"
