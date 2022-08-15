@@ -5,10 +5,11 @@
 #' @description import *.vcf structured text format,
 #' as well as the compressed `*.vcf.gz` format.
 #' @examples
-#' \dontrun{
 #'
-#' vcf <- import_vcf(file = "test.vcf.gz")
-#' }
+#' vcf.Path <- system.file("extdata", "var.vcf.gz", package = "geneHapR")
+#' vcf <- import_vcf(file = vcf.Path)
+#' vcf
+#'
 #' @importFrom vcfR read.vcfR
 #' @param vcf_file file path of VCF file
 #' @param ... pass to `vcfR::read.vcfR()`
@@ -38,10 +39,15 @@ import_vcf <- function(vcf_file = vcf_file, ...) {
 #' the part before the dot will be set as y axis name
 #' and the latter will be set as foot when plot figures.
 #' @examples
-#' \dontrun{
 #'
+#' oldDir <- getwd()
+#' setwd(tempdir())
+#' data("geneHapR_test")
+#' write.table(pheno, file = "test.pheno.txt", sep = "\t")
 #' pheno <- import_AccINFO("test.pheno.txt")
-#' }
+#' pheno
+#' setwd(oldDir)
+#'
 #' @importFrom utils read.delim
 #' @param file file path, this file should be a tab delimed table
 #' @inheritParams utils::read.delim
@@ -67,10 +73,11 @@ import_AccINFO <- function(file, comment.char = "#",
 #' @description import genome annotations in GFF/GFF3 format
 #' @usage import_gff(gffFile, format = "GFF")
 #' @examples
-#' \dontrun{
 #'
-#'     gff <- import_gff("your.gff", format = "GFF")
-#' }
+#' gff.Path <- system.file("extdata", "annotation.gff", package = "geneHapR")
+#' gff <- import_gff(gff.Path, format = "GFF")
+#' gff
+#'
 #' @importFrom rtracklayer import
 #' @param gffFile the gff file path
 #' @param format should be one of "gff", "gff1", "gff2", "gff3", "gvf",
@@ -88,9 +95,10 @@ import_gff <- function(gffFile, format = "GFF") {
 #' @description import DNA sequences in FASTA format
 #' @usage import_seqs(filepath, format = "fasta")
 #' @examples
-#' \dontrun{
-#'    geneSeqs <- import_seqs(filepath = "fastaFilePath", format = "fasta")
-#' }
+#'
+#' seqPath <- system.file("extdata", "seqs.fa", package = "geneHapR")
+#' geneSeqs <- import_seqs(filepath = seqPath, format = "fasta")
+#'
 #' @param filepath A character vector containing the path to the DNA sequences file.
 #' Reading files in gzip format (which usually have the '.gz' extension) is
 #' supported.
@@ -109,17 +117,18 @@ import_seqs <- function(filepath, format = "fasta") {
 #' @description import sequences algned results
 #' @usage import_MultipleAlignment(filepath, format = "fasta", type = "DNA")
 #' @examples
-#' \dontrun{
-#'    geneSeqs <- import_MultipleAlignment(filepath = "fastaFilePath",
-#'                                         format = "fasta",
-#'                                          type = "DNA")
-#'    geneSeqs <- import_MultipleAlignment(filepath = "fastaFilePath",
-#'                                         format = "fasta",
-#'                                          type = "Protein")
-#' }
+#' aliSeqPath <- system.file("extdata", "seqs.fa", package = "geneHapR")
+#'
+#' geneSeqs <- import_MultipleAlignment(filepath = aliSeqPath,
+#'                                      format = "fasta",
+#'                                      type = "DNA")
+#' geneSeqs <- import_MultipleAlignment(filepath = aliSeqPath,
+#'                                      format = "fasta",
+#'                                      type = "Protein")
+#'
 #' @param type one of "DNA" and "Protein"
 #' @inheritParams Biostrings::readDNAMultipleAlignment
-#' @return DNAMultipleAlignment
+#' @return object of DNAMultipleAlignment
 #' @export
 import_MultipleAlignment <- function(filepath,
                                      format = "fasta",
@@ -139,7 +148,7 @@ import_MultipleAlignment <- function(filepath,
 }
 
 
-# Checked
+
 #' @name import_hap
 #' @title Import hapResult/hapSummary
 #' @usage import_hap(file, ...)
@@ -156,10 +165,15 @@ import_MultipleAlignment <- function(filepath,
 #'     Rows represent haplotypes in hap summary result, while rows represent accessions in hap result.
 #'     In addtion, the accessions of each haplotype in hap summary result were separated by ";".
 #' @examples
-#' \dontrun{
 #'
+#' oldDir <- getwd()
+#' setwd(tempdir())
+#' data("geneHapR_test")
+#' write.hap(hapResult, file = "test.pheno.txt", sep = "\t")
 #' hap <- import_hap("hapSummary_OR_hapResult_file.txt")
-#' }
+#' hap
+#' setwd(oldDir)
+#'
 #' @param file hapSummary or hapResult file path
 #' @param ... extras will pass to `read.delim()`
 #' @export
@@ -222,12 +236,13 @@ the 'freq' column (ususlly the last column) contains nonnumeric data.")
 #' @inherit import_hap details
 #' @examples
 #'
-#' data("geneHapR_test")
 #'
 #' oriDir <- getwd()
 #' setwd(tempdir())
+#' data("geneHapR_test")
 #' write.hap(hapResult, file = "hapResult.txt")
 #' setwd(oriDir)
+#'
 #' @param x objec of hapResult or hapSummary class
 #' @param file file path, where to save the hap result/summary
 #' @param sep the field separator string. Values within each row of x are separated by this string.
@@ -256,8 +271,7 @@ write.hap <- function(x, file = file, sep = "\t") {
 }
 
 
-# import pips
 #' @importFrom magrittr `%>%`
 #' @importFrom IRanges `%over%`
-`%>%` <- magrittr::`%>%`
-`%over%` <- IRanges::`%over%`
+#`%>%` <- magrittr::`%>%`
+#`%over%` <- IRanges::`%over%`

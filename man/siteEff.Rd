@@ -14,13 +14,40 @@ and row name as accessions.}
 
 \item{phenoNames}{pheno names used for analysis, if missing,
 will use all pheno names in \code{pheno}}
+
+\item{quality}{bool type, indicate whther the type of phenos are quality or
+quantitative. Length of \code{quality} could be 1 or equal with length of
+\code{phenoNames}. Default as \code{FALSE}}
+
+\item{method}{character or character vector with length equal with
+\code{phenoNames} indicate which method should be performed towards each
+phenotype. Should be one of "t.test", "chi.test", "anova" and "auto".
+Default as "auto", see details.}
+
+\item{p.adj}{character, indicate correction method.
+Could be "BH", "BY", "none"}
 }
 \value{
-matrix, with column name are pheno names and
-row name are site position
+a list containing two matrix names as "p" and "EFF",
+with column name are pheno names and row name are site position.
+The matrix names as "p" contains all \emph{p}-value.
+The matrix named as "EFF" contains scaled difference between each geno-types
+per site.
 }
 \description{
 Calculation of Sites Effective
+}
+\details{
+The site \strong{EFF} was determinate by the phenotype difference between each
+site geno-type.
+
+The \emph{p} was calculated with statistical analysis method as designated by the
+parameter \code{method}. If \code{method} set as "auto", then
+chi.test will be
+selected for quantity phenotype, eg.: color;
+for quantity phynotype, eg.: height, with at least 30 observations per
+geno-type and fit Gaussian distribution t.test will be performed or
+anova will be performed.
 }
 \examples{
 \donttest{

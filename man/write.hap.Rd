@@ -32,10 +32,11 @@ In addtion, the accessions of each haplotype in hap summary result were separate
 }
 \examples{
 
-data("geneHapR_test")
 
 oriDir <- getwd()
 setwd(tempdir())
+data("geneHapR_test")
 write.hap(hapResult, file = "hapResult.txt")
 setwd(oriDir)
+
 }

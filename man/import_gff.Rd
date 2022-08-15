@@ -19,8 +19,9 @@ GRange object
 import genome annotations in GFF/GFF3 format
 }
 \examples{
-\dontrun{
 
-    gff <- import_gff("your.gff", format = "GFF")
-}
+gff.Path <- system.file("extdata", "annotation.gff", package = "geneHapR")
+gff <- import_gff(gff.Path, format = "GFF")
+gff
+
 }

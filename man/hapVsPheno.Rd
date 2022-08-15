@@ -9,7 +9,7 @@ hapVsPheno(hap,
            phenoName, hapPrefix = "H",
            title = "test1G0387",
            mergeFigs = TRUE,
-           minAcc = 5, ...)
+           minAcc = 5, outlier.rm = TRUE, ...)
 }
 \arguments{
 \item{hap}{object of hapResult class, generate with\code{vcf2hap()} or
@@ -29,6 +29,8 @@ plot or not. Default as \code{TRUE}}
 \item{minAcc}{If observations number of a Hap less than this number will
 not be compared with others or be ploted. Should not less than 3 due to the
 t-test will meaninglessly. default as 5}
+
+\item{outlier.rm}{whether remove ouliers, default as TRUE}
 
 \item{...}{options will pass to \code{ggpubr()}}
 }

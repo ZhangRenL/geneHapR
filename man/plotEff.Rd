@@ -23,7 +23,7 @@ plotEff(siteEff, gff = gff,
 
 \item{end}{end position}
 
-\item{showType}{character vector, eg: "CDS", "five_prime_UTR",
+\item{showType}{character vector, eg.: "CDS", "five_prime_UTR",
 "three_prime_UTR"}
 
 \item{CDS.height}{numeric indicate the height of CDS in gene model,
@@ -50,6 +50,9 @@ range: \verb{[0,1]}}
 \item{mutants.type}{a vector of line types}
 
 \item{ylab}{character, yaxis label}
+}
+\value{
+No return value, called for side effects
 }
 \description{
 plotEff

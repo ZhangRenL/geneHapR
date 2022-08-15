@@ -5,8 +5,33 @@
 #' and row name as accessions.
 #' @param phenoNames pheno names used for analysis, if missing,
 #' will use all pheno names in `pheno`
-#' @return matrix, with column name are pheno names and
-#'  row name are site position
+#' @param quality bool type, indicate whther the type of phenos are quality or
+#' quantitative. Length of `quality` could be 1 or equal with length of
+#' `phenoNames`. Default as `FALSE`
+#' @param method character or character vector with length equal with
+#' `phenoNames` indicate which method should be performed towards each
+#' phenotype. Should be one of "t.test", "chi.test", "anova" and "auto".
+#' Default as "auto", see details.
+#' @param p.adj character, indicate correction method.
+#' Could be "BH", "BY", "none"
+#' @details
+#' The site **EFF** was determinate by the phenotype difference between each
+#' site geno-type.
+#'
+#' The *p* was calculated with statistical analysis method as designated by the
+#' parameter `method`. If `method` set as "auto", then
+#' chi.test will be
+#' selected for quantity phenotype, eg.: color;
+#' for quantity phynotype, eg.: height, with at least 30 observations per
+#' geno-type and fit Gaussian distribution t.test will be performed or
+#' anova will be performed.
+#'
+#'
+#' @return a list containing two matrix names as "p" and "EFF",
+#' with column name are pheno names and row name are site position.
+#' The matrix names as "p" contains all *p*-value.
+#' The matrix named as "EFF" contains scaled difference between each geno-types
+#' per site.
 #' @importFrom stats t.test
 #' @usage
 #' siteEff(hap, pheno, phenoNames)
@@ -19,8 +44,15 @@
 #' plotEff(siteEFF, gff = gff, Chr = "scaffold_1")
 #' }
 #' @export
-siteEff <- function(hap, pheno, phenoNames){
+siteEff <- function(hap, pheno, phenoNames, quality = FALSE, method = "auto",
+                    p.adj = "none"){
     if(missing(phenoNames)) phenoNames <- names(pheno)
+    m <- print("'quality' length should be equal with 'phenoNames'")
+    if(length(quality) == 1)
+        quality <- rep(quality, length(phenoNames)) else
+            stopifnot("'quality' length should be equal with 'phenoNames'" =
+                          length(quality[1:10]) == length(phenoNames))
+    names(quality) <- phenoNames
     if(!inherits(hap, "hapResult"))
         stop("hap should be object of 'hapResult' class")
 
@@ -36,12 +68,34 @@ siteEff <- function(hap, pheno, phenoNames){
     accessions <- hapData[,names(hapData) == "Accession"]
 
     # preset of results
-    results <- data.frame()
+    results.p <- data.frame()
+    results.d <- data.frame()
 
+    echo <- FALSE
+    t <- Sys.time()
     # processing
     for(phynoname in phenoNames){
-        cat("\n\t", phynoname)
-        res <- c()
+        # whether echo pheno name
+        # if(echo) cat("\n\t", phynoname) else {
+        #     if(t){
+        #         if((Sys.time() - t) > 5)
+        #             echo <- TRUE
+        #         t <- FALSE
+        #     }
+        # }
+
+
+        # is.quality
+        is.quality <- quality[phynoname]
+
+        # scale phenos if not quality
+        pheno.n < pheno[, phenoNames]
+        if(!is.quality) pheno.n <- pscale(pheno.n)
+        names(pheno.n) <- rownames(pheno)
+
+        # EFF and pValue calculate
+        res.p <- c()
+        res.d <- c()
         for(pos in POS){
 
             # get alleles
@@ -50,43 +104,73 @@ siteEff <- function(hap, pheno, phenoNames){
             Aln <- length(unique(Als))
 
             # get accessions of each genotype
+            accs <- list()
             for(i in seq_len(Aln)){
                 probe <- c(alleles == Als[i])
-                assign(paste0("acc",i), accessions[probe])
+                accs[[i]] <- accessions[probe]
             }
-            p <- c()
-            if(Aln > 1)
-                for(i in seq_len(Aln)){
-                    for(j in rev(seq_len(Aln))){
-                        if(i >= j) next
-                        acci <- get(paste0("acc",i))
-                        accj <- get(paste0("acc",j))
-                        phenoi <- pheno[acci, phynoname]
-                        phenoj <- pheno[accj, phynoname]
-                        pij <- try(t.test(phenoi, phenoj), silent = TRUE)
-                        if(inherits(pij, "htest")){
-                            pij <- pij$p.value
-                        } else {
-                            pij <- NA
-                        }
-                        p <- c(p, pij)
-                    }
-                }
-            p <- min(p)
-            res <- c(res, p)
+            # test start
+            if(is.quality) {
+                res.ps <- chisq.test.ps(accs = accs, pheno.n = pheno.n)
+            } else {
+                res.ps <- t.test.ps(accs = accs, pheno.n = pheno.n)
+            }
+            # test end
+            p <- min(res.ps$p)
+            d <- max(res.ps$d)
+            res.p <- c(res.p, p)
+            res.d <- c(res.d, d)
         }
-        results <- rbind(results, res)
+        results.p <- rbind(results.p, res.p)
+        results.d <- rbind(results.d, res.d)
     }
-    names(results) <- POS
-    results <- -log10(results)
-    row.names(results) <- phenoNames
+    names(results.p) <- POS
+    results.p <- -log10(results.p)
+
+    row.names(results.p) <- phenoNames
+    names(results.d) <- POS
+    results.d <- (results.d)
+    row.names(results.d) <- phenoNames
     # results <- cbind(pheno = phenoNames, results)
-    return(t(results))
+    return(list(p = t(results.p), EFF = t(results.d)))
 }
 
+# TODO
+t.test.ps <- function(accs = accs, pheno.n = pheno.n){
+    p <- c()
+    d <- c()
+    if(Aln > 1)
+        for(i in seq_len(Aln)){
+            for(j in rev(seq_len(Aln))){
+                if(i >= j) next
+                acci <- get(paste0("acc",i))
+                accj <- get(paste0("acc",j))
+                phenoi <- pheno.n[acci]
+                phenoj <- pheno.n[accj]
 
+                # t.test or chisqure test or anova analysis
+                if(is.quality){
 
+                } else {
+                    pij <- try(t.test(phenoi, phenoj), silent = TRUE)
+                    if(inherits(pij, "htest")){
+                        pij <- pij$p.value
+                        dij <- abs(diff(pij$estimate))
+                    } else {
+                        pij <- NA
+                        dij <- NA
+                    }
+                }
+                p <- c(p, pij)
+                d <- c(d, dij)
+            }
+        }
+    list(p = p, d = d)
+}
+chisq.test.ps <- function(accs = accs, pheno.n = pheno.n){}
 
+# TODO
+# add delta EFF plot function
 #' @title plotEff
 #' @name plotEff
 #' @importFrom graphics par strwidth rect points
@@ -104,7 +188,7 @@ siteEff <- function(hap, pheno, phenoNames){
 #' @param Chr the chromosome name
 #' @param start start postion
 #' @param end end position
-#' @param showType character vector, eg: "CDS", "five_prime_UTR",
+#' @param showType character vector, eg.: "CDS", "five_prime_UTR",
 #' "three_prime_UTR"
 #' @param CDS.height numeric indicate the height of CDS in gene model,
 #' range: `[0,1]`
@@ -120,6 +204,7 @@ siteEff <- function(hap, pheno, phenoNames){
 #' @param mutants.col color of lines which mark mutants
 #' @param mutants.type a vector of line types
 #' @param ylab character, yaxis label
+#' @return No return value, called for side effects
 #' @export
 plotEff <- function(siteEff, gff = gff,
                     Chr = Chr, start = start, end = end,
@@ -155,7 +240,7 @@ plotEff <- function(siteEff, gff = gff,
     # set of fig.h
     Parents <- unique(unlist(gff$Parent))
     nsplicement <- length(Parents)
-    fig.h <- ifelse(nsplicement >= 5, 0.5, 0.1 * (1 + nsplicement))
+    fig.h <- ifelse(nsplicement >= 5, 0.5, 0.1 * (1.2 + nsplicement))
 
     # set of par
     par.mar <- oldPar.mar
@@ -219,6 +304,9 @@ plotEff <- function(siteEff, gff = gff,
 
 
     # plot points indicate EFFs
+    # TODO
+    # 1. add color for pValue
+    # 2. height for EFF
     for(i in seq_len(nrow(EFF))){
         points(x = rep(POS[i], ncol(EFF)),
                y = EFF[i,],
@@ -238,8 +326,34 @@ plotEff <- function(siteEff, gff = gff,
              type = "n", xaxt = "n", yaxt = "n",
              xlab = "", ylab = "", frame.plot = FALSE)
         for(pos in POS){
-            lines(c(pos,pos), c(0.4, ln+2.1),
+            lines(c(pos, pos), c(0.4, ln + 2.1),
                   col = mutants.col, lty = mutants.type)
         }
     }
+}
+
+# TODO
+# add phenos scale function here
+pscale <- function(x){
+    # remove outlier
+    x <- removeOutlier(x)
+    # scale
+    x.max <- max(x, na.rm = TRUE)
+    x.min <- min(x, na.rm = TRUE)
+    x <- (x - x.min)/(x.max - x.min)
+    return(x)
+}
+
+#' @importFrom stats IQR quantile
+removeOutlier <- function(x){
+    outlier_limup <-
+        3 * IQR(x, na.rm = TRUE) +
+        quantile(x, 3 / 4, na.rm = TRUE, names = FALSE)# Q3+k(Q3-Q1)
+
+    outlier_limdown <-
+        quantile(x, 1 / 4, na.rm = TRUE, names = FALSE) -
+        3 * IQR(x , na.rm = TRUE) # Q1-k(Q3-Q1)
+
+    x[x >= outlier_limup | x <= outlier_limdown] = NA
+    return(x)
 }

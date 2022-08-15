@@ -6,7 +6,7 @@
 #'            phenoName, hapPrefix = "H",
 #'            title = "test1G0387",
 #'            mergeFigs = TRUE,
-#'            minAcc = 5, ...)
+#'            minAcc = 5, outlier.rm = TRUE, ...)
 #' @examples
 #'
 #' \donttest{
@@ -37,6 +37,7 @@
 #' @param minAcc If observations number of a Hap less than this number will
 #' not be compared with others or be ploted. Should not less than 3 due to the
 #' t-test will meaninglessly. default as 5
+#' @param outlier.rm whether remove ouliers, default as TRUE
 #' @param ... options will pass to `ggpubr()`
 #' @importFrom stats na.omit t.test
 #' @importFrom rlang .data
@@ -52,6 +53,7 @@ hapVsPheno <- function(hap,
                        title = "test1G0387",
                        mergeFigs = TRUE,
                        minAcc = 5,
+                       outlier.rm = TRUE,
                        ...)
 {
     if (missing(phenoName)) {
@@ -69,6 +71,10 @@ hapVsPheno <- function(hap,
 
     pheno$Hap <- haps[row.names(pheno)]
     phenop <- pheno[, c("Hap", phenoName)]
+
+    # remove outliers
+    if(outlier.rm)
+        phenop[, phenoName] <- removeOutlier(phenop[, phenoName])
     phenop <- na.omit(phenop)
     if (nrow(phenop) == 0)
         stop(
@@ -265,6 +271,7 @@ hapVsPheno <- function(hap,
 #'          filename.prefix = filename.prefix,
 #'          filename.surfix = "pdf",
 #'          filename.sep = "_",
+#'          outlier.rm = TRUE,
 #'          ...)
 #' @param outPutSingleFile `TRUE` or `FALSE` indicate whether put all figs
 #' into to each pages of single file or generate multi-files.
@@ -317,6 +324,7 @@ hapVsPhenos <- function(hap,
                         filename.prefix = filename.prefix,
                         filename.surfix = "pdf",
                         filename.sep = "_",
+                        outlier.rm = TRUE,
                         ...) {
 
     # pheno association

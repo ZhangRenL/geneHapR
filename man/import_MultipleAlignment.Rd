@@ -23,18 +23,19 @@ import_MultipleAlignment(filepath, format = "fasta", type = "DNA")
 \item{type}{one of "DNA" and "Protein"}
 }
 \value{
-DNAMultipleAlignment
+object of DNAMultipleAlignment
 }
 \description{
 import sequences algned results
 }
 \examples{
-\dontrun{
-   geneSeqs <- import_MultipleAlignment(filepath = "fastaFilePath",
-                                        format = "fasta",
-                                         type = "DNA")
-   geneSeqs <- import_MultipleAlignment(filepath = "fastaFilePath",
-                                        format = "fasta",
-                                         type = "Protein")
-}
+aliSeqPath <- system.file("extdata", "seqs.fa", package = "geneHapR")
+
+geneSeqs <- import_MultipleAlignment(filepath = aliSeqPath,
+                                     format = "fasta",
+                                     type = "DNA")
+geneSeqs <- import_MultipleAlignment(filepath = aliSeqPath,
+                                     format = "fasta",
+                                     type = "Protein")
+
 }

@@ -67,14 +67,14 @@ If hapSummarys were generated from sequences, INFO row is null.
 If hapSummarys were generated from VCF, INFO was take from the INFO column
 in the source VCF file.
 Some tag-values may contains more than one value separated by
-"|", eg: "ANN" or "snpEFF" added by 'snpeff' or other software. For those
+"|", eg.: "ANN" or "snpEFF" added by 'snpeff' or other software. For those
 fields we need specified value of \code{tag_field = "ANN"} and \code{tag_split = "[\\|]"},
 it's suggest specified the value of \code{tag_name} for display in figure.
 
 'snpeff', a toolbox for genetic variant annotation and functional effect
 prediction, will add annotations to INFO filed in VCF file under a tag
 named as "ANN". The annotations contains several fields separated by "|".
-eg:
+eg.:
 \enumerate{
 \item Allele
 \item Annotation

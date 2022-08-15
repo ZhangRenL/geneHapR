@@ -15,6 +15,7 @@ hapVsPhenos(hap, pheno,
          filename.prefix = filename.prefix,
          filename.surfix = "pdf",
          filename.sep = "_",
+         outlier.rm = TRUE,
          ...)
 }
 \arguments{
@@ -49,6 +50,8 @@ pheno name, a dot and surfix \code{filename.surfix},
 and file type was decide by \code{filename.surfix};
 if single file was generated, file name will be formed by
 prefix \code{filename.prefix}, a dot and surfix \code{filename.surfix}}
+
+\item{outlier.rm}{whether remove ouliers, default as TRUE}
 
 \item{...}{options will pass to \code{ggpubr()}}
 }

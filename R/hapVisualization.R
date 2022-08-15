@@ -94,14 +94,14 @@ hap_summary <- function(hap,
 #' If hapSummarys were generated from VCF, INFO was take from the INFO column
 #' in the source VCF file.
 #' Some tag-values may contains more than one value separated by
-#' "|", eg: "ANN" or "snpEFF" added by 'snpeff' or other software. For those
+#' "|", eg.: "ANN" or "snpEFF" added by 'snpeff' or other software. For those
 #' fields we need specified value of `tag_field = "ANN"` and `tag_split = "[\|]"`,
 #' it's suggest specified the value of `tag_name` for display in figure.
 #'
 #' 'snpeff', a toolbox for genetic variant annotation and functional effect
 #' prediction, will add annotations to INFO filed in VCF file under a tag
 #' named as "ANN". The annotations contains several fields separated by "|".
-#' eg:
+#' eg.:
 #'  1.  Allele
 #'  2.  Annotation
 #'  3.  Annotation_Impact

@@ -13,6 +13,7 @@ vignette: >
 
 ## Preliminaries
 
+
 Input files frequently present challenges to analysis.
 A common problem I encounter is that chromosome names and gene IDs are not standardized among **VCF**, **FASTA** and **GFF** files.
 That means additional work for users.
@@ -158,6 +159,7 @@ If your VCF file is just a few 'MB', this step was not necessary at all.
 ```{r preprocess large VCF, eval=FALSE, include=TRUE}
 # new VCF file will be saved to disk
 # extract a single gene/range from a large vcf
+
 filterLargeVCF(VCFin = "Ori.vcf.gz",
                VCFout = "filtered.vcf.gz",
                Chr = "scaffold_8",

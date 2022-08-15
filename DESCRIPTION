@@ -1,8 +1,8 @@
 Package: geneHapR
 Type: Package
-Title: a Suit for Gene Haplotype Statistics, Phenotype Association and Visualization 
-Description: Import genome variants data and perform gene haplotype analysis, 
-  visualization and phenotype association with R.
+Title: Gene Haplotype Statistics, Phenotype Association and Visualization
+Description: Import genome variants data and perform gene haplotype Statistics, 
+  visualization and phenotype association with 'R'.
 biocViews: NucleosomePositioning, DataImport
 Encoding: UTF-8
 Maintainer: Zhang Renliang <zhang_renliang@163.com>

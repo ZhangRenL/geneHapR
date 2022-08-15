@@ -54,8 +54,13 @@ the part before the dot will be set as y axis name
 and the latter will be set as foot when plot figures.
 }
 \examples{
-\dontrun{
 
+oldDir <- getwd()
+setwd(tempdir())
+data("geneHapR_test")
+write.table(pheno, file = "test.pheno.txt", sep = "\t")
 pheno <- import_AccINFO("test.pheno.txt")
-}
+pheno
+setwd(oldDir)
+
 }

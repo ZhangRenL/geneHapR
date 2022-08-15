@@ -6,12 +6,21 @@
 #' `*.vcf/*.vcf.gz` file.
 #' @usage
 #'  filterLargeVCF(VCFin = VCFin, VCFout = VCFout,
-#'                 Chr = Chr, POS = POS, override = TRUE)
+#'                 Chr = Chr,
+#'                 POS = POS,
+#'                 start = start,
+#'                 end = end,
+#'                 override = TRUE)
 #' @param VCFin Path of input `*.vcf/*.vcf.gz` file.
 #' @param VCFout Path(s) of output `*.vcf/*.vcf.gz` file.
 #' @param Chr a single CHROM name or CHROM names vector.
-#' @param POS a vector consist with start and end position or a list
-#'  with length equal to `Chr`.
+#' @param POS,start,end provide the range should be extract from orignal vcf.
+#'  `POS`: a vector consist with start and end position or a list
+#'  with length equal to `Chr`, eg.: `list(c(1,200), c(300,500), c(300,400))`
+#'  indicates 3 ranges (1~200, 300~500 and 300~400).
+#'  if `POS` is `NULL`, `start` and `end` are needed, eg.:
+#'  `start = c(1, 30)` and `end = c(200, 150)` indicates 2 ranges
+#'  (1~200 and 30~150)
 #' @param override whether override existed file or not, default as `TRUE`.
 #' @details
 #' This package import VCF files with 'vcfR' which is more efficient to
@@ -28,52 +37,72 @@
 #' large VCF file(s), it's prefer to process with other linux tools in a script
 #' on server, such as: 'vcftools' and 'bcftools'.
 #' @examples
-#' \dontrun{
+#' \donttest{
+#'  # The filteration of small vcf should be done with `filter_vcf()`.
+#'  # however, here, we use a mini vcf instead just for example
+#'
+#'  vcfPath <- system.file("extdata", "var.vcf.gz", package = "geneHapR")
+#'
+#'  oldDir <- getwd()
+#'  setwd(tempdir())
 #'  # extract a single gene/range from large vcf
-#'  filterLargeVCF(VCFin = "Ori.vcf.gz", VCFout = "filtered.vcf.gz",
-#'                 Chr = "scaffold_8", POS = c(19802,24501), override = TRUE)
+#'  filterLargeVCF(VCFin = vcfPath, VCFout = "filtered.vcf.gz",
+#'                 Chr = "scaffold_1", POS = c(4300,500), override = TRUE)
 #'
 #'  # extract multi genes/ranges from large vcf
-#'  filterLargeVCF(VCFin = "Ori.vcf.gz",
+#'  filterLargeVCF(VCFin = vcfPath,
 #'                 VCFout = c("filtered1.vcf.gz",
 #'                            "filtered2.vcf.gz",
 #'                            "filtered3.vcf.gz"),
-#'                 Chr = c("scaffold_8",
-#'                         "scaffold_8",
-#'                         "scaffold_7"),
-#'                 POS = list(c(19802,24501),
-#'                            c(27341,28949),
-#'                            c(38469,40344)),
+#'                 Chr = rep("scaffold_1", 3),
+#'                 POS = list(c(4300, 5000),
+#'                            c(5000, 6000),
+#'                            c(5000, 7000)),
 #'                 override = TRUE)
+#'
+#' setwd(oldDir)
 #' }
 #' @return No return value
 #' @export
 filterLargeVCF <- function(VCFin = VCFin,
                            VCFout = VCFout,
                            Chr = Chr,
-                           POS = POS,
+                           POS = NULL,
+                           start = start,
+                           end = end,
                            override = TRUE)
 {
     if (missing(Chr))
         stop("Chr is missing")
-    if (missing(POS))
-        stop("POS is missing")
+    if (is.null(POS) && (missing(start) | missing(end)))
+        stop("POS is null, please provide start(s) and end(s)")
     if (!file.exists(VCFin))
         stop("Can't find ", VCFin, ", please check input")
     if (!override)
         if (TRUE %in% file.exists(VCFout))
             stop(paste(VCFout[file.exists(VCFout)], collapse = " "),
                  " existed, please check 'VCFout'")
-    if (length(Chr) == 1)
-        if (length(POS) != 2 | !is.numeric(POS)) {
-            stop("'POS' should be interger vector consist with start and end position")
-            if (!is.numeric(POS))
-                stop("'POS' should be a numeric vector")
-        }
-    if (length(Chr) > 1)
-        if (length(POS) != length(Chr) | ! inherits(POS,"list"))
-            stop("'POS' should be a list have length equal with 'Chr'")
 
+    if(is.null(POS)){
+        if(length(start) != length(end) | length(start) != length(POS))
+            stop("length of 'POS', 'start', 'end' should be equal")
+        if(!is.numeric(start) | !is.numeric(end))
+            stop("'start' and 'end' should be numeric")
+        if(length(Chr) == 1) POS <- c(start, end) else{
+            POS <- list()
+            for(i in seq_len(length(start))) POS <- c(POS, c(start[i], end[i]))
+        }
+    } else {
+        if (length(Chr) == 1)
+            if (length(POS) != 2 | !is.numeric(POS)) {
+                stop("'POS' should be interger vector consist with start and end position")
+                if (!is.numeric(POS))
+                    stop("'POS' should be a numeric vector")
+            }
+        if (length(Chr) > 1)
+            if (length(POS) != length(Chr) | ! inherits(POS,"list"))
+                stop("'POS' should be a list have length equal with 'Chr'")
+    }
     # number of conditions and file paths
     nCond <- length(Chr)
 
@@ -117,6 +146,7 @@ filterLargeVCF_One <- function(VCFin = VCFin,
             iz <- file(VCFin, "rb")
     else
         stop("Input should with surfix 'vcf' or '.vcf.gz'")
+    on.exit(close(oz))
     if (endsWith(VCFout, "gz"))
         oz <- gzcon(file(VCFout, "wb"))
     else
@@ -124,6 +154,7 @@ filterLargeVCF_One <- function(VCFin = VCFin,
             oz <- file(VCFout, "wb")
     else
         stop("Output should with surfix 'vcf' or '.vcf.gz'")
+    on.exit(close(iz), add = TRUE)
 
     nl <- 0
 
@@ -155,8 +186,6 @@ filterLargeVCF_One <- function(VCFin = VCFin,
 
     }
     message("Processed ", nl, " lines. \nExit")
-    close(iz)
-    close(oz)
 }
 
 
@@ -187,6 +216,7 @@ filterLargeVCF_Multi <- function(VCFin = VCFin,
             iz <- file(VCFin, "rb")
     else
         stop("Input should with surfix 'vcf' or '.vcf.gz'")
+    on.exit(close(oz))
 
     for (i in seq_len(nF)) {
         if (endsWith(VCFout, "gz")) {
@@ -197,7 +227,9 @@ filterLargeVCF_Multi <- function(VCFin = VCFin,
             stop("Output should with surfix 'vcf' or '.vcf.gz'")
         }
     }
-
+    for (i in seq_len(nF))
+        on.exit(expr =  close(get(paste0("oz", i))),
+                add = TRUE)
 
     # init number of rows
     nl <- 0
@@ -241,7 +273,4 @@ filterLargeVCF_Multi <- function(VCFin = VCFin,
 
     # close con
     message("Processed ", nl, " lines. \nExit")
-    close(iz)
-    for (i in seq_len(nF))
-        close(get(paste0("oz", i)))
 }

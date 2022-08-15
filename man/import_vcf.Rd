@@ -21,10 +21,11 @@ import *.vcf structured text format,
 as well as the compressed \verb{*.vcf.gz} format.
 }
 \examples{
-\dontrun{
 
-vcf <- import_vcf(file = "test.vcf.gz")
-}
+vcf.Path <- system.file("extdata", "var.vcf.gz", package = "geneHapR")
+vcf <- import_vcf(file = vcf.Path)
+vcf
+
 }
 \seealso{
 \code{\link[vcfR:read.vcfR]{vcfR::read.vcfR()}}

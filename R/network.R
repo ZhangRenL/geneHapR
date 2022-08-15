@@ -422,7 +422,7 @@ getHapGroup <- function(hap,
         l <- table(probe)["FALSE"]
         l <- ifelse(l >= 3, 3, l)
         warning(table(probe)["FALSE"],
-                 " accession(s) not in 'AccINFO', eg: ",
+                 " accession(s) not in 'AccINFO', eg.: ",
                  paste(accs.hap[!probe][seq_len(l)], collapse = ", "))
         message("Type of those accessions will be assigned ", na.label)
     }

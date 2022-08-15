@@ -1,0 +1,17 @@
+scaffold_1	phytozomev10	gene	4300	7910	.	+	.	ID=test1G0387;Name=test1G0387
+scaffold_1	phytozomev10	mRNA	4300	7910	.	+	.	ID=test1G0387.1;Name=test1G0387.1;Parent=test1G0387
+scaffold_1	phytozomev10	exon	4300	7269	.	+	.	ID=test1G0387.1.exon.1;Parent=test1G0387.1
+scaffold_1	phytozomev10	five_prime_UTR	4300	4331	.	+	.	ID=test1G0387.1.five_prime_UTR.1;Parent=test1G0387.1
+scaffold_1	phytozomev10	CDS	4332	7269	.	+	0	ID=test1G0387.1.CDS.1;Parent=test1G0387.1
+scaffold_1	phytozomev10	exon	7377	7910	.	+	.	ID=test1G0387.1.exon.2;Parent=test1G0387.1
+scaffold_1	phytozomev10	CDS	7377	7753	.	+	2	ID=test1G0387.1.CDS.2;Parent=test1G0387.1
+scaffold_1	phytozomev10	three_prime_UTR	7754	7910	.	+	.	ID=test1G0387.1.three_prime_UTR.1;Parent=test1G0387.1
+scaffold_1	phytozomev10	mRNA	4300	7910	.	+	.	ID=test1G0387.2;Name=test1G0387.2;Parent=test1G0387
+scaffold_1	phytozomev10	exon	4300	4641	.	+	.	ID=test1G0387.2.exon.1;Parent=test1G0387.2
+scaffold_1	phytozomev10	five_prime_UTR	4300	4331	.	+	.	ID=test1G0387.2.five_prime_UTR.1;Parent=test1G0387.2
+scaffold_1	phytozomev10	CDS	4332	4641	.	+	0	ID=test1G0387.2.CDS.1;Parent=test1G0387.2
+scaffold_1	phytozomev10	exon	7069	7269	.	+	.	ID=test1G0387.2.exon.2;Parent=test1G0387.2
+scaffold_1	phytozomev10	CDS	7069	7269	.	+	2	ID=test1G0387.2.CDS.2;Parent=test1G0387.2
+scaffold_1	phytozomev10	exon	7377	7910	.	+	.	ID=test1G0387.2.exon.3;Parent=test1G0387.2
+scaffold_1	phytozomev10	CDS	7377	7753	.	+	2	ID=test1G0387.2.CDS.3;Parent=test1G0387.2
+scaffold_1	phytozomev10	three_prime_UTR	7754	7910	.	+	.	ID=test1G0387.2.three_prime_UTR.1;Parent=test1G0387.2

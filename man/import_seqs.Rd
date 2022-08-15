@@ -21,7 +21,8 @@ object of DNAStringSet class
 import DNA sequences in FASTA format
 }
 \examples{
-\dontrun{
-   geneSeqs <- import_seqs(filepath = "fastaFilePath", format = "fasta")
-}
+
+seqPath <- system.file("extdata", "seqs.fa", package = "geneHapR")
+geneSeqs <- import_seqs(filepath = seqPath, format = "fasta")
+
 }
