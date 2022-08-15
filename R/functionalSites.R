@@ -67,7 +67,7 @@ siteEff <- function(hap, pheno, phenoNames){
                         if(inherits(pij, "htest")){
                             pij <- pij$p.value
                         } else {
-                            pij <- 1
+                            pij <- NA
                         }
                         p <- c(p, pij)
                     }
@@ -206,7 +206,7 @@ plotEff <- function(siteEff, gff = gff,
     # set of par and plot frame
     par(fig = c(0,1,fig.h + 0.01, 1), mar = par.mar, new = TRUE)
     plot(x = POS[1], y = EFF[1,1], type = "n",
-         xlim = c(start, end), ylim = c(0, max(EFF)),
+         xlim = c(start, end), ylim = c(0, max(EFF, na.rm = TRUE)),
          col = 3, cex = 0.5,
          xaxt = "n", xlab = "", ylab = ylab)
     cols <- rainbow(length(POS))

@@ -27,9 +27,6 @@ Several small example \strong{datasets} are included in 'geneHapR'.
 \strong{AccINFO} provide a data provide accessions information for
 pie plot in hapNet visualization, and information for geography distrbution.
 }
-\seealso{
-
-}
 \author{
 \strong{Maintainer}: Zhang Renliang \email{zhang_renliang@163.com}
 
