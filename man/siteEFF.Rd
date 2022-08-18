@@ -22,7 +22,7 @@ quantitative. Length of \code{quality} could be 1 or equal with length of
 
 \item{method}{character or character vector with length equal with
 \code{phenoNames} indicate which method should be performed towards each
-phenotype. Should be one of "t.test", "chi.test", "anova" and "auto".
+phenotype. Should be one of "t.test", "chi.test", "wilcox.test" and "auto".
 Default as "auto", see details.}
 
 \item{p.adj}{character, indicate correction method.
@@ -47,8 +47,8 @@ parameter \code{method}. If \code{method} set as "auto", then
 chi.test will be
 selected for quantity phenotype, eg.: color;
 for quantity phynotype, eg.: height, with at least 30 observations per
-geno-type and fit Gaussian distribution t.test will be performed or
-anova will be performed.
+geno-type and fit Gaussian distribution t.test will be performed, otherwise
+wilcox.test will be performed.
 }
 \examples{
 \donttest{

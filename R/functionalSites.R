@@ -10,7 +10,7 @@
 #' `phenoNames`. Default as `FALSE`
 #' @param method character or character vector with length equal with
 #' `phenoNames` indicate which method should be performed towards each
-#' phenotype. Should be one of "t.test", "chi.test", "anova" and "auto".
+#' phenotype. Should be one of "t.test", "chi.test", "wilcox.test" and "auto".
 #' Default as "auto", see details.
 #' @param p.adj character, indicate correction method.
 #' Could be "BH", "BY", "none"
@@ -23,8 +23,8 @@
 #' chi.test will be
 #' selected for quantity phenotype, eg.: color;
 #' for quantity phynotype, eg.: height, with at least 30 observations per
-#' geno-type and fit Gaussian distribution t.test will be performed or
-#' anova will be performed.
+#' geno-type and fit Gaussian distribution t.test will be performed, otherwise
+#' wilcox.test will be performed.
 #'
 #'
 #' @return a list containing two matrix names as "p" and "EFF",
@@ -32,7 +32,7 @@
 #' The matrix names as "p" contains all *p*-value.
 #' The matrix named as "EFF" contains scaled difference between each geno-types
 #' per site.
-#' @importFrom stats t.test chisq.test p.adjust shapiro.test
+#' @importFrom stats t.test chisq.test p.adjust shapiro.test wilcox.test
 #' @usage
 #' siteEFF(hap, pheno, phenoNames, quality = FALSE, method = "auto",
 #'         p.adj = "none")
@@ -137,13 +137,14 @@ siteEFF <- function(hap, pheno, phenoNames, quality = FALSE, method = "auto",
                         res.ps <- t.test.ps(phenos)
                     } else {
                         # not all sub data set fit normal distribution
-                        res.ps <- t.test.ps(phenos)
+                        res.ps <- wilcox.test.ps(phenos)
                     }
                 }
             } else {
                 switch (method,
                     "chisq.test" = chisq.test.ps(phenos),
-                    "t.test" = t.test.ps(phenos)
+                    "t.test" = t.test.ps(phenos),
+                    "wilcox.test" = wilcox.test.ps(phenos)
                 )
             }
 
@@ -231,6 +232,36 @@ chisq.test.ps <- function(phenos){
         d <- (max(ptable.f[,i]) - min(ptable.f[,i])) / 2
 
     list(p = p, d = d)
+}
+
+
+wilcox.test.ps <- function(phenos){
+    p <- c()
+    d <- c()
+    l = length(phenos)
+    for(i in seq_len(l)){
+        for(j in rev(seq_len(l))){
+            if(i >= j) next
+            phenoi <- phenos[[i]]
+            phenoj <- phenos[[j]]
+
+            # t.test or chisqure test or anova analysis
+            pij.res <- try(wilcox.test(phenoi, phenoj,
+                                       alternative = "two.sided",
+                                       exact = FALSE),
+                           silent = TRUE)
+            if(inherits(pij.res, "htest")){
+                pij <- pij.res$p.value
+            } else {
+                pij <- NA
+            }
+            p <- c(p, pij)
+            dij <- abs(diff(mean(phenoi), mean(phenoj)))
+            d <- c(d, dij)
+        }
+    }
+    list(p = p, d = d)
+
 }
 
 # TODO

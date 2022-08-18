@@ -55,9 +55,9 @@ plotHapNet(hapNet,
 }
 \references{
 Mark P.J. van der Loo (2014)
-\url{doi:10.32614/RJ-2014-011};
+<\doi:10.32614/RJ-2014-011>;
 
-E. Paradis (2010) \url{doi:10.1093/bioinformatics/btp696}
+E. Paradis (2010) <\doi:10.1093/bioinformatics/btp696>
 }
 \seealso{
 \code{\link[geneHapR:plotHapNet]{plotHapNet()}} and

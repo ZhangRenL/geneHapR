@@ -97,7 +97,7 @@ setATGas0 <- function(gff = gff,
     }
     if (missing(POS)) {
         warning("POS is missing, using postion info in hap")
-        POS <- hap[hap$Hap == "POS", 1]
+        POS <- hap[hap$Hap == "POS", ]
         POS <- suppressWarnings(as.numeric(POS))
         POS <- na.omit(POS)
         POS <- c(min(POS), max(POS))
@@ -113,11 +113,17 @@ setATGas0 <- function(gff = gff,
     if (missing(geneID)) {
         stop("geneID is missing")
     } else {
-        probe <- stringr::str_detect(gffOver$Parent, geneID)
-        probe[is.na(probe)] <- FALSE
+        probe <- c()
+        for(i in seq_len(length(gffOver$Parent))){
+            if(length(gffOver$Parent[[i]]) == 0L) p <- FALSE else
+                p <- stringr::str_detect(gffOver$Parent[[i]], geneID)
+            probe <- c(probe, p)
+        }
         gffOver <- gffOver[probe]
     }
 
+    if(TRUE %in% probe == FALSE)
+        stop("please check your input")
     # get position of ATG
     # filter gff by type: CDS
     gffCDS <- gffOver[gffOver$type == "CDS"]
@@ -173,3 +179,4 @@ setATGas0 <- function(gff = gff,
 
     return(list(gff = gffOver, hap = hap))
 }
+
