@@ -34,7 +34,7 @@ oldDir <- getwd()
 setwd(tempdir())
 data("geneHapR_test")
 write.hap(hapResult, file = "test.pheno.txt", sep = "\t")
-hap <- import_hap("hapSummary_OR_hapResult_file.txt")
+hap <- import_hap("test.pheno.txt")
 hap
 setwd(oldDir)
 

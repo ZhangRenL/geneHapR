@@ -7,7 +7,7 @@
 #' @usage
 #'  filterLargeVCF(VCFin = VCFin, VCFout = VCFout,
 #'                 Chr = Chr,
-#'                 POS = POS,
+#'                 POS = NULL,
 #'                 start = start,
 #'                 end = end,
 #'                 override = TRUE)
@@ -216,20 +216,20 @@ filterLargeVCF_Multi <- function(VCFin = VCFin,
             iz <- file(VCFin, "rb")
     else
         stop("Input should with surfix 'vcf' or '.vcf.gz'")
-    on.exit(close(oz))
+    on.exit(close(iz))
 
     for (i in seq_len(nF)) {
-        if (endsWith(VCFout, "gz")) {
-            assign(paste0("oz", i), gzcon(file(VCFout, "wb")))
-        } else if (endsWith(VCFout, "vcf")) {
-            assign(paste0("oz", i), file(VCFout, "wb"))
+        if (endsWith(VCFout[i], ".gz")) {
+            assign(paste0("oz", i), gzcon(file(VCFout[i], "wb")))
+        } else if (endsWith(VCFout[i], ".vcf")) {
+            assign(paste0("oz", i), file(VCFout[i], "wb"))
         } else {
             stop("Output should with surfix 'vcf' or '.vcf.gz'")
         }
     }
-    for (i in seq_len(nF))
-        on.exit(expr =  close(get(paste0("oz", i))),
-                add = TRUE)
+
+    on.exit(expr = for (i in seq_len(nF)) close(get(paste0("oz", i))),
+            add = TRUE)
 
     # init number of rows
     nl <- 0
@@ -249,7 +249,7 @@ filterLargeVCF_Multi <- function(VCFin = VCFin,
     }
 
     # process variant information
-    subn <- nchar(Chr) + nchar(max(POS)) + 10
+    subn <- nchar(Chr) + nchar(max(unlist(POS))) + 10
     while (TRUE) {
         if (length(l) == 0)
             break

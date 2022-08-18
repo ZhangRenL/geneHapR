@@ -1,25 +1,25 @@
 #' @name import_vcf
 #' @title Import VCF from File
 #' @author Zhangrenl
-#' @usage import_vcf(vcf_file = vcf_file, ...)
+#' @usage import_vcf(file = file, ...)
 #' @description import *.vcf structured text format,
 #' as well as the compressed `*.vcf.gz` format.
 #' @examples
 #'
-#' vcf.Path <- system.file("extdata", "var.vcf.gz", package = "geneHapR")
-#' vcf <- import_vcf(file = vcf.Path)
+#' vcfPath <- system.file("extdata", "var.vcf.gz", package = "geneHapR")
+#' vcf <- import_vcf(file = vcfPath)
 #' vcf
 #'
 #' @importFrom vcfR read.vcfR
-#' @param vcf_file file path of VCF file
+#' @param file file path of VCF file
 #' @param ... pass to `vcfR::read.vcfR()`
-#' @usage import_vcf(vcf_file = vcf_file, ...)
+#' @usage import_vcf(file = file, ...)
 #' @export
 #' @seealso
 #' \code{\link[vcfR:read.vcfR]{vcfR::read.vcfR()}}
 #' @return vcfR object
-import_vcf <- function(vcf_file = vcf_file, ...) {
-    vcf <- vcfR::read.vcfR(vcf_file, ...)
+import_vcf <- function(file = file, ...) {
+    vcf <- vcfR::read.vcfR(file, ...)
     return(vcf)
 }
 
@@ -170,7 +170,7 @@ import_MultipleAlignment <- function(filepath,
 #' setwd(tempdir())
 #' data("geneHapR_test")
 #' write.hap(hapResult, file = "test.pheno.txt", sep = "\t")
-#' hap <- import_hap("hapSummary_OR_hapResult_file.txt")
+#' hap <- import_hap("test.pheno.txt")
 #' hap
 #' setwd(oldDir)
 #'

@@ -6,7 +6,7 @@
 \usage{
 filterLargeVCF(VCFin = VCFin, VCFout = VCFout,
                 Chr = Chr,
-                POS = POS,
+                POS = NULL,
                 start = start,
                 end = end,
                 override = TRUE)

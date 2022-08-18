@@ -4,12 +4,12 @@
 \alias{import_vcf}
 \title{Import VCF from File}
 \usage{
-import_vcf(vcf_file = vcf_file, ...)
+import_vcf(file = file, ...)
 
-import_vcf(vcf_file = vcf_file, ...)
+import_vcf(file = file, ...)
 }
 \arguments{
-\item{vcf_file}{file path of VCF file}
+\item{file}{file path of VCF file}
 
 \item{...}{pass to \code{vcfR::read.vcfR()}}
 }
@@ -22,8 +22,8 @@ as well as the compressed \verb{*.vcf.gz} format.
 }
 \examples{
 
-vcf.Path <- system.file("extdata", "var.vcf.gz", package = "geneHapR")
-vcf <- import_vcf(file = vcf.Path)
+vcfPath <- system.file("extdata", "var.vcf.gz", package = "geneHapR")
+vcf <- import_vcf(file = vcfPath)
 vcf
 
 }
