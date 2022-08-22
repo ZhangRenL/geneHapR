@@ -1,10 +1,19 @@
-# Vignettes of 'geneHapR':
+# `geneHapR`:
+
+## Installation
+```r
+install.packages("geneHapR")  # not work yet
+
+devtools::install_git("https://gitee.com/zhangrenl/genehapr")  # need devtools package and git software
+```
 
 
-[The workflow of 'geneHapR'](https://gitee.com/zhangrenl/genehapr/wikis/workflow.html)
+## Vignettes 
 
-[Needed DATA of 'geneHapR'](https://gitee.com/zhangrenl/genehapr/wikis/geneHapR_data.html)
+[The workflow of geneHapR](https://gitee.com/zhangrenl/genehapr/wikis/workflow.html)
 
-[Detailed Introduction of 'geneHapR'](https://gitee.com/zhangrenl/genehapr/wikis/Introduction_of_geneHapR.html)
+[DATA Format of geneHapR](https://gitee.com/zhangrenl/genehapr/wikis/data_format.html)
 
-[An example in ***Setaria italica***](https://gitee.com/zhangrenl/genehapr/wikis/An_example)
+[Introduction of geneHapR](https://gitee.com/zhangrenl/genehapr/wikis/Introduction.html)
+
+[An example in *Setaria italica*](https://gitee.com/zhangrenl/genehapr/wikis/An_example)
