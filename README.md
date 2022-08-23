@@ -2,7 +2,7 @@
 
 ## Installation
 ```r
-install.packages("geneHapR")  # not work yet
+install.packages("geneHapR")
 
 devtools::install_git("https://gitee.com/zhangrenl/genehapr")  # need devtools package and git software
 ```
