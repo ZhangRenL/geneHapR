@@ -231,16 +231,10 @@ plink.pedmap2hapdata <- function(p.link, POS = POS, Chr = Chr){
 }
 
 
-<<<<<<< HEAD
+
 # p.link <- import_plink.pedmap(root, sep_ped = "\t", sep_map = "\t")
 # x = p.link
 # Chr = x$map[1,1]
 # POS = range(x$map[,4])
 # p.link = filter_plink.pedmap(x, mode = "POS", Chr = Chr, POS = POS)
-=======
-p.link <- import_plink.pedmap(root, sep_ped = "\t", sep_map = "\t")
-x = p.link
-Chr = x$map[1,1]
-POS = range(x$map[,4])
-p.link = filter_plink.pedmap(x, mode = "POS", Chr = Chr, POS = POS)
->>>>>>> 80ac43a1d1649cf55788d2652d2c01878c835b32
+
