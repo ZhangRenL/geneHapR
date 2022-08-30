@@ -67,8 +67,10 @@ filter_vcf <- function(vcf,
     if (mode == "type" | mode == "both") {
         if (missing(gff))
             stop("gff is missing!")
-        if (length(type) != 1)
-            stop('Type must be one of c("CDS", "exon", "gene", "genome", "custom")')
+        p <- type %in% unique(gff$type)
+        m <- paste(unique(gff$type), collapse = "','")
+        if (FALSE %in% p)
+            stop("type should in c('",m,"')")
         if (type == "custom")
             type <- cusTyp
         if ("genome" %in% type) {
@@ -77,11 +79,10 @@ filter_vcf <- function(vcf,
             gff <- gff[gff$type %in% type]
         }
 
-        if (missing(Chr))
-            Chr <- vcfR::getCHROM(vcf)[1]
         POS <- vcfR::getPOS(vcf)
         POS <- as.numeric(POS)
-        POSRange <- POS2GRanges(Chr = Chr, POS = POS)
+        POSRange <- POS2GRanges(Chr = vcfR::getCHROM(vcf),
+                                POS = POS)
         POSRange_rm <- POSRange[!(POSRange %over% gff)]
 
         POS_rm <- IRanges::start(POSRange_rm)

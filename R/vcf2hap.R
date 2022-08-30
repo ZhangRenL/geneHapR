@@ -179,7 +179,13 @@ order_vcf <- function(vcf) {
 
 
 #
-# return data.frame, individuals in rows and positions in cols
+#' @return data.frame, individuals in rows and positions in cols
+#' with additional attrs
+#' eg. # $hap
+#'     #    41  136
+#'     # a  A   A|T
+#'     # b  G   G
+#'     # $allS_new
 vcf2hap_data <- function(vcf,
                          allS_new = allS_new,
                          REF = REF,
@@ -200,6 +206,7 @@ vcf2hap_data <- function(vcf,
 
     # convert "." into "N/N"
     hap[hap == "."] <- "N/N"
+    hap[is.na(hap)] <- "N/N"
 
     # convert Indel(biallelic site) into +/-
     nr = nrow(hap)
@@ -215,7 +222,7 @@ vcf2hap_data <- function(vcf,
                 update_allS(allS_new, REF = REF[l], ALT = ALT[l])
     }
 
-    hap <- t(hap)
+    hap <- gsub("[|]","/",hap) %>% t()
 
     # reform the genotypes
     # homo site convert into single
