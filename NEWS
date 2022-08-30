@@ -1,5 +1,35 @@
+
+V 1.0.9
+TODO:
+add:
+1. filter_hap()
+4. shiny app
+5. mergehap()
+6. phase2hap/hap2phase()
+7. plink2hap
+Fix bugs.
+
+
+V 1.0.8
+Update functions:
+1. siteEFF()
+    Add chisq.test for quility traits and wilcoxon test for quantity traits that dosen't fit Normal distribution.
+    Update computational methods for site effect calculation, rescale the effect from 0 (none) to 100 (totally).
+2. plotEFF()
+    Update plot method adapted update of siteEFF().
+	eg.:
+	the y axis indicate site effect from 0 to 100;
+	add heat color scale for -log10(p-value), from yellow (low) to red (height).
+Fix bugs and issues.
+    eg.:
+	add \value tags to export functions;
+	wrap or replace \dontrun in examples by \donttest;
+	add small files for example like import_*().
+
+
 V 1.0.3
 fix issues and resubmit to CRAN
+
 
 V 1.0.1
 Fix bugs.

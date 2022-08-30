@@ -1,5 +1,5 @@
-#' @name filter_vcf_by_gff
-#' @title Filter VCF by GFF
+#' @name filter_vcf
+#' @title Filter VCF
 #' @description filter VCF by GFF annotation or by position or both
 #' @usage
 #' filter_vcf(vcf, gff = gff,
@@ -67,8 +67,10 @@ filter_vcf <- function(vcf,
     if (mode == "type" | mode == "both") {
         if (missing(gff))
             stop("gff is missing!")
-        if (length(type) != 1)
-            stop('Type must be one of c("CDS", "exon", "gene", "genome", "custom")')
+        p <- type %in% unique(gff$type)
+        m <- paste(unique(gff$type), collapse = "','")
+        if (FALSE %in% p)
+            stop("type should in c('",m,"')")
         if (type == "custom")
             type <- cusTyp
         if ("genome" %in% type) {
@@ -77,11 +79,10 @@ filter_vcf <- function(vcf,
             gff <- gff[gff$type %in% type]
         }
 
-        if (missing(Chr))
-            Chr <- vcfR::getCHROM(vcf)[1]
         POS <- vcfR::getPOS(vcf)
         POS <- as.numeric(POS)
-        POSRange <- POS2GRanges(Chr = Chr, POS = POS)
+        POSRange <- POS2GRanges(Chr = vcfR::getCHROM(vcf),
+                                POS = POS)
         POSRange_rm <- POSRange[!(POSRange %over% gff)]
 
         POS_rm <- IRanges::start(POSRange_rm)
@@ -94,6 +95,83 @@ filter_vcf <- function(vcf,
 }
 
 
+#' @name filter_hap
+#' @title Filter hap
+#' @description filter hapResult or hapSummary by remove
+#'   positions or accessions or haplotypes
+#' @usage
+#' filter_hap(hap, rm.mode = c("position", "accession", "haplotype"),
+#'            position.rm = position.rm,
+#'            accession.rm = accession.rm,
+#'            haplotype.rm = haplotype.rm)
+#' @param hap object of hapSummary or hapResult class
+#' @param rm.mode filter mode, one of "position", "accession", "haplotype"
+#' @param position.rm numeric vector contains positions need to be removed
+#' @param accession.rm character vector contains accessions need to be removed,
+#'   only hapResult can be filtered by accessions
+#' @param haplotype.rm character vector contains haplotypes need to be removed
+#' @examples
+#' data("geneHapR_test")
+#' hap <- filter_hap(hap, rm.mode = c("position", "accession", "haplotype"),
+#'                   position.rm = c(4879, 4950),
+#'                   accession.rm = c("C1", "C9"),
+#'                   haplotype.rm = c("H009", "H008"))
+#' @return hapSummary or hapResult depend input
+filter_hap <- function(hap, rm.mode = c("position", "accession", "haplotype"),
+                       position.rm = position.rm,
+                       accession.rm = accession.rm,
+                       haplotype.rm = haplotype.rm){
+    if(! (inherits(hap, "hapSummary") | inherits(hap, "hapResult")))
+        stop("hap should be class of hapSummary or hapResult")
+    cls <- class(hap)
+    # attributes
+    options <- attr(hap, "options")
+    AccAll <- attr(hap, "AccAll")
+    AccRemoved <- attr(hap, "AccRemoved")
+    hap2acc <- attr(hap, "hap2acc")
+
+    if("position" %in% rm.mode){
+        if(missing(position.rm))
+            stop("position.rm is missing")
+
+        probe <- hap[hap$Hap == "POS",] %>%
+            t() %>%
+            as.vector()
+        probe <- probe %in% as.character(position.rm)
+        hap <- hap[, which(! probe)]
+    }
+
+    if("accession" %in% rm.mode){
+        if(inherits(hap, "hapSummary")){
+            warning("Only hapResult class can be filtered by accession")
+        } else {
+            if(missing(accession.rm))
+                warnning("accession.rm is missing")
+            probe <- hap$Accession %in% accession.rm
+            hap <- hap[which(!probe),]
+            AccRemoved <- c(AccRemoved, accession.rm)
+            hap2acc <- hap2acc[! hap2acc %in% accession.rm]
+        }
+    }
+
+    if("haplotype" %in% rm.mode){
+        if(missing(haplotype.rm))
+            warnning("haplotype is missing")
+        probe <- hap$Hap %in% haplotype.rm
+        hap <- hap[which(! probe),]
+        AccRemoved <- c(AccRemoved, hap2acc[names(hap2acc) %in% haplotype.rm])
+        hap2acc <- hap2acc[! names(hap2acc) %in% haplotype.rm]
+    }
+    hap <- remove_redundancy_col(hap)
+    attr(hap, "options") <- options
+    attr(hap, "AccAll") <- AccAll
+    attr(hap, "AccRemoved") <- AccRemoved
+    attr(hap, "AccRemain") <- AccAll[! AccAll %in% AccRemoved]
+    attr(hap, "hap2acc") <- hap2acc
+    attr(hap, "freq") <- table(names(hap2acc))
+    class(hap) <- cls
+    return(hap)
+}
 
 
 POS2GRanges <- function(Chr, POS) {
