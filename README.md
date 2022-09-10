@@ -21,3 +21,7 @@ devtools::install_git("https://gitee.com/zhangrenl/genehapr")  # need devtools p
 [DATA Format of geneHapR](https://gitee.com/zhangrenl/genehapr/wikis/data_format.html)
 
 [An example in *Setaria italica*](https://gitee.com/zhangrenl/genehapr/wikis/An_example)
+
+## Issues
+
+If you find any bugs or suggesstions, please add a new issue at [**zhangrenl/genehapr**](https://gitee.com/zhangrenl/genehapr/issues)
