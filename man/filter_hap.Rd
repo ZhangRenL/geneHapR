@@ -20,6 +20,9 @@ filter_hap(hap, rm.mode = c("position", "accession", "haplotype"),
 only hapResult can be filtered by accessions}
 
 \item{haplotype.rm}{character vector contains haplotypes need to be removed}
+
+\item{freq.min}{numeric, hapltypes with accessions number less than freq.min
+will be removed}
 }
 \value{
 hapSummary or hapResult depend input
@@ -30,8 +33,10 @@ positions or accessions or haplotypes
 }
 \examples{
 data("geneHapR_test")
-hap <- filter_hap(hap, rm.mode = c("position", "accession", "haplotype"),
+hap <- filter_hap(hap,
+                  rm.mode = c("position", "accession", "haplotype", "freq"),
                   position.rm = c(4879, 4950),
                   accession.rm = c("C1", "C9"),
-                  haplotype.rm = c("H009", "H008"))
+                  haplotype.rm = c("H009", "H008"),
+                  freq.min = 5)
 }

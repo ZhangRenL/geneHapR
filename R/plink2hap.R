@@ -1,23 +1,22 @@
-root = "../example/snp3kvars-CHR8-25947258-25951166-plink"
 #' @title import_plink.pedmap
 #' @name import_plink.pedmap
 #' @description used for import small p.link file stored in map and ped format
 #' @param root this function only support p.link file
 #'   format stored in "map" and "ped" format, the file names after removed suffix
 #'   should be same with each other.
-#' @param sep_ped a character indicate the separation of ped file, default as "\t"
-#' @param sep_map a character indicate the separation of map file, default as "\t"
+#' @param sep_ped a character indicate the separation of ped file
+#' @param sep_map a character indicate the separation of map file
 #' @param pedfile,mapfile if `root` is missing then `pedfile` and `mapfile` are needed
 #' @return list, contains map information stored in data.frame and ped
 #'   information stored in data.frame
 #' @usage
 #'   import_plink.pedmap(root = root,
-#'                       sep_ped = " ", sep_map = "\t",
+#'                       sep_ped = "\t", sep_map = "\t",
 #'                       pedfile = pedfile, mapfile = mapfile)
 #' @inherit plink.pedmap2hap examples
 #' @export
 import_plink.pedmap <- function(root = root,
-                                sep_ped = " ", sep_map = "\t",
+                                sep_ped = "\t", sep_map = "\t",
                                 pedfile = pedfile, mapfile = mapfile){
     if(!missing(root)){
         pedfile <- paste0(root, ".ped")
@@ -229,12 +228,4 @@ plink.pedmap2hapdata <- function(p.link, POS = POS, Chr = Chr){
     allS_new
     return(list(hap = hap, allS_new = allS_new, alleles = alleles))
 }
-
-
-
-# p.link <- import_plink.pedmap(root, sep_ped = "\t", sep_map = "\t")
-# x = p.link
-# Chr = x$map[1,1]
-# POS = range(x$map[,4])
-# p.link = filter_plink.pedmap(x, mode = "POS", Chr = Chr, POS = POS)
 

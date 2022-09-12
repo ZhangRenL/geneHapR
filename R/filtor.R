@@ -23,7 +23,7 @@
 #' @importFrom IRanges `%over%`
 #' @examples
 #'
-#' # filtet hap
+#' # filtet vcf
 #' data("geneHapR_test")
 #' vcf_f1 <- filter_vcf(vcf, mode = "POS",
 #'                     Chr = "scaffold_1",
@@ -110,17 +110,24 @@ filter_vcf <- function(vcf,
 #' @param accession.rm character vector contains accessions need to be removed,
 #'   only hapResult can be filtered by accessions
 #' @param haplotype.rm character vector contains haplotypes need to be removed
+#' @param freq.min numeric, hapltypes with accessions number less than freq.min
+#' will be removed
 #' @examples
 #' data("geneHapR_test")
-#' hap <- filter_hap(hap, rm.mode = c("position", "accession", "haplotype"),
+#' hap <- filter_hap(hap,
+#'                   rm.mode = c("position", "accession", "haplotype", "freq"),
 #'                   position.rm = c(4879, 4950),
 #'                   accession.rm = c("C1", "C9"),
-#'                   haplotype.rm = c("H009", "H008"))
+#'                   haplotype.rm = c("H009", "H008"),
+#'                   freq.min = 5)
 #' @return hapSummary or hapResult depend input
-filter_hap <- function(hap, rm.mode = c("position", "accession", "haplotype"),
+#' @export
+filter_hap <- function(hap,
+                       rm.mode = c("position", "accession", "haplotype", "freq"),
                        position.rm = position.rm,
                        accession.rm = accession.rm,
-                       haplotype.rm = haplotype.rm){
+                       haplotype.rm = haplotype.rm,
+                       freq.min = 5){
     if(! (inherits(hap, "hapSummary") | inherits(hap, "hapResult")))
         stop("hap should be class of hapSummary or hapResult")
     cls <- class(hap)
@@ -130,38 +137,56 @@ filter_hap <- function(hap, rm.mode = c("position", "accession", "haplotype"),
     AccRemoved <- attr(hap, "AccRemoved")
     hap2acc <- attr(hap, "hap2acc")
 
-    if("position" %in% rm.mode){
-        if(missing(position.rm))
-            stop("position.rm is missing")
-
-        probe <- hap[hap$Hap == "POS",] %>%
-            t() %>%
-            as.vector()
-        probe <- probe %in% as.character(position.rm)
-        hap <- hap[, which(! probe)]
-    }
-
     if("accession" %in% rm.mode){
         if(inherits(hap, "hapSummary")){
             warning("Only hapResult class can be filtered by accession")
         } else {
             if(missing(accession.rm))
                 warnning("accession.rm is missing")
-            probe <- hap$Accession %in% accession.rm
-            hap <- hap[which(!probe),]
+            rm.probe <- hap$Accession %in% accession.rm
+            rm.probe <- sapply(function(x) isTRUE(x))
+            hap <- hap[which(!rm.probe),]
             AccRemoved <- c(AccRemoved, accession.rm)
             hap2acc <- hap2acc[! hap2acc %in% accession.rm]
         }
-    }
+    } else
 
     if("haplotype" %in% rm.mode){
         if(missing(haplotype.rm))
             warnning("haplotype is missing")
-        probe <- hap$Hap %in% haplotype.rm
-        hap <- hap[which(! probe),]
+        rm.probe <- hap$Hap %in% haplotype.rm
+        rm.probe <- sapply(function(x) isTRUE(x))
+        hap <- hap[which(! rm.probe),]
         AccRemoved <- c(AccRemoved, hap2acc[names(hap2acc) %in% haplotype.rm])
         hap2acc <- hap2acc[! names(hap2acc) %in% haplotype.rm]
+    } else
+
+    if("freq" %in% rm.mode){
+        if(missing(freq.min))
+            warnning("freq.min is missing")
+        rm.probe <- hap$freq < 5
+        rm.probe <- sapply(rm.probe, function(x) isTRUE(x))
+        hap <- hap[which(! rm.probe),]
+        AccRemoved <- c(AccRemoved, hap2acc[! names(hap2acc) %in% hap$Hap])
+        hap2acc <- hap2acc[! names(hap2acc) %in% hap$Hap]
     }
+
+
+    if("position" %in% rm.mode){
+        if(missing(position.rm))
+            stop("position.rm is missing")
+
+        rm.probe <- hap[hap$Hap == "POS",] %>%
+            t() %>%
+            as.vector()
+        rm.probe <- sapply(function(x) isTRUE(x))
+        probe <- probe %in% as.character(position.rm)
+        hap <- hap[, which(! probe)]
+        AccRemoved <- c(AccRemoved, hap2acc[! names(hap2acc) %in% hap$Hap])
+        hap2acc <- hap2acc[! names(hap2acc) %in% hap$Hap]
+    }
+
+
     hap <- remove_redundancy_col(hap)
     attr(hap, "options") <- options
     attr(hap, "AccAll") <- AccAll

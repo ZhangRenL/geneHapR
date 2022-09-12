@@ -4,13 +4,13 @@
 \alias{import_gff}
 \title{Import Annotations from GFF Format File}
 \usage{
-import_gff(gffFile, format = "GFF")
+import_gff(gffFile, format = "gff")
 }
 \arguments{
 \item{gffFile}{the gff file path}
 
 \item{format}{should be one of "gff", "gff1", "gff2", "gff3", "gvf",
-or "gtf". Default as GFF}
+or "gtf". Default as gff}
 }
 \value{
 GRange object
@@ -21,7 +21,7 @@ import genome annotations in GFF/GFF3 format
 \examples{
 
 gff.Path <- system.file("extdata", "annotation.gff", package = "geneHapR")
-gff <- import_gff(gff.Path, format = "GFF")
+gff <- import_gff(gff.Path, format = "gff")
 gff
 
 }

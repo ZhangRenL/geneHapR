@@ -71,23 +71,94 @@ import_AccINFO <- function(file, comment.char = "#",
 #' @name import_gff
 #' @title Import Annotations from GFF Format File
 #' @description import genome annotations in GFF/GFF3 format
-#' @usage import_gff(gffFile, format = "GFF")
+#' @usage import_gff(gffFile, format = "gff")
 #' @examples
 #'
 #' gff.Path <- system.file("extdata", "annotation.gff", package = "geneHapR")
-#' gff <- import_gff(gff.Path, format = "GFF")
+#' gff <- import_gff(gff.Path, format = "gff")
 #' gff
 #'
 #' @importFrom rtracklayer import
 #' @param gffFile the gff file path
 #' @param format should be one of "gff", "gff1", "gff2", "gff3", "gvf",
-#' or "gtf". Default as GFF
+#' or "gtf". Default as gff
 #' @export
 #' @return GRange object
-import_gff <- function(gffFile, format = "GFF") {
+import_gff <- function(gffFile, format = "gff") {
     rtracklayer::import(gffFile, format = format)
 }
 
+
+#' @name import_bed
+#' @title import annotation files in BED format
+#' @description import bed files contains annotations into R as GRanges object
+#' @details
+#' If there is no genome annotation file in GFF format for your interest species,
+#' a BED file is convenient to custom a simple annotation file for a gene.
+#' Here we suggest two type of BED format: BED6 and BED4.
+#'
+#' As the definition of
+#' [UCSC](http://genome.ucsc.edu/FAQ/FAQformat.html#format1).
+#' The BED6 contains 6 columns, which are 1) chrom, 2) chromStart, 3) chromEnd,
+#' 4) name, 5) score and 6) strand. The BED4 format contains the first 4 column
+#' of BED6 format.
+#'
+#' However, in gene haplotype statistics, we only care about the type of each site.
+#' Thus we use the fourth column to definition the
+#' transcripts name and "CDS" or "URTs", separated by a space, eg.:
+#'
+#'   \code{Chr8   678   890   HD1.1 CDS   .   -}
+#'
+#'   \code{Chr8   891   989   HD1.1 five_prime_UTR   .   -}
+#'
+#'   \code{Chr8   668   759   HD1.2 CDS   .   -}
+#'
+#'   \code{Chr8   908   989   HD1.2 CDS   .   -}
+#'
+#' This example indicate a small gene named as HD1 have two transcripts,
+#' named as HD1.1 and HD1.2, separately. HD1 has a CDS and a UTR region;
+#' while HD1.2 has two CDS region.
+#'
+#' @inheritParams rtracklayer::import.bed
+#' @importFrom rtracklayer import.bed
+#' @importFrom stringr str_count
+#' @importFrom tidyr separate
+#' @usage
+#' import_bed(con, quite = FALSE)
+#' @examples
+#'
+#' bed.Path <- system.file("extdata", "annotation.bed6", package = "geneHapR")
+#' bed <- import_gff(bed.Path)
+#' bed
+#'
+#' @return GRange object
+#' @export
+import_bed <- function(con, quite = FALSE){
+    bed <- rtracklayer::import.bed(con)
+    if(length(bed)  == 0) stop("the bed file seems has no annotations")
+    probe <- stringr::str_count(bed$name, " ") %>% unique()
+
+    m <- "the fourth column should contains transcript name and region type, seprated by a space"
+    if(length(probe) != 1) {
+        stop(m)
+    } else {
+        if(probe != 1) stop(m)
+    }
+
+    if(quite){
+        cat("Please note that:")
+        cat("  this function was only intend to import customed annotations\n")
+        cat("  in BED4/BED6 format for haplotype statistics")
+    }
+
+    name <- tidyr::separate(tibble::tibble(bed$name),
+                            col = 1,
+                            into = c("name", "type"),
+                            sep = " ")
+    bed$Parent <- bed$Name <- name$name
+    bed$type <- name$type
+    return(bed)
+}
 
 
 #' @name import_seqs

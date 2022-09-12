@@ -71,7 +71,11 @@ hapDistribution <-
         AccINFO$Hap <- acc2hap[row.names(AccINFO)]
         geoData <- AccINFO[, c("Hap", LON.col, LAT.col)]
         geoData$value <- 1
-
+        if(! inherits(geoData[,LAT.col], "numeric")){
+            warnning("Longitude and Latitude shuld be numeric")
+            geoData[,LON.col] <- as.numeric(geoData[,LON.col])
+            geoData[,LAT.col] <- as.numeric(geoData[,LAT.col])
+        }
         # reshape the data
         formu <- paste0(LON.col, "+", LAT.col, "~Hap")
         dF <-

@@ -5,7 +5,7 @@
 \title{import_plink.pedmap}
 \usage{
 import_plink.pedmap(root = root,
-                      sep_ped = " ", sep_map = "\t",
+                      sep_ped = "\t", sep_map = "\t",
                       pedfile = pedfile, mapfile = mapfile)
 }
 \arguments{
@@ -13,9 +13,9 @@ import_plink.pedmap(root = root,
 format stored in "map" and "ped" format, the file names after removed suffix
 should be same with each other.}
 
-\item{sep_ped}{a character indicate the separation of ped file, default as "\t"}
+\item{sep_ped}{a character indicate the separation of ped file}
 
-\item{sep_map}{a character indicate the separation of map file, default as "\t"}
+\item{sep_map}{a character indicate the separation of map file}
 
 \item{pedfile, mapfile}{if \code{root} is missing then \code{pedfile} and \code{mapfile} are needed}
 }

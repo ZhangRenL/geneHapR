@@ -39,7 +39,7 @@ filter VCF by GFF annotation or by position or both
 }
 \examples{
 
-# filtet hap
+# filtet vcf
 data("geneHapR_test")
 vcf_f1 <- filter_vcf(vcf, mode = "POS",
                     Chr = "scaffold_1",
