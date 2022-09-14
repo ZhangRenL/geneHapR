@@ -7,7 +7,7 @@
 hapVsPheno(hap,
            pheno,
            phenoName, hapPrefix = "H",
-           title = "test1G0387",
+           title = "",
            mergeFigs = FALSE,
            angle = angle,
            minAcc = 5, outlier.rm = TRUE,

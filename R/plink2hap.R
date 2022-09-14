@@ -12,8 +12,12 @@
 #'                    na.drop = TRUE)
 #' @examples
 #' \donttest{
-#'    pedfile <- system.file()
-#'    mapfile <- system.file()
+#'    pedfile <- system.file("extdata",
+#'                           "snp3kvars-CHR8-25947258-25951166-plink.ped",
+#'                           package = "geneHapR")
+#'    mapfile <- system.file("extdata",
+#'                           "snp3kvars-CHR8-25947258-25951166-plink.map",
+#'                           package = "geneHapR")
 #'    p.link <- import_plink.pedmap(pedfile = pedfile, mapfile = mapfile,
 #'                                  sep_map = "\t", sep_ped = "\t")
 #'    p.link <- filter_plink.pedmap(p.link, mode = "POS",
@@ -39,7 +43,7 @@ plink.pedmap2hap <- function(p.link,
     POS <- map[,4]
     CHR <- map[,1]
     INFO <- map[,2]
-    hapData <- plink.pedmap2hapdata(p.link, POS = POS, Chr = Chr)
+    hapData <- plink.pedmap2hapdata(p.link, POS = POS)
     hap <- hapData$hap
     allS_new <- hapData$allS_new
     ALLELE <- hapData$alleles
@@ -90,7 +94,7 @@ plink.pedmap2hap <- function(p.link,
 }
 
 
-plink.pedmap2hapdata <- function(p.link, POS = POS, Chr = Chr){
+plink.pedmap2hapdata <- function(p.link, POS = POS){
     allS_new <- allS
 
     # prepare for hapdata

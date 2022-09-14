@@ -58,7 +58,7 @@ while HD1.2 has two CDS region.
 \examples{
 
 bed.Path <- system.file("extdata", "annotation.bed6", package = "geneHapR")
-bed <- import_gff(bed.Path)
+bed <- import_bed(bed.Path)
 bed
 
 }

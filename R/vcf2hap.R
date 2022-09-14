@@ -178,14 +178,13 @@ order_vcf <- function(vcf) {
 }
 
 
-#
-#' @return data.frame, individuals in rows and positions in cols
-#' with additional attrs
-#' eg. # $hap
-#'     #    41  136
-#'     # a  A   A|T
-#'     # b  G   G
-#'     # $allS_new
+# return: data.frame, individuals in rows and positions in cols
+# with additional attrs
+# eg. # $hap
+#     #    41  136
+#     # a  A   A|T
+#     # b  G   G
+#     # $allS_new
 vcf2hap_data <- function(vcf,
                          allS_new = allS_new,
                          REF = REF,
