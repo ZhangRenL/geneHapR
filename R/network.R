@@ -153,7 +153,7 @@ plotHapNet <- function(hapNet,
                        main = main,
                        labels = TRUE,
                        ...) {
-    if (! inherits(hapNet, "haploNet") | inherits(hapNet, "hapNet"))
+    if (! (inherits(hapNet, "haploNet") | inherits(hapNet, "hapNet")))
         stop("'hapNet' must be of 'hapNet' class")
 
     if (missing(hapGroup))
