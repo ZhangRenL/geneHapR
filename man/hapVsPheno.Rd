@@ -8,8 +8,10 @@ hapVsPheno(hap,
            pheno,
            phenoName, hapPrefix = "H",
            title = "test1G0387",
-           mergeFigs = TRUE,
-           minAcc = 5, outlier.rm = TRUE, ...)
+           mergeFigs = FALSE,
+           angle = angle,
+           minAcc = 5, outlier.rm = TRUE,
+           method = "t.test", ...)
 }
 \arguments{
 \item{hap}{object of hapResult class, generate with\code{vcf2hap()} or
@@ -24,13 +26,17 @@ hapVsPheno(hap,
 \item{title}{a charater which will used for figure title}
 
 \item{mergeFigs}{bool type, indicate whether merge the heat map and box
-plot or not. Default as \code{TRUE}}
+plot or not. Default as \code{FALSE}}
+
+\item{angle}{the angle of x labels}
 
 \item{minAcc}{If observations number of a Hap less than this number will
 not be compared with others or be ploted. Should not less than 3 due to the
 t-test will meaninglessly. default as 5}
 
 \item{outlier.rm}{whether remove ouliers, default as TRUE}
+
+\item{method}{a character string indicating which method to be used for comparing means.}
 
 \item{...}{options will pass to \code{ggpubr()}}
 }

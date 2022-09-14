@@ -19,6 +19,8 @@ import_bed(con, quite = FALSE)
     files (\dQuote{gz}, \dQuote{bz2} and
     \dQuote{xz}) are handled transparently.
   }
+
+\item{quite}{whether show message}
 }
 \value{
 GRange object

@@ -95,15 +95,80 @@ filter_vcf <- function(vcf,
 }
 
 
+#' @name filter_plink.pedmap
+#' @title filter_plink.pedmap
+#' @description used for filtration of p.link
+#' @usage
+#'   filter_plink.pedmap(x,
+#'                       mode = c("POS", "type", "both"),
+#'                       Chr = Chr, start = start, end = end,
+#'                       gff = gff, type = type, cusTyp = cusTyp))
+#' @param x a list stored the p.link information
+#' @param mode filtration mode, one of c("POS", "type", "both")
+#' @param Chr the chromosome name, need if mode set as POS or both
+#' @param start,end numeric, the range of filtration, and the start should smaller than end
+#' @param gff the imported gff object
+#' @param type should be in `unique(gff$type)`, usually as "CDS", "genome".
+#' @param cusTyp if `type` set as custom, then `cusTyp` is needed
+#' @inherit plink.pedmap2hap examples
+#' @return list, similar with `x`, but filtered
+#' @export
+filter_plink.pedmap <- function(x,
+                                mode = c("POS", "type", "both"),
+                                Chr = Chr, start = start, end = end,
+                                gff = gff, type = type, cusTyp = cusTyp){
+    on.exit(gc(verbose = FALSE))
+    if(missing(Chr)) stop("Chr is missing")
+    map <- x$map
+    probe <- rep(TRUE, nrow(map))
+
+
+    if(mode %in% c("POS", "both")){
+        if(missing(start) | missing(end)) stop("start or end is missing")
+        POS <- c(start, end)
+        probe <- probe & as.character(map[, 1]) %in% as.character(Chr)
+        probe <- probe & map[, 4] > min(POS) & map[, 4] < max(POS)
+    }
+
+
+    if(mode %in% c("type", "both")){
+        if (missing(gff))
+            stop("gff is missing!")
+        p <- type %in% unique(gff$type)
+        m <- paste(unique(gff$type), collapse = "','")
+        if (FALSE %in% p)
+            stop("type should in c('",m,"')")
+        if (type == "custom")
+            type <- cusTyp
+        if ("genome" %in% type) {
+            gff <- gff
+        } else {
+            gff <- gff[gff$type %in% type]
+        }
+        POSRange <- POS2GRanges(Chr = "scaffold_1", POS = map[, 4])
+        probe <- probe & POSRange %over% gff
+    }
+    if(! TRUE %in% probe)
+        warning("There is no overlaps")
+
+    probe_ped <- c(1:6, which(probe) * 2 + 6, which(probe) * 2 + 5)
+    probe_ped <- probe_ped[order(probe_ped)]
+    return(list(map = x$map[which(probe), ],
+                ped = x$ped[, probe_ped]))
+}
+
+
 #' @name filter_hap
 #' @title Filter hap
 #' @description filter hapResult or hapSummary by remove
 #'   positions or accessions or haplotypes
 #' @usage
-#' filter_hap(hap, rm.mode = c("position", "accession", "haplotype"),
+#' filter_hap(hap,
+#'            rm.mode = c("position", "accession", "haplotype", "freq"),
 #'            position.rm = position.rm,
 #'            accession.rm = accession.rm,
-#'            haplotype.rm = haplotype.rm)
+#'            haplotype.rm = haplotype.rm,
+#'            freq.min = 5)
 #' @param hap object of hapSummary or hapResult class
 #' @param rm.mode filter mode, one of "position", "accession", "haplotype"
 #' @param position.rm numeric vector contains positions need to be removed
@@ -114,7 +179,7 @@ filter_vcf <- function(vcf,
 #' will be removed
 #' @examples
 #' data("geneHapR_test")
-#' hap <- filter_hap(hap,
+#' hap <- filter_hap(hapResult,
 #'                   rm.mode = c("position", "accession", "haplotype", "freq"),
 #'                   position.rm = c(4879, 4950),
 #'                   accession.rm = c("C1", "C9"),
@@ -144,7 +209,7 @@ filter_hap <- function(hap,
             if(missing(accession.rm))
                 warnning("accession.rm is missing")
             rm.probe <- hap$Accession %in% accession.rm
-            rm.probe <- sapply(function(x) isTRUE(x))
+            rm.probe <- sapply(rm.probe, function(x) isTRUE(x))
             hap <- hap[which(!rm.probe),]
             AccRemoved <- c(AccRemoved, accession.rm)
         }
@@ -154,18 +219,22 @@ filter_hap <- function(hap,
         if(missing(haplotype.rm))
             warnning("haplotype is missing")
         rm.probe <- hap$Hap %in% haplotype.rm
-        rm.probe <- sapply(function(x) isTRUE(x))
+        rm.probe <- sapply(rm.probe, function(x) isTRUE(x))
         hap <- hap[which(! rm.probe),]
         AccRemoved <- c(AccRemoved, hap2acc[names(hap2acc) %in% haplotype.rm])
     }
 
     if("freq" %in% rm.mode){
-        if(missing(freq.min))
-            warnning("freq.min is missing")
-        rm.probe <- hap$freq < 5
-        rm.probe <- sapply(rm.probe, function(x) isTRUE(x))
-        hap <- hap[which(! rm.probe),]
-        AccRemoved <- c(AccRemoved, hap2acc[! names(hap2acc) %in% hap$Hap])
+        if(inherits(hap, "hapSummary")) {
+            if(missing(freq.min))
+                warnning("freq.min is missing")
+            rm.probe <- hap$freq < 5
+            rm.probe <- sapply(rm.probe, function(x) isTRUE(x))
+            hap <- hap[which(! rm.probe),]
+            AccRemoved <- c(AccRemoved, hap2acc[! names(hap2acc) %in% hap$Hap])
+        } else {
+            warning("only 'hapSummary' class surrport filtered by 'freq'")
+        }
     }
 
 
@@ -176,9 +245,9 @@ filter_hap <- function(hap,
         rm.probe <- hap[hap$Hap == "POS",] %>%
             t() %>%
             as.vector()
-        rm.probe <- sapply(function(x) isTRUE(x))
-        probe <- probe %in% as.character(position.rm)
-        hap <- hap[, which(! probe)]
+        rm.probe <- rm.probe %in% as.character(position.rm)
+        rm.probe <- sapply(rm.probe, function(x) isTRUE(x))
+        hap <- hap[, which(! rm.probe)]
         AccRemoved <- c(AccRemoved, hap2acc[! names(hap2acc) %in% hap$Hap])
     }
 

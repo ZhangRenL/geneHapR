@@ -24,6 +24,40 @@ import_vcf <- function(file = file, ...) {
 }
 
 
+#' @title import_plink.pedmap
+#' @name import_plink.pedmap
+#' @description used for import small p.link file stored in map and ped format
+#' @param root this function only support p.link file
+#'   format stored in "map" and "ped" format, the file names after removed suffix
+#'   should be same with each other.
+#' @param sep_ped a character indicate the separation of ped file
+#' @param sep_map a character indicate the separation of map file
+#' @param pedfile,mapfile if `root` is missing then `pedfile` and `mapfile` are needed
+#' @return list, contains map information stored in data.frame and ped
+#'   information stored in data.frame
+#' @usage
+#'   import_plink.pedmap(root = root,
+#'                       sep_ped = "\t", sep_map = "\t",
+#'                       pedfile = pedfile, mapfile = mapfile)
+#' @inherit plink.pedmap2hap examples
+#' @export
+import_plink.pedmap <- function(root = root,
+                                sep_ped = "\t", sep_map = "\t",
+                                pedfile = pedfile, mapfile = mapfile){
+    if(!missing(root)){
+        pedfile <- paste0(root, ".ped")
+        mapfile <- paste0(root, ".map")
+    }
+    ped <- read.table(file <- pedfile, sep = sep_ped, # nrows = 100,
+                      header = FALSE)
+    map <- read.table(file = mapfile, header = FALSE, sep = sep_map)
+    if((ncol(ped) - 6) / nrow(map) != 2)
+        warning("ped or map file may corrupted")
+    return(list(map = map, ped = ped))
+}
+
+
+
 #' @name import_AccINFO
 #' @title Import Accession Information from File
 #' @usage
@@ -120,6 +154,7 @@ import_gff <- function(gffFile, format = "gff") {
 #' while HD1.2 has two CDS region.
 #'
 #' @inheritParams rtracklayer::import.bed
+#' @param quite whether show message
 #' @importFrom rtracklayer import.bed
 #' @importFrom stringr str_count
 #' @importFrom tidyr separate

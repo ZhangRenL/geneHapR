@@ -4,10 +4,12 @@
 \alias{filter_hap}
 \title{Filter hap}
 \usage{
-filter_hap(hap, rm.mode = c("position", "accession", "haplotype"),
+filter_hap(hap,
+           rm.mode = c("position", "accession", "haplotype", "freq"),
            position.rm = position.rm,
            accession.rm = accession.rm,
-           haplotype.rm = haplotype.rm)
+           haplotype.rm = haplotype.rm,
+           freq.min = 5)
 }
 \arguments{
 \item{hap}{object of hapSummary or hapResult class}
@@ -33,7 +35,7 @@ positions or accessions or haplotypes
 }
 \examples{
 data("geneHapR_test")
-hap <- filter_hap(hap,
+hap <- filter_hap(hapResult,
                   rm.mode = c("position", "accession", "haplotype", "freq"),
                   position.rm = c(4879, 4950),
                   accession.rm = c("C1", "C9"),

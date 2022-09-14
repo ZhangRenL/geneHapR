@@ -275,10 +275,12 @@ wilcox.test.ps <- function(phenos){
 #' plotEFF(siteEFF, gff = gff,
 #'         Chr = Chr, start = start, end = end,
 #'         showType = c("five_prime_UTR", "CDS", "three_prime_UTR"),
-#'         CDS.height = 1, cex = 0.1, col = col, pch = 20,
+#'         CDS.height = CDS.height, cex = 0.1, col = col, pch = 20,
 #'         main = main, legend.cex = 0.8, legend.ncol = legend.ncol,
 #'         markMutants = TRUE, mutants.col = 1, mutants.type = 1,
-#'         ylab = "effect", par.restore = TRUE)
+#'         y = c("pvalue","effect"), ylab = ylab,
+#'         legendtitle = legendtitle,
+#'         par.restore = TRUE)
 #' @inherit siteEFF examples
 #' @param siteEFF matrix, column name are pheno names and row name are site position
 #' @param gff gff

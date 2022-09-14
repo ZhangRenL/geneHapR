@@ -6,6 +6,7 @@
 #'            phenoName, hapPrefix = "H",
 #'            title = "test1G0387",
 #'            mergeFigs = FALSE,
+#'            angle = angle,
 #'            minAcc = 5, outlier.rm = TRUE,
 #'            method = "t.test", ...)
 #' @examples
@@ -22,7 +23,6 @@
 #' results <- hapVsPheno(hap = hapResult,
 #'                       pheno = pheno,
 #'                       phenoName = "GrainWeight.2021",
-#'                       angle = angle,
 #'                       minAcc = 3,
 #'                       mergeFigs = FALSE)
 #' plot(results$fig_pvalue)

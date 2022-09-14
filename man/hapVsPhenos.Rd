@@ -42,7 +42,8 @@ Only worked while file type is pdf}
 bitmap file, if a positive integer. Also used for units other than the
 default, and to convert points to pixels}
 
-\item{compression}{the type of compression to be used.}
+\item{compression}{the type of compression to be used.  Ignored for
+     \code{type = "quartz"}.}
 
 \item{filename.prefix, filename.surfix, filename.sep}{if multi files generated, file names will be formed by
 prefix \code{filename.prefix}, a seperate charcter \code{filename.sep},
@@ -53,7 +54,17 @@ prefix \code{filename.prefix}, a dot and surfix \code{filename.surfix}}
 
 \item{outlier.rm}{whether remove ouliers, default as TRUE}
 
-\item{...}{options will pass to \code{ggpubr()}}
+\item{...}{for \code{type = "Xlib"} only, additional arguments to
+    the underlying \code{\link[grDevices]{X11}} device such as \code{fonts} or
+     \code{family}.
+
+    For types \code{"cairo"} and \code{"quartz"}, the \code{family}
+    argument can be supplied.  See the \sQuote{Cairo fonts}
+    section in the help for \code{\link[grDevices]{X11}}.
+    
+    For type \code{"cairo"}, the \code{symbolfamily}
+    argument can be supplied.  See \code{\link[grDevices]{X11.options}}.
+  }
 }
 \value{
 No return value
