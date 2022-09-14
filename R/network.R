@@ -24,7 +24,7 @@
 #' @param groupName the group name used for pie plot,
 #' should be in `AccINFO` column names, default as the first column name
 #' @param na.label the label of `NA`s
-#' @return haplonet class
+#' @return hapNet class
 #' @export
 get_hapNet <-
     function(hapSummary,
@@ -44,6 +44,7 @@ get_hapNet <-
                                     na.label = na.label)
             attr(hapNet, "hapGroup") <- hapGroup
         }
+        class(hapNet) <- c("hapNet", "haploNet")
         return(hapNet)
     }
 
@@ -152,8 +153,8 @@ plotHapNet <- function(hapNet,
                        main = main,
                        labels = TRUE,
                        ...) {
-    if (!inherits(hapNet, "haploNet"))
-        stop("'hapNet' must be of 'haploNet' class")
+    if (! inherits(hapNet, "haploNet") | inherits(hapNet, "hapNet"))
+        stop("'hapNet' must be of 'hapNet' class")
 
     if (missing(hapGroup))
         hapGroup <- attr(hapNet, "hapGroup")
@@ -246,17 +247,25 @@ plotHapNet <- function(hapNet,
             SZ <- ceiling(SZ)
 
             # plot size legend
-            SHIFT <- max(SZ.sc) * 0.5
-            vspace <- strheight(" ")
+            SHIFT <- max(SZ.sc)
+            vspace <- strheight(" ", cex = cex.legend)
+            hspace <- strwidth(" ", cex = cex.legend)
             for (sz.sc in SZ.sc) {
-                seqx <- seq(-sz.sc/2, 0, length.out = 100)
+                seqx <- seq(-sz.sc/2, sz.sc/2, length.out = 150)
                 seqy <- sqrt((sz.sc/2)^2 - seqx^2)
-                seqx <- seqx + xy[1] + SHIFT
-                seqy <- xy[2] + seqy - SHIFT
-                lines(seqx, seqy)
-                text(seqx[100], seqy[100], SZ[match(sz.sc, SZ.sc)], adj = c(-0.1, 0.5), cex = cex.legend)
+                seqx <- c(seqx, rev(seqx))
+                seqy <- c(seqy, -seqy)
+
+                xy[2] <- xy[2] - max(seqy)
+                lines(seqx + SHIFT / 2 + xy[1], xy[2] + seqy)
+                text(xy[1] + SHIFT + hspace * 2,
+                     xy[2] + seqy[150],
+                     SZ[match(sz.sc, SZ.sc)],
+                     adj = c(0, 0.5), cex = cex.legend)
+                xy[2] <- xy[2] - max(seqy) - vspace
+
             }
-            xy[2] <- xy[2] - SHIFT - vspace
+            xy[2] <- xy[2] - 0.5 * vspace
         }
 
         # add color legend
@@ -405,10 +414,17 @@ getStringDist <- function(hapSummary) {
 }
 
 
+#' @name network
+#' @export
 getHapGroup <- function(hap,
                         AccINFO = AccINFO,
                         groupName = groupName,
                         na.label = na.label) {
+    if (missing(groupName))
+        groupName <- colnames(AccINFO)[1]
+    if (missing(na.label))
+        na.label <- "Unknown"
+
     # get indvidual group number of each hap
     accs.hap <- attr(hap, "hap2acc")
     accs.info <- row.names(AccINFO)

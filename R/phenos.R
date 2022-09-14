@@ -5,8 +5,9 @@
 #'            pheno,
 #'            phenoName, hapPrefix = "H",
 #'            title = "test1G0387",
-#'            mergeFigs = TRUE,
-#'            minAcc = 5, outlier.rm = TRUE, ...)
+#'            mergeFigs = FALSE,
+#'            minAcc = 5, outlier.rm = TRUE,
+#'            method = "t.test", ...)
 #' @examples
 #'
 #' \donttest{
@@ -21,6 +22,7 @@
 #' results <- hapVsPheno(hap = hapResult,
 #'                       pheno = pheno,
 #'                       phenoName = "GrainWeight.2021",
+#'                       angle = angle,
 #'                       minAcc = 3,
 #'                       mergeFigs = FALSE)
 #' plot(results$fig_pvalue)
@@ -33,11 +35,13 @@
 #' @param hapPrefix prefix of hapotypes, default as "H"
 #' @param title a charater which will used for figure title
 #' @param mergeFigs bool type, indicate whether merge the heat map and box
-#' plot or not. Default as `TRUE`
+#' plot or not. Default as `FALSE`
 #' @param minAcc If observations number of a Hap less than this number will
 #' not be compared with others or be ploted. Should not less than 3 due to the
 #' t-test will meaninglessly. default as 5
 #' @param outlier.rm whether remove ouliers, default as TRUE
+#' @param angle the angle of x labels
+#' @param method a character string indicating which method to be used for comparing means.
 #' @param ... options will pass to `ggpubr()`
 #' @importFrom stats na.omit t.test
 #' @importFrom rlang .data
@@ -50,12 +54,16 @@ hapVsPheno <- function(hap,
                        pheno,
                        phenoName,
                        hapPrefix = "H",
-                       title = "test1G0387",
-                       mergeFigs = TRUE,
+                       title = "",
+                       mergeFigs = FALSE,
+                       angle = angle,
                        minAcc = 5,
                        outlier.rm = TRUE,
+                       method = "t.test",
                        ...)
 {
+    if(! inherits(hap, "hapResult"))
+        stop("hap should be object of 'hapResult' class")
     if (missing(phenoName)) {
         warning("phenoName is null, will use the first pheno")
         phenoName <- colnames(pheno)[1]
@@ -219,6 +227,9 @@ hapVsPheno <- function(hap,
             add = "boxplot",
             ...
         )
+
+    if(missing(angle))
+        angle <- ifelse(length(hps) >= 6, 45, 0)
     fig2 <- fig2 +  # do not modify here
         #    stat_compare_means(label.y = max(data[,2]))+
         #    no comparision by remove this line (Kruskal-Wallis test)
@@ -226,7 +237,7 @@ hapVsPheno <- function(hap,
         ggplot2::theme(
             plot.subtitle = ggplot2::element_text(hjust = 0.5),
             axis.text.x = ggplot2::element_text(
-                angle = ifelse(length(hps) >= 6, 45, 0),
+                angle = angle,
                 hjust = ifelse(length(hps) >= 6, 1, 0.5)
             ),
             plot.title = ggplot2::element_text(hjust = 0.5)
@@ -237,7 +248,7 @@ hapVsPheno <- function(hap,
             ggpubr::stat_compare_means(
                 comparisons = unique(my_comparisons),
                 paired = FALSE,
-                method = "t.test"
+                method = method
             )
     }
 

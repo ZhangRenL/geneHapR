@@ -42,6 +42,20 @@ gffSetATGas0 <- function(gff = gff,
                          geneID = geneID,
                          Chr = Chr,
                          POS = POS) {
+    if (missing(Chr)) {
+        Chr <- hap[hap$Hap == "CHR", 2]
+        warning("Chr is missing, will use: ", Chr)
+    }
+    if (missing(POS)) {
+        POS <- hap[hap$Hap == "POS", ]
+        POS <- suppressWarnings(as.numeric(POS))
+        POS <- na.omit(POS)
+        POS <- c(min(POS), max(POS))
+        warning("POS is missing, will use: ", POS)
+    } else {
+        POS <- c(min(POS), max(POS))
+    }
+
     tmp <- setATGas0(
         gff = gff,
         hap = hap,
@@ -73,6 +87,20 @@ hapSetATGas0 <- function(gff = gff,
                          geneID = geneID,
                          Chr = Chr,
                          POS = POS) {
+    if (missing(Chr)) {
+        Chr <- hap[hap$Hap == "CHR", 2]
+        warning("Chr is missing, will use: ", Chr)
+    }
+    if (missing(POS)) {
+        POS <- hap[hap$Hap == "POS", ]
+        POS <- suppressWarnings(as.numeric(POS))
+        POS <- na.omit(POS)
+        POS <- c(min(POS), max(POS))
+        warning("POS is missing, will use: ", POS)
+    } else {
+        POS <- c(min(POS), max(POS))
+    }
+
     tmp <- setATGas0(
         gff = gff,
         hap = hap,
@@ -90,20 +118,14 @@ setATGas0 <- function(gff = gff,
                       geneID = geneID,
                       Chr = Chr,
                       POS = POS) {
+
+    options <- attr(hap, "options")
+    AccAll <- attr(hap, "AccAll")
+    AccRemoved <- attr(hap, "AccRemoved")
+    hap2acc <- attr(hap, "hap2acc")
+
+
     # filter gff by postion
-    if (missing(Chr)) {
-        warning("Chr is missing, using CHROM in hap")
-        Chr <- hap[hap$Hap == "CHR", 2]
-    }
-    if (missing(POS)) {
-        warning("POS is missing, using postion info in hap")
-        POS <- hap[hap$Hap == "POS", ]
-        POS <- suppressWarnings(as.numeric(POS))
-        POS <- na.omit(POS)
-        POS <- c(min(POS), max(POS))
-    } else {
-        POS <- c(min(POS), max(POS))
-    }
     POSRange <- GenomicRanges::GRanges(seqnames = Chr,
                                        IRanges::IRanges(start = min(POS),
                                                         end = max(POS)))
@@ -176,7 +198,12 @@ setATGas0 <- function(gff = gff,
         IRanges::end(gffOver) <- ends
     }
     GenomicRanges::strand(gffOver) <- "+"
-
+    attr(hap, "options") <- options
+    attr(hap, "AccAll") <- AccAll
+    attr(hap, "AccRemoved") <- AccRemoved
+    attr(hap, "AccRemain") <- AccAll[! AccAll %in% AccRemoved]
+    attr(hap, "hap2acc") <- hap2acc
+    attr(hap, "freq") <- table(names(hap2acc))
     return(list(gff = gffOver, hap = hap))
 }
 

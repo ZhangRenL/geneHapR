@@ -147,9 +147,8 @@ filter_hap <- function(hap,
             rm.probe <- sapply(function(x) isTRUE(x))
             hap <- hap[which(!rm.probe),]
             AccRemoved <- c(AccRemoved, accession.rm)
-            hap2acc <- hap2acc[! hap2acc %in% accession.rm]
         }
-    } else
+    }
 
     if("haplotype" %in% rm.mode){
         if(missing(haplotype.rm))
@@ -158,8 +157,7 @@ filter_hap <- function(hap,
         rm.probe <- sapply(function(x) isTRUE(x))
         hap <- hap[which(! rm.probe),]
         AccRemoved <- c(AccRemoved, hap2acc[names(hap2acc) %in% haplotype.rm])
-        hap2acc <- hap2acc[! names(hap2acc) %in% haplotype.rm]
-    } else
+    }
 
     if("freq" %in% rm.mode){
         if(missing(freq.min))
@@ -168,7 +166,6 @@ filter_hap <- function(hap,
         rm.probe <- sapply(rm.probe, function(x) isTRUE(x))
         hap <- hap[which(! rm.probe),]
         AccRemoved <- c(AccRemoved, hap2acc[! names(hap2acc) %in% hap$Hap])
-        hap2acc <- hap2acc[! names(hap2acc) %in% hap$Hap]
     }
 
 
@@ -183,10 +180,9 @@ filter_hap <- function(hap,
         probe <- probe %in% as.character(position.rm)
         hap <- hap[, which(! probe)]
         AccRemoved <- c(AccRemoved, hap2acc[! names(hap2acc) %in% hap$Hap])
-        hap2acc <- hap2acc[! names(hap2acc) %in% hap$Hap]
     }
 
-
+    hap2acc <- hap2acc[names(hap2acc) %in% hap$Hap]
     hap <- remove_redundancy_col(hap)
     attr(hap, "options") <- options
     attr(hap, "AccAll") <- AccAll

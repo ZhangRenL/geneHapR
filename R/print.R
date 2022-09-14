@@ -73,3 +73,21 @@ print.hapSummary <- function(x, ...) {
     cat("\n\n")
     print(tibble::as_tibble(x))
 }
+
+
+#' @exportS3Method print hapNet
+print.hapNet <- function(x, ...){
+    cat("Haplotype network with:\n")
+    cat(" ", length(attr(x, "labels")), "haplotypes\n")
+    N <- n <- nrow(x)
+    altlinks <- attr(x, "alter.links")
+    if (!is.null(altlinks)) N <- N + nrow(altlinks)
+    cat(" ", N, if (N > 1) "links\n" else "link\n")
+    cat("  link lengths between", x[1, 3], "and", x[n, 3], "steps\n\n")
+    hapGroup <- attr(hapnet, "hapGroup")
+    if(! is.null(hapGroup)){
+        cat("Additional Iformation:\n")
+        print(hapGroup)
+    }
+    cat("\nUse print.default() to display all elements.\n")
+}

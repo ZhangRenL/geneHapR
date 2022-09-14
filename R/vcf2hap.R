@@ -222,7 +222,9 @@ vcf2hap_data <- function(vcf,
                 update_allS(allS_new, REF = REF[l], ALT = ALT[l])
     }
 
-    hap <- gsub("[|]","/",hap) %>% t()
+    hap <- gsub("|","/",hap, fixed = TRUE) %>%
+        t() %>%
+        toupper()
 
     # reform the genotypes
     # homo site convert into single

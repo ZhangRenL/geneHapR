@@ -223,7 +223,7 @@ plink.pedmap2hapdata <- function(p.link, POS = POS, Chr = Chr){
         alleles <- c(alleles, alele.i)
     }
     colnames(hap) <- POS
-    hap <- as.matrix(hap)
+    hap <- as.matrix(hap) %>% toupper()
     allS_new <- table(hap) %>% names()
     allS_new
     return(list(hap = hap, allS_new = allS_new, alleles = alleles))
