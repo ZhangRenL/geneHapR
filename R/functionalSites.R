@@ -33,7 +33,6 @@
 #' The matrix named as "EFF" contains scaled difference between each geno-types
 #' per site.
 #' @importFrom stats t.test chisq.test p.adjust shapiro.test wilcox.test
-#' @import GENESIS
 #' @usage
 #' siteEFF(hap, pheno, phenoNames, quality = FALSE, method = "auto",
 #'         p.adj = "none")
@@ -48,7 +47,6 @@
 #' @export
 siteEFF <- function(hap, pheno, phenoNames, quality = FALSE, method = "auto",
                     p.adj = "none"){
-    requireNamespace("GENESIS")
     if(missing(phenoNames)) phenoNames <- names(pheno)
     m <- "'quality' length should be equal with 'phenoNames'"
     if(length(quality) == 1)
@@ -152,8 +150,10 @@ siteEFF <- function(hap, pheno, phenoNames, quality = FALSE, method = "auto",
 
 
             # test end
-            p <- min(res.ps$p, na.rm = TRUE)
-            d <- max(res.ps$d, na.rm = TRUE)
+            p <- if(na.omit(res.ps$p) %>% length() > 0)
+                min(res.ps$p, na.rm = TRUE) else NA
+            d <- if(na.omit(res.ps$d) %>% length() > 0)
+                max(res.ps$d, na.rm = TRUE) else NA
             res.p <- c(res.p, p)
             res.d <- c(res.d, d)
 
@@ -167,11 +167,8 @@ siteEFF <- function(hap, pheno, phenoNames, quality = FALSE, method = "auto",
         results.p <- matrix(p.adjust(as.matrix(results.p), method = p.adj),
                             nrow = nrow(results.p))
     }
-    names(results.p) <- POS
-    row.names(results.p) <- phenoNames
-    names(results.d) <- POS
-    results.d <- (results.d)
-    row.names(results.d) <- phenoNames
+    colnames(results.d) <- colnames(results.p) <- POS
+    rownames(results.d) <- rownames(results.p) <- phenoNames
     # results <- cbind(pheno = phenoNames, results)
     return(list(p = t(results.p), EFF = t(results.d)))
 }
@@ -231,7 +228,7 @@ chisq.test.ps <- function(phenos){
         ptable.f[i,] <- ptable[i,]/sum(ptable[i,])
     d <- 0
     for(i in seq_len(ncol(ptable)))
-        d <- (max(ptable.f[,i]) - min(ptable.f[,i])) / 2
+        d <- (max(ptable.f[,i], na.rm = TRUE) - min(ptable.f[,i], na.rm = TRUE)) / 2
 
     list(p = p, d = d)
 }
@@ -346,8 +343,8 @@ plotEFF <- function(siteEFF, gff = gff,
 
     # legend text and colors
     heatcols <- rev(heat.colors(1000))
-    value_c.max <- max(value_c)
-    value_c.min <- min(value_c)
+    value_c.max <- max(value_c, na.rm = TRUE)
+    value_c.min <- min(value_c, na.rm = TRUE)
     cols <- round((value_c - value_c.min + 1) / (value_c.max - value_c.min + 1) * 1000)
     cols[,] <- heatcols[cols]
 
@@ -358,9 +355,9 @@ plotEFF <- function(siteEFF, gff = gff,
 
     POS <- suppressWarnings(as.numeric(row.names(value_y)))
     if(missing(start))
-        start <- min(POS) - 0.05 * diff(range(POS))
+        start <- min(POS, na.rm = TRUE) - 0.05 * diff(range(POS))
     if(missing(end))
-        end <- max(POS) + 0.05 * diff(range(POS))
+        end <- max(POS, na.rm = TRUE) + 0.05 * diff(range(POS))
 
 
     if(! missing(gff)){

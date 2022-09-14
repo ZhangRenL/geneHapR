@@ -92,7 +92,8 @@ table2hap <- function(x,
 
 table2hapdata <- function(x, POS = POS){
     rownames(x) <- POS
-    hap <- x %>% t() %>%
+    hap <- x %>%
+        t() %>%
         toupper()
     hap <- hap[-c(1:4),]
 

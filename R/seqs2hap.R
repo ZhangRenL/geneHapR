@@ -231,6 +231,8 @@ seq2hap_data <- function(seqs,
                                 ALT = ALi[2])
     }
 
-
+    newmseqs <- t(newmseqs) %>%
+        toupper() %>%
+        t()
     return(list(hap = newmseqs, allS_new = allS_new))
 }
