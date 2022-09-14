@@ -84,7 +84,7 @@ print.hapNet <- function(x, ...){
     if (!is.null(altlinks)) N <- N + nrow(altlinks)
     cat(" ", N, if (N > 1) "links\n" else "link\n")
     cat("  link lengths between", x[1, 3], "and", x[n, 3], "steps\n\n")
-    hapGroup <- attr(hapnet, "hapGroup")
+    hapGroup <- attr(x, "hapGroup")
     if(! is.null(hapGroup)){
         cat("Additional Iformation:\n")
         print(hapGroup)

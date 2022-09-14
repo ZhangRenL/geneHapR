@@ -33,6 +33,17 @@ NULL
 
 
 #' Datasets
+#' `gt.geno` contains a example of genotype stored in table format
+#'
+#'
+#' @name DataSet
+#' @aliases gt.geno
+#' @docType data
+#' @keywords datasets
+NULL
+
+
+#' Datasets
 #'
 #' `pheno` contains a simulated test pheno data used for test of comparison
 #' between different haps

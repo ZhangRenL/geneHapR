@@ -5,9 +5,9 @@
 \title{filter_plink.pedmap}
 \usage{
 filter_plink.pedmap(x,
-                      mode = c("POS", "type", "both"),
-                      Chr = Chr, start = start, end = end,
-                      gff = gff, type = type, cusTyp = cusTyp))
+                    mode = c("POS", "type", "both"),
+                    Chr = Chr, start = start, end = end,
+                    gff = gff, type = type, cusTyp = cusTyp))
 }
 \arguments{
 \item{x}{a list stored the p.link information}
@@ -32,8 +32,12 @@ used for filtration of p.link
 }
 \examples{
 \donttest{
-   pedfile <- system.file()
-   mapfile <- system.file()
+   pedfile <- system.file("extdata",
+                          "snp3kvars-CHR8-25947258-25951166-plink.ped",
+                          package = "geneHapR")
+   mapfile <- system.file("extdata",
+                          "snp3kvars-CHR8-25947258-25951166-plink.map",
+                          package = "geneHapR")
    p.link <- import_plink.pedmap(pedfile = pedfile, mapfile = mapfile,
                                  sep_map = "\t", sep_ped = "\t")
    p.link <- filter_plink.pedmap(p.link, mode = "POS",

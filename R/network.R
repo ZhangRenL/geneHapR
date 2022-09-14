@@ -417,7 +417,7 @@ getStringDist <- function(hapSummary) {
 
 #' @name network
 #' @export
-getHapGroup <- function(hap,
+getHapGroup <- function(hapSummary,
                         AccINFO = AccINFO,
                         groupName = groupName,
                         na.label = na.label) {
@@ -426,6 +426,7 @@ getHapGroup <- function(hap,
     if (missing(na.label))
         na.label <- "Unknown"
 
+    hap <- hapSummary
     # get indvidual group number of each hap
     accs.hap <- attr(hap, "hap2acc")
     accs.info <- row.names(AccINFO)

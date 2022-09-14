@@ -99,10 +99,10 @@ filter_vcf <- function(vcf,
 #' @title filter_plink.pedmap
 #' @description used for filtration of p.link
 #' @usage
-#'   filter_plink.pedmap(x,
-#'                       mode = c("POS", "type", "both"),
-#'                       Chr = Chr, start = start, end = end,
-#'                       gff = gff, type = type, cusTyp = cusTyp))
+#' filter_plink.pedmap(x,
+#'                     mode = c("POS", "type", "both"),
+#'                     Chr = Chr, start = start, end = end,
+#'                     gff = gff, type = type, cusTyp = cusTyp))
 #' @param x a list stored the p.link information
 #' @param mode filtration mode, one of c("POS", "type", "both")
 #' @param Chr the chromosome name, need if mode set as POS or both
@@ -207,7 +207,7 @@ filter_hap <- function(hap,
             warning("Only hapResult class can be filtered by accession")
         } else {
             if(missing(accession.rm))
-                warnning("accession.rm is missing")
+                warning("accession.rm is missing")
             rm.probe <- hap$Accession %in% accession.rm
             rm.probe <- sapply(rm.probe, function(x) isTRUE(x))
             hap <- hap[which(!rm.probe),]
@@ -217,7 +217,7 @@ filter_hap <- function(hap,
 
     if("haplotype" %in% rm.mode){
         if(missing(haplotype.rm))
-            warnning("haplotype is missing")
+            warning("haplotype is missing")
         rm.probe <- hap$Hap %in% haplotype.rm
         rm.probe <- sapply(rm.probe, function(x) isTRUE(x))
         hap <- hap[which(! rm.probe),]
@@ -227,7 +227,7 @@ filter_hap <- function(hap,
     if("freq" %in% rm.mode){
         if(inherits(hap, "hapSummary")) {
             if(missing(freq.min))
-                warnning("freq.min is missing")
+                warning("freq.min is missing")
             rm.probe <- hap$freq < 5
             rm.probe <- sapply(rm.probe, function(x) isTRUE(x))
             hap <- hap[which(! rm.probe),]

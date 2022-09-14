@@ -35,6 +35,7 @@ import_vcf <- function(file = file, ...) {
 #' @param pedfile,mapfile if `root` is missing then `pedfile` and `mapfile` are needed
 #' @return list, contains map information stored in data.frame and ped
 #'   information stored in data.frame
+#' @importFrom utils read.table
 #' @usage
 #'   import_plink.pedmap(root = root,
 #'                       sep_ped = "\t", sep_map = "\t",
@@ -163,7 +164,7 @@ import_gff <- function(gffFile, format = "gff") {
 #' @examples
 #'
 #' bed.Path <- system.file("extdata", "annotation.bed6", package = "geneHapR")
-#' bed <- import_gff(bed.Path)
+#' bed <- import_bed(bed.Path)
 #' bed
 #'
 #' @return GRange object
@@ -379,5 +380,5 @@ write.hap <- function(x, file = file, sep = "\t") {
 
 #' @importFrom magrittr `%>%`
 #' @importFrom IRanges `%over%`
-#`%>%` <- magrittr::`%>%`
-#`%over%` <- IRanges::`%over%`
+`%>%` <- magrittr::`%>%`
+`%over%` <- IRanges::`%over%`
