@@ -131,7 +131,7 @@ siteEFF <- function(hap, pheno, phenoNames, quality = FALSE, method = "auto",
                                         if(length(x) > 5000) x <- sample(x, 5000)
                                         shapiro.test(x)$p.value
                                     }
-                                    )
+                    )
                     if(min(sha.p, na.rm = TRUE) >= 0.05){
                         # all sub data set fit normal distribution
                         res.ps <- t.test.ps(phenos)
@@ -186,8 +186,8 @@ t.test.ps <- function(phenos){
 
             # t.test or chisqure test or anova analysis
             pij.res <- try(t.test(phenoi, phenoj,
-                              alternative = "two.sided"),
-                       silent = TRUE)
+                                  alternative = "two.sided"),
+                           silent = TRUE)
             if(inherits(pij.res, "htest")){
                 pij <- pij.res$p.value
                 dij <- abs(diff(pij.res$estimate))
@@ -329,10 +329,10 @@ plotEFF <- function(siteEFF, gff = gff,
     if(y == "pvalue") {
         value_c <- as.matrix(siteEFF$EFF)
         value_y <- -log10(siteEFF$p)
-            if(missing(ylab))
-                ylab <- expression("-log"[10]~italic(p)~"Value")
-            if(missing(legendtitle))
-                legendtitle <- "effect"
+        if(missing(ylab))
+            ylab <- expression("-log"[10]~italic(p)~"Value")
+        if(missing(legendtitle))
+            legendtitle <- "effect"
     } else if(y == "effect") {
         value_c <- -log10(siteEFF$p)
         value_y <- as.matrix(siteEFF$EFF)
@@ -403,8 +403,8 @@ plotEFF <- function(siteEFF, gff = gff,
 
         if(legend.ncol)
             legend(x = 0.5 * (xy[1] + xy[2]), y = xy[3] - 4 * strheight(""), legend = Parents,
-               fill = rainbow(length(Parents)), xjust = 0.5, cex = legend.cex,
-               ncol = legend.ncol, xpd = TRUE)
+                   fill = rainbow(length(Parents)), xjust = 0.5, cex = legend.cex,
+                   ncol = legend.ncol, xpd = TRUE)
 
         # markMutants
         if(markMutants){
@@ -458,6 +458,7 @@ plotEFF <- function(siteEFF, gff = gff,
                  x = rep(0.1, length(pch)),
                  xlim = c(0, 1),
                  ylim = c(0, length(pch) + 0.5),
+                 xlab = "", ylab = "",
                  xaxt = 'n',
                  yaxt = 'n',
                  type = "p",
@@ -552,6 +553,7 @@ plotEFF <- function(siteEFF, gff = gff,
                  x = rep(0.1, length(pch)),
                  xlim = c(0, 1),
                  ylim = c(0, length(pch) + 0.5),
+                 xlab = "", ylab = "",
                  xaxt = 'n',
                  yaxt = 'n',
                  type = "p",
