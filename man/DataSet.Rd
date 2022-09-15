@@ -6,6 +6,7 @@
 \alias{gff}
 \alias{seqs}
 \alias{hapResult}
+\alias{gt.geno}
 \alias{pheno}
 \alias{vcf}
 \alias{AccINFO}

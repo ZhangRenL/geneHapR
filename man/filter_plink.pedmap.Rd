@@ -7,7 +7,7 @@
 filter_plink.pedmap(x,
                     mode = c("POS", "type", "both"),
                     Chr = Chr, start = start, end = end,
-                    gff = gff, type = type, cusTyp = cusTyp))
+                    gff = gff, type = type, cusTyp = cusTyp)
 }
 \arguments{
 \item{x}{a list stored the p.link information}

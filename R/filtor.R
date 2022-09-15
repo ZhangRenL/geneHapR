@@ -102,7 +102,7 @@ filter_vcf <- function(vcf,
 #' filter_plink.pedmap(x,
 #'                     mode = c("POS", "type", "both"),
 #'                     Chr = Chr, start = start, end = end,
-#'                     gff = gff, type = type, cusTyp = cusTyp))
+#'                     gff = gff, type = type, cusTyp = cusTyp)
 #' @param x a list stored the p.link information
 #' @param mode filtration mode, one of c("POS", "type", "both")
 #' @param Chr the chromosome name, need if mode set as POS or both
