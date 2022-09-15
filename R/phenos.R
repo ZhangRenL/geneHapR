@@ -5,6 +5,7 @@
 #'            pheno,
 #'            phenoName, hapPrefix = "H",
 #'            title = "",
+#'            comparisons = comparisons,
 #'            mergeFigs = FALSE,
 #'            angle = angle,
 #'            minAcc = 5, outlier.rm = TRUE,
@@ -41,6 +42,9 @@
 #' t-test will meaninglessly. default as 5
 #' @param outlier.rm whether remove ouliers, default as TRUE
 #' @param angle the angle of x labels
+#' @param comparisons a list contains comparison pairs
+#' eg. `list(c("H001", "H002"), c("H001", "H004"))`,
+#' Or "none" indicates do not add comparisons.
 #' @param method a character string indicating which method to be used for comparing means.
 #' @param ... options will pass to `ggpubr()`
 #' @importFrom stats na.omit t.test
@@ -55,6 +59,7 @@ hapVsPheno <- function(hap,
                        phenoName,
                        hapPrefix = "H",
                        title = "",
+                       comparisons = comparisons,
                        mergeFigs = FALSE,
                        angle = angle,
                        minAcc = 5,
@@ -243,7 +248,9 @@ hapVsPheno <- function(hap,
             plot.title = ggplot2::element_text(hjust = 0.5)
         ) +
         ggplot2::ylab(stringr::str_split(phenoName, "[.]")[[1]][1])
-    if (length(my_comparisons) > 0) {
+    if(! missing(comparisons))
+        my_comparisons <- comparisons
+    if (length(my_comparisons) > 0 & my_comparisons != "none") {
         fig2 <- fig2 + # 添加箱线图
             ggpubr::stat_compare_means(
                 comparisons = unique(my_comparisons),

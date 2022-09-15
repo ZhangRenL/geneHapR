@@ -8,6 +8,7 @@ hapVsPheno(hap,
            pheno,
            phenoName, hapPrefix = "H",
            title = "",
+           comparisons = comparisons,
            mergeFigs = FALSE,
            angle = angle,
            minAcc = 5, outlier.rm = TRUE,
@@ -24,6 +25,10 @@ hapVsPheno(hap,
 \item{hapPrefix}{prefix of hapotypes, default as "H"}
 
 \item{title}{a charater which will used for figure title}
+
+\item{comparisons}{a list contains comparison pairs
+eg. \code{list(c("H001", "H002"), c("H001", "H004"))},
+Or "none" indicates do not add comparisons.}
 
 \item{mergeFigs}{bool type, indicate whether merge the heat map and box
 plot or not. Default as \code{FALSE}}
