@@ -53,7 +53,34 @@ prefix \code{filename.prefix}, a dot and surfix \code{filename.surfix}}
 
 \item{outlier.rm}{whether remove ouliers, default as TRUE}
 
-\item{...}{options will pass to \code{ggpubr()}}
+\item{...}{
+  Arguments passed on to \code{\link[=hapVsPheno]{hapVsPheno}}
+  \describe{
+    \item{\code{phenoName}}{pheno name for plot, should be one column name of pheno}
+    \item{\code{mergeFigs}}{bool type, indicate whether merge the heat map and box
+plot or not. Default as \code{FALSE}}
+    \item{\code{minAcc}}{If observations number of a Hap less than this number will
+not be compared with others or be ploted. Should not less than 3 due to the
+t-test will meaninglessly. default as 5}
+    \item{\code{angle}}{the angle of x labels}
+    \item{\code{comparisons}}{a list contains comparison pairs
+eg. \code{list(c("H001", "H002"), c("H001", "H004"))},
+or a character vector contains haplotype names for comparison,
+or "none" indicates do not add comparisons.}
+    \item{\code{method}}{a character string indicating which method to be used for
+comparing means.}
+    \item{\code{method.args}}{a list of additional arguments used for the test method.
+For example one might use \code{method.args = list(alternative = "greater")}
+for wilcoxon test.}
+    \item{\code{symnum.args}}{a list of arguments to pass to the function
+ \code{\link[stats]{symnum}} for symbolic number coding of p-values. For
+ example, \code{symnum.args <- list(cutpoints = c(0, 0.0001, 0.001,
+ 0.01, 0.05, 1), symbols = c("****", "***", "**", "*",  "ns"))}.
+
+ In other words, we use the following convention for symbols indicating
+ statistical significance: \itemize{ \item \code{ns}: p > 0.05 \item
+ \code{*}: p <= 0.05 \item \code{**}: p <= 0.01 \item \code{***}: p <= 0.001 \item \code{****}:  p <= 0.0001 }}
+  }}
 }
 \value{
 No return value

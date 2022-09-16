@@ -276,7 +276,7 @@ wilcox.test.ps <- function(phenos){
 #'         Chr = Chr, start = start, end = end,
 #'         showType = c("five_prime_UTR", "CDS", "three_prime_UTR"),
 #'         CDS.height = CDS.height, cex = 0.1, col = col, pch = 20,
-#'         main = main, legend.cex = 0.8, legend.ncol = legend.ncol,
+#'         main = main, legend.cex = 0.8, gene.legend = TRUE,
 #'         markMutants = TRUE, mutants.col = 1, mutants.type = 1,
 #'         y = c("pvalue","effect"), ylab = ylab,
 #'         legendtitle = legendtitle,
@@ -298,8 +298,7 @@ wilcox.test.ps <- function(phenos){
 #' \code{\link[graphics:par]{par()}}
 #' @param main main title
 #' @param legend.cex a numeric control the legend size
-#' @param legend.ncol the number of columns in which to set the legend items,
-#' if set as 0, legend for gene model will not be ploted
+#' @param gene.legend whether add legend for gene model
 #' @param markMutants whether mark mutants on gene model, default as `TRUE`
 #' @param mutants.col color of lines which mark mutants
 #' @param mutants.type a vector of line types
@@ -312,7 +311,7 @@ plotEFF <- function(siteEFF, gff = gff,
                     Chr = Chr, start = start, end = end,
                     showType = c("five_prime_UTR", "CDS", "three_prime_UTR"),
                     CDS.height = CDS.height, cex = 0.1, col = col, pch = 20,
-                    main = main, legend.cex = 0.8, legend.ncol = legend.ncol,
+                    main = main, legend.cex = 0.8, gene.legend = TRUE,
                     markMutants = TRUE, mutants.col = 1, mutants.type = 1,
                     y = c("pvalue","effect"), ylab = ylab,
                     legendtitle = legendtitle,
@@ -321,6 +320,8 @@ plotEFF <- function(siteEFF, gff = gff,
     oldPar.fig <- par("fig")
     oldPar.mar.m <- oldPar.mar <- par("mar")
     oldPar.mar.m[4] <- 0
+    oldPar.mar.m[1] <- 3
+
     if(par.restore)
         on.exit(par(fig = oldPar.fig, mar = oldPar.mar))
 
@@ -362,6 +363,16 @@ plotEFF <- function(siteEFF, gff = gff,
     if(missing(end))
         end <- max(POS, na.rm = TRUE) + 0.05 * diff(range(POS))
 
+    # set of par
+    par.mar <- oldPar.mar.m
+    par.mar[3] <- 0
+    par(fig = c(0, 0.78, 0, 1), mar = par.mar)
+
+
+    # just plot
+    plot(x = c(start, end), y = c(1, 1),
+         yaxt = "n", type = "n", xlab="", ylab ="",
+         frame.plot = FALSE)
 
     if(! missing(gff)){
         if(missing(Chr))
@@ -384,36 +395,16 @@ plotEFF <- function(siteEFF, gff = gff,
         fig.h <- ifelse(nsplicement >= 5, 0.5, 0.1 * (1.2 + nsplicement))
         ln <- -0.6
 
-
-        # set of par
+        # SET OF PAR
         par.mar <- oldPar.mar.m
         par.mar[3] <- 0
-        par(fig = c(0, 0.82, 0, fig.h), mar = par.mar)
-
-
-        # just plot
-        plot(x = c(start, end), y = c(0, nsplicement * 1.1),
-             yaxt = "n", type = "n", xlab="", ylab ="",
-             frame.plot = FALSE)
-
-        # add legend for gene model
-        xy <- par("usr")
-        if(missing(legend.ncol))
-            legend.ncol <- ifelse(nsplicement <= 3, nsplicement, 3)
-
-        if(legend.ncol)
-            legend(x = 0.5 * (xy[1] + xy[2]), y = xy[3] - 4 * strheight(""), legend = Parents,
-                   fill = rainbow(length(Parents)), xjust = 0.5, cex = legend.cex,
-                   ncol = legend.ncol, xpd = TRUE)
+        par(fig = c(0, 0.78, 0.01, fig.h + 0.01), mar = par.mar, new = TRUE)
+        plot(start, xlim = c(start, end), ylim = c(0, nsplicement * 1.1),
+             type = "n", xaxt = "n", yaxt = "n",
+             xlab = "", ylab = "", frame.plot = FALSE)
 
         # markMutants
         if(markMutants){
-            par.mar <- oldPar.mar.m
-            par.mar[3] <- 0
-            par(fig = c(0, 0.82, 0.01, fig.h + 0.01), mar = par.mar, new = TRUE)
-            plot(start, xlim = c(start, end), ylim = c(0, nsplicement * 1.1),
-                 type = "n", xaxt = "n", yaxt = "n",
-                 xlab = "", ylab = "", frame.plot = FALSE)
             for(pos in POS){
                 y.up <- ln + 1.1 * length(Parents) + 2.1
                 lines(c(pos, pos), c(0.4, y.up),
@@ -422,6 +413,8 @@ plotEFF <- function(siteEFF, gff = gff,
         }
 
         n <- 1
+        Parents.txt <- c()
+        Parents.y <- c()
         for(s in Parents){
             gffs <- gff[unlist(gff$Parent) == s]
             anno <- ifelse(gffs@strand[1] == "-", "3'<-5'", "5'->3'")
@@ -440,6 +433,23 @@ plotEFF <- function(siteEFF, gff = gff,
                 xr <- xl + gffi@ranges@width - 1
                 rect(xleft = xl, xright = xr, ybottom = ln - h, ytop = ln + h, col = s.col)
             }
+            Parents.txt <- c(Parents.txt, s)
+            Parents.y <- c(Parents.y, ln)
+        }
+
+        # add legend for gene model
+        if(gene.legend){
+            par.mar <- oldPar.mar.m
+            par.mar[3] <- par.mar[2] <- par.mar[4] <- 0
+            par(fig = c(0.78, 1, 0.01, fig.h + 0.01),
+                mar = par.mar, new = TRUE)
+            plot(start, xlim = c(0,1), ylim = c(0, nsplicement * 1.1),
+                 type = "n", xaxt = "n", yaxt = "n",
+                 xlab = "", ylab = "", frame.plot = FALSE)
+            for(i in seq_len(length(Parents.y))){
+                text(0, Parents.y[i], Parents.txt[i],
+                     xpd = TRUE, adj = 0, cex = legend.cex)
+            }
         }
 
         # add shape legend
@@ -453,20 +463,27 @@ plotEFF <- function(siteEFF, gff = gff,
             par.mar[2] <- 0.5
             par.mar[3] <- 0.5
 
-            par(mar = par.mar, fig = c(0.82, 0.98, fig.h, 0.4 + fig.h * 0.4), new = TRUE)
-            plot(y = seq_len(length(pch)),
-                 x = rep(0.1, length(pch)),
+            par(mar = par.mar, fig = c(0.78, 0.98, fig.h, 0.4 + fig.h * 0.4),
+                new = TRUE)
+            plot(y = 1,
+                 x = 1,
                  xlim = c(0, 1),
-                 ylim = c(0, length(pch) + 0.5),
+                 ylim = c(0, 1),
                  xlab = "", ylab = "",
                  xaxt = 'n',
                  yaxt = 'n',
-                 type = "p",
-                 pch = pch,
+                 type = "n",
                  frame.plot  = FALSE)
             nms <- colnames(value_y)
+            hspace <- strwidth(" ", cex = legend.cex)
+            SHIFT <- strheight(" ", cex = legend.cex) * 1.25
             for(i in seq_len(length(pch))){
-                text(0.1 + strwidth("  "), i, nms[i], xpd = TRUE, adj = 0, cex = legend.cex)
+                points(x = hspace,
+                       y = 1 - SHIFT * i,
+                       cex = legend.cex, pch = pch[i])
+
+                text(3 * hspace, 1 - SHIFT * i, nms[i],
+                     xpd = TRUE, adj = 0, cex = legend.cex)
             }
         }
 
@@ -474,13 +491,14 @@ plotEFF <- function(siteEFF, gff = gff,
         # add color legend
         # set of mar
         par.mar <- oldPar.mar
-        par.mar[1] <- 0
+        par.mar[1] <- 0.5
         par.mar[2] <- 1.5
-        par(mar = par.mar, fig = c(0.82, 0.98, 0.4 + fig.h * 0.4, 1), new = TRUE)
-        plot(y = 9,
+        par(mar = par.mar, fig = c(0.78, 0.98, 0.4 + fig.h * 0.4, 1), new = TRUE)
+        plot(y = 12,
              x = 1,
              xlim = c(0, 1),
              ylim = c(0, 1000),
+             xlab = "", ylab = "",
              xaxt = 'n',
              yaxt = 'n',
              type = 'n',
@@ -497,8 +515,8 @@ plotEFF <- function(siteEFF, gff = gff,
         text(6 * strwidth(" "), 500, round(t2, 2), xpd = TRUE, adj = 0, cex = legend.cex)
         text(6 * strwidth(" "), 250, round(t3, 2), xpd = TRUE, adj = 0, cex = legend.cex)
         text(6 * strwidth(" "), 0, round(value_c.min, 2), xpd = TRUE, adj = 0, cex = legend.cex)
-        text(xy[1] - 3 * strwidth(" "), 1000, legendtitle,
-             xpd = TRUE, cex = 1, adj = 1, srt = 90)
+        text(xy[1] - strwidth(" "), 1000, legendtitle,
+             xpd = TRUE, cex = legend.cex, adj = c(1, 0), srt = 90)
 
 
 
@@ -508,7 +526,7 @@ plotEFF <- function(siteEFF, gff = gff,
         par.mar[1] <- 0
 
         # set of par and plot frame
-        par(fig = c(0, 0.82, fig.h + 0.01, 1), mar = par.mar, new = TRUE)
+        par(fig = c(0, 0.78, fig.h + 0.01, 1), mar = par.mar, new = TRUE)
         plot(x = POS[1], y = value_y[1, 1], type = "n",
              xlim = c(start, end), ylim = c(0, max(value_y, na.rm = TRUE)),
              col = 3, cex = 0.5,
@@ -546,22 +564,30 @@ plotEFF <- function(siteEFF, gff = gff,
                      ncol(value_y), ")")
             par.mar <- oldPar.mar
             par.mar[1] <- 0
-            par.mar[2] <- 1.5
-            par.mar[3] <- 0.2
-            par(mar = par.mar, fig = c(0.82, 0.98, 0.1, 0.4), new = TRUE)
-            plot(y = seq_len(length(pch)),
-                 x = rep(0.1, length(pch)),
+            par.mar[2] <- 0.5
+            par.mar[3] <- 0.5
+
+            par(mar = par.mar, fig = c(0.78, 0.98, 0.1, 0.4),
+                new = TRUE)
+            plot(y = 1,
+                 x = 1,
                  xlim = c(0, 1),
-                 ylim = c(0, length(pch) + 0.5),
+                 ylim = c(0, 1),
                  xlab = "", ylab = "",
                  xaxt = 'n',
                  yaxt = 'n',
-                 type = "p",
-                 pch = pch,
+                 type = "n",
                  frame.plot  = FALSE)
             nms <- colnames(value_y)
+            hspace <- strwidth(" ", cex = legend.cex)
+            SHIFT <- strheight(" ", cex = legend.cex) * 1.25
             for(i in seq_len(length(pch))){
-                text(0.1 + strwidth(" "), i, nms[i], xpd = TRUE, adj = 0, cex = legend.cex)
+                points(x = hspace,
+                       y = 1 - SHIFT * i,
+                       cex = legend.cex, pch = pch[i])
+
+                text(3 * hspace, 1 - SHIFT * i, nms[i],
+                     xpd = TRUE, adj = 0, cex = legend.cex)
             }
         }
 
@@ -569,13 +595,14 @@ plotEFF <- function(siteEFF, gff = gff,
         # add color legend
         # set of mar
         par.mar <- oldPar.mar
-        par.mar[1] <- 0
-        par.mar[2] <- 0.5
-        par(mar = par.mar, fig = c(0.82, 0.98, 0.4, 1))
-        plot(y = 9,
+        par.mar[1] <- 0.5
+        par.mar[2] <- 1.5
+        par(mar = par.mar, fig = c(0.78, 0.98, 0.4, 1), new = TRUE)
+        plot(y = 1,
              x = 1,
              xlim = c(0, 1),
              ylim = c(0, 1000),
+             xlab = "", ylab = "",
              xaxt = 'n',
              yaxt = 'n',
              type = 'n',
@@ -592,15 +619,15 @@ plotEFF <- function(siteEFF, gff = gff,
         text(6 * strwidth(" "), 500, round(t2, 2), xpd = TRUE, adj = 0, cex = legend.cex)
         text(6 * strwidth(" "), 250, round(t3, 2), xpd = TRUE, adj = 0, cex = legend.cex)
         text(6 * strwidth(" "), 0, round(value_c.min, 2), xpd = TRUE, adj = 0, cex = legend.cex)
-        text(xy[1] - 3 * strwidth(" "), 1000, legendtitle,
-             xpd = TRUE, cex = legend.cex, adj = 1, srt = 90)
+        text(xy[1] - strwidth(" "), 1000, legendtitle,
+             xpd = TRUE, cex = legend.cex, adj = c(1, 0), srt = 90)
 
 
         # plot EFFs
         # set of mar
         par.mar <- oldPar.mar.m
         # set of par and plot frame
-        par(fig = c(0, 0.82, 0, 1), mar = par.mar, new = TRUE)
+        par(fig = c(0, 0.78, 0, 1), mar = par.mar, new = TRUE)
         plot(x = POS[1], y = value_y[1,1], type = "n",
              xlim = c(start, end), ylim = c(0, max(value_y, na.rm = TRUE)),
              col = 3, cex = 0.5,
@@ -631,6 +658,7 @@ plotEFF <- function(siteEFF, gff = gff,
 
     }
 }
+
 
 
 # phenos scale function here

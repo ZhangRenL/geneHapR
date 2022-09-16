@@ -8,7 +8,7 @@ plotEFF(siteEFF, gff = gff,
         Chr = Chr, start = start, end = end,
         showType = c("five_prime_UTR", "CDS", "three_prime_UTR"),
         CDS.height = CDS.height, cex = 0.1, col = col, pch = 20,
-        main = main, legend.cex = 0.8, legend.ncol = legend.ncol,
+        main = main, legend.cex = 0.8, gene.legend = TRUE,
         markMutants = TRUE, mutants.col = 1, mutants.type = 1,
         y = c("pvalue","effect"), ylab = ylab,
         legendtitle = legendtitle,
@@ -43,8 +43,7 @@ range: \verb{[0,1]}}
 
 \item{legend.cex}{a numeric control the legend size}
 
-\item{legend.ncol}{the number of columns in which to set the legend items,
-if set as 0, legend for gene model will not be ploted}
+\item{gene.legend}{whether add legend for gene model}
 
 \item{markMutants}{whether mark mutants on gene model, default as \code{TRUE}}
 

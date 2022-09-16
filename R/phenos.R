@@ -6,6 +6,8 @@
 #'            phenoName, hapPrefix = "H",
 #'            title = "",
 #'            comparisons = comparisons,
+#'            method.args = list(),
+#'            symnum.args = list(),
 #'            mergeFigs = FALSE,
 #'            angle = angle,
 #'            minAcc = 5, outlier.rm = TRUE,
@@ -44,9 +46,12 @@
 #' @param angle the angle of x labels
 #' @param comparisons a list contains comparison pairs
 #' eg. `list(c("H001", "H002"), c("H001", "H004"))`,
-#' Or "none" indicates do not add comparisons.
-#' @param method a character string indicating which method to be used for comparing means.
-#' @param ... options will pass to `ggpubr()`
+#' or a character vector contains haplotype names for comparison,
+#' or "none" indicates do not add comparisons.
+# @param method a character string indicating which method to be used for comparing means.
+# @param ... options will pass to `ggpubr`
+#' @inheritDotParams ggpubr::ggviolin
+#' @inheritParams ggpubr::stat_compare_means
 #' @importFrom stats na.omit t.test
 #' @importFrom rlang .data
 #' @export
@@ -60,6 +65,8 @@ hapVsPheno <- function(hap,
                        hapPrefix = "H",
                        title = "",
                        comparisons = comparisons,
+                       method.args = list(),
+                       symnum.args = list(),
                        mergeFigs = FALSE,
                        angle = angle,
                        minAcc = 5,
@@ -248,13 +255,32 @@ hapVsPheno <- function(hap,
             plot.title = ggplot2::element_text(hjust = 0.5)
         ) +
         ggplot2::ylab(stringr::str_split(phenoName, "[.]")[[1]][1])
-    if(! missing(comparisons))
-        my_comparisons <- comparisons
-    if (length(my_comparisons) > 0 & my_comparisons != "none") {
+
+    if(! missing(comparisons)){
+        if(inherits(comparisons, "list")) {
+            for(i in seq_len(length(comparisons)))
+                comparisons[[i]] <- hps[comparisons[[i]]]
+            my_comparisons <- comparisons
+        } else if(inherits(comparisons, "character")){
+            if(comparisons[1] == "none") {
+                my_comparisons <- list()
+            } else {
+                comparisons <- hps[comparisons]
+                probe <- c()
+                for(i in my_comparisons)
+                    probe <- c(probe, TRUE %in% (i %in% comparisons))
+                my_comparisons <- my_comparisons[probe]
+            }
+        }
+    }
+
+    if (length(my_comparisons) > 0) {
         fig2 <- fig2 + # 添加箱线图
             ggpubr::stat_compare_means(
                 comparisons = unique(my_comparisons),
                 paired = FALSE,
+                method.args = method.args,
+                symnum.args = symnum.args,
                 method = method
             )
     }
@@ -310,6 +336,7 @@ hapVsPheno <- function(hap,
 #' if single file was generated, file name will be formed by
 #' prefix `filename.prefix`, a dot and surfix `filename.surfix`
 #' @inheritParams hapVsPheno
+#' @inheritDotParams hapVsPheno
 #' @examples
 #' data("geneHapR_test")
 #'

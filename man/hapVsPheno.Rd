@@ -9,6 +9,8 @@ hapVsPheno(hap,
            phenoName, hapPrefix = "H",
            title = "",
            comparisons = comparisons,
+           method.args = list(),
+           symnum.args = list(),
            mergeFigs = FALSE,
            angle = angle,
            minAcc = 5, outlier.rm = TRUE,
@@ -28,7 +30,21 @@ hapVsPheno(hap,
 
 \item{comparisons}{a list contains comparison pairs
 eg. \code{list(c("H001", "H002"), c("H001", "H004"))},
-Or "none" indicates do not add comparisons.}
+or a character vector contains haplotype names for comparison,
+or "none" indicates do not add comparisons.}
+
+\item{method.args}{a list of additional arguments used for the test method.
+For example one might use \code{method.args = list(alternative = "greater")}
+for wilcoxon test.}
+
+\item{symnum.args}{a list of arguments to pass to the function
+ \code{\link[stats]{symnum}} for symbolic number coding of p-values. For
+ example, \code{symnum.args <- list(cutpoints = c(0, 0.0001, 0.001,
+ 0.01, 0.05, 1), symbols = c("****", "***", "**", "*",  "ns"))}.
+
+ In other words, we use the following convention for symbols indicating
+ statistical significance: \itemize{ \item \code{ns}: p > 0.05 \item
+ \code{*}: p <= 0.05 \item \code{**}: p <= 0.01 \item \code{***}: p <= 0.001 \item \code{****}:  p <= 0.0001 }}
 
 \item{mergeFigs}{bool type, indicate whether merge the heat map and box
 plot or not. Default as \code{FALSE}}
@@ -41,9 +57,95 @@ t-test will meaninglessly. default as 5}
 
 \item{outlier.rm}{whether remove ouliers, default as TRUE}
 
-\item{method}{a character string indicating which method to be used for comparing means.}
+\item{method}{a character string indicating which method to be used for
+comparing means.}
 
-\item{...}{options will pass to \code{ggpubr()}}
+\item{...}{
+  Arguments passed on to \code{\link[ggpubr:ggviolin]{ggpubr::ggviolin}}
+  \describe{
+    \item{\code{data}}{a data frame}
+    \item{\code{x}}{character string containing the name of x variable.}
+    \item{\code{y}}{character vector containing one or more variables to plot}
+    \item{\code{combine}}{logical value. Default is FALSE. Used only when y is a vector
+containing multiple variables to plot. If TRUE, create a multi-panel plot by
+combining the plot of y variables.}
+    \item{\code{merge}}{logical or character value. Default is FALSE. Used only when y is
+a vector containing multiple variables to plot. If TRUE, merge multiple y
+variables in the same plotting area. Allowed values include also "asis"
+(TRUE) and "flip". If merge = "flip", then y variables are used as x tick
+labels and the x variable is used as grouping variable.}
+    \item{\code{color}}{outline color.}
+    \item{\code{fill}}{fill color.}
+    \item{\code{palette}}{the color palette to be used for coloring or filling by groups.
+Allowed values include "grey" for grey color palettes; brewer palettes e.g.
+"RdBu", "Blues", ...; or custom color palette e.g. c("blue", "red"); and
+scientific journal palettes from ggsci R package, e.g.: "npg", "aaas",
+"lancet", "jco", "ucscgb", "uchicago", "simpsons" and "rickandmorty".}
+    \item{\code{alpha}}{color transparency. Values should be between 0 and 1.}
+    \item{\code{xlab}}{character vector specifying x axis labels. Use xlab = FALSE to
+hide xlab.}
+    \item{\code{ylab}}{character vector specifying y axis labels. Use ylab = FALSE to
+hide ylab.}
+    \item{\code{facet.by}}{character vector, of length 1 or 2, specifying grouping
+variables for faceting the plot into multiple panels. Should be in the data.}
+    \item{\code{panel.labs}}{a list of one or two character vectors to modify facet panel
+labels. For example, panel.labs = list(sex = c("Male", "Female")) specifies
+the labels for the "sex" variable. For two grouping variables, you can use
+for example panel.labs = list(sex = c("Male", "Female"), rx = c("Obs",
+"Lev", "Lev2") ).}
+    \item{\code{short.panel.labs}}{logical value. Default is TRUE. If TRUE, create short
+labels for panels by omitting variable names; in other words panels will be
+labelled only by variable grouping levels.}
+    \item{\code{linetype}}{line types.}
+    \item{\code{trim}}{If \code{TRUE} (default), trim the tails of the violins
+to the range of the data. If \code{FALSE}, don't trim the tails.}
+    \item{\code{size}}{Numeric value (e.g.: size = 1). change the size of points and
+outlines.}
+    \item{\code{width}}{violin width.}
+    \item{\code{draw_quantiles}}{If \code{not(NULL)} (default), draw horizontal lines
+at the given quantiles of the density estimate.}
+    \item{\code{select}}{character vector specifying which items to display.}
+    \item{\code{remove}}{character vector specifying which items to remove from the plot.}
+    \item{\code{order}}{character vector specifying the order of items.}
+    \item{\code{add}}{character vector for adding another plot element (e.g.: dot plot or
+error bars). Allowed values are one or the combination of: "none",
+"dotplot", "jitter", "boxplot", "point", "mean", "mean_se", "mean_sd",
+"mean_ci", "mean_range", "median", "median_iqr", "median_hilow",
+"median_q1q3", "median_mad", "median_range"; see ?desc_statby for more
+details.}
+    \item{\code{add.params}}{parameters (color, shape, size, fill, linetype) for the
+argument 'add'; e.g.: add.params = list(color = "red").}
+    \item{\code{error.plot}}{plot type used to visualize error. Allowed values are one of
+c("pointrange", "linerange", "crossbar", "errorbar", "upper_errorbar",
+"lower_errorbar", "upper_pointrange", "lower_pointrange", "upper_linerange",
+"lower_linerange"). Default value is "pointrange" or "errorbar". Used only
+when add != "none" and add contains one "mean_*" or "med_*" where "*" = sd,
+se, ....}
+    \item{\code{label}}{the name of the column containing point labels. Can be also a
+character vector with length = nrow(data).}
+    \item{\code{font.label}}{a list which can contain the combination of the following
+elements: the size (e.g.: 14), the style (e.g.: "plain", "bold", "italic",
+"bold.italic") and the color (e.g.: "red") of labels. For example font.label
+= list(size = 14, face = "bold", color ="red"). To specify only the size and
+the style, use font.label = list(size = 14, face = "plain").}
+    \item{\code{label.select}}{can be of two formats: \itemize{ \item a character vector
+specifying some labels to show. \item a list containing one or the
+combination of the following components: \itemize{ \item \code{top.up} and
+\code{top.down}: to display the labels  of the top up/down points. For
+example, \code{label.select = list(top.up = 10, top.down = 4)}. \item
+\code{criteria}: to filter, for example, by x and y variabes values, use
+this: \code{label.select = list(criteria = "`y` > 2 & `y` < 5 & `x` \%in\%
+c('A', 'B')")}. } }}
+    \item{\code{repel}}{a logical value, whether to use ggrepel to avoid overplotting
+text labels or not.}
+    \item{\code{label.rectangle}}{logical value. If TRUE, add rectangle underneath the
+text, making it easier to read.}
+    \item{\code{position}}{Position adjustment, either as a string, or the result of
+a call to a position adjustment function.}
+    \item{\code{ggtheme}}{function, ggplot2 theme name. Default value is theme_pubr().
+Allowed values include ggplot2 official themes: theme_gray(), theme_bw(),
+theme_minimal(), theme_classic(), theme_void(), ....}
+  }}
 }
 \value{
 list. A list contains a character vector with Haps were applied
