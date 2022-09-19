@@ -127,7 +127,8 @@ only one CHROM should be in vcf, consider set 'filter_Chr' as 'TRUE'
     hap <- hapData$hap
     # Drop hyb or N
     if (hyb_remove) {
-        hap[!hap %in% allS_new$homo] <- NA
+        hap[grepl("|", hap, fixed = T)] <- NA
+        hap[grepl("/", hap, fixed = T)] <- NA
         hap <- na.omit(hap)
         options <- c(options, hyb_remove = "YES")
     } else
