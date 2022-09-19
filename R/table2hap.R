@@ -109,10 +109,10 @@ table2hapdata <- function(x, POS = POS){
     names(p) <- c("R", "Y", "M", "K", "S", "W",
                   "H", "B", "V", "D")
     hap[hap %in% names(p)] <- p[hap[hap %in% names(p)]]
+    hap <- gsub(pattern = "|", replacement = "/", x = hap, fixed = TRUE)
     p1 <- c("A", "T", "C", "G")
     names(p1) <- c("A|A","T|T","C|C","G|G")
     hap[hap %in% names(p1)] <- p1[hap[hap %in% names(p1)]]
-    hap <- gsub(pattern = "|", replacement = "/", x = hap, fixed = TRUE)
 
     # prepare hapdata
     hap <- data.frame(hap, check.names = FALSE)
