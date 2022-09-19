@@ -11,6 +11,7 @@
 #'            symnum.args = list(),
 #'            mergeFigs = FALSE,
 #'            angle = angle,
+#'            hjust = 0.5,
 #'            minAcc = 5, outlier.rm = TRUE,
 #'            ...)
 #' @examples
@@ -45,6 +46,7 @@
 #' t-test will meaninglessly. default as 5
 #' @param outlier.rm whether remove ouliers, default as TRUE
 #' @param angle the angle of x labels
+#' @param hjust hjust of x labels
 #' @param comparisons a list contains comparison pairs
 #' eg. `list(c("H001", "H002"), c("H001", "H004"))`,
 #' or a character vector contains haplotype names for comparison,
@@ -71,6 +73,7 @@ hapVsPheno <- function(hap,
                        symnum.args = list(),
                        mergeFigs = FALSE,
                        angle = angle,
+                       hjust = 0.5,
                        minAcc = 5,
                        outlier.rm = TRUE,
                        ...)
@@ -251,7 +254,7 @@ hapVsPheno <- function(hap,
             plot.subtitle = ggplot2::element_text(hjust = 0.5),
             axis.text.x = ggplot2::element_text(
                 angle = angle,
-                hjust = ifelse(length(hps) >= 6, 1, 0.5)
+                hjust = hjust
             ),
             plot.title = ggplot2::element_text(hjust = 0.5)
         ) +
@@ -311,7 +314,7 @@ hapVsPheno <- function(hap,
 #'          title = "Seita.0G000000",
 #'          width = 12,
 #'          height = 8,
-#'          res = res,
+#'          res = 300,
 #'          compression = "lzw",
 #'          filename.prefix = filename.prefix,
 #'          filename.surfix = "pdf",
@@ -365,12 +368,13 @@ hapVsPhenos <- function(hap,
                         title = "Seita.0G000000",
                         width = 12,
                         height = 8,
-                        res = res,
+                        res = 300,
                         compression = "lzw",
                         filename.prefix = filename.prefix,
                         filename.surfix = "pdf",
                         filename.sep = "_",
                         outlier.rm = TRUE,
+                        mergeFigs = TRUE,
                         ...) {
 
     # pheno association
@@ -479,9 +483,11 @@ hapVsPhenos <- function(hap,
                                   phenoName = phenoName,
                                   hapPrefix = hapPrefix,
                                   title = title,
-                                  mergeFigs = TRUE,
+                                  mergeFigs = mergeFigs,
                                   ...))
-        if(!inherits(resulti, "try-error")) plot(resulti$figs) else resulti
+        if(!inherits(resulti, "try-error")) {
+            if(mergeFigs) plot(resulti$figs) else plot(resulti$fig_Violin)
+            }else resulti
         if (!probe)
             dev.off()
         resulti <- NULL

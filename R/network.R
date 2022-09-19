@@ -66,6 +66,8 @@ get_hapNet <-
 #'            backGround = backGround,
 #'            hapGroup = hapGroup,
 #'            legend = FALSE,
+#'            show_size_legend = TRUE,
+#'            show_color_legend = TRUE,
 #'            main = main,
 #'            labels = TRUE,
 #'            ...)
@@ -93,6 +95,7 @@ get_hapNet <-
 #' if 3, the number of mutations are printed on the links.
 #' @param backGround a color vector with length equal to number of
 #' Accession types
+#' @param show_size_legend,show_color_legend wether show size or color legend
 #' @param hapGroup a matrix used to draw pie charts for each haplotype;
 #' its number of rows must be equal to the number of haplotypes
 #' @param cex character expansion factor relative to current par("cex")
@@ -151,6 +154,8 @@ plotHapNet <- function(hapNet,
                        backGround = backGround,
                        hapGroup = hapGroup,
                        legend = FALSE,
+                       show_size_legend = TRUE,
+                       show_color_legend = TRUE,
                        main = main,
                        labels = TRUE,
                        ...) {
@@ -181,7 +186,7 @@ plotHapNet <- function(hapNet,
 
     if (!is.null(hapGroup)) {
         if (missing(backGround))
-            backGround <- rainbow(ncol(hapGroup))
+            backGround <- rainbow
 
         plot(
             hapNet,
@@ -231,7 +236,8 @@ plotHapNet <- function(hapNet,
         SZ <- unique(size)
         SZ.sc <- unique(size.sc)
 
-        if (length(SZ) > 1) {
+        if(show_size_legend)
+            if (length(SZ) > 1) {
             # calculate size legend
             SZ.sc.50 <- (min(SZ.sc) + max(SZ.sc)) * 0.5
             SZ.sc.25 <- (min(SZ.sc) + SZ.sc.50) * 0.5
@@ -270,16 +276,20 @@ plotHapNet <- function(hapNet,
         }
 
         # add color legend
-        if (!is.null(hapGroup)) {
-            legend(
-                x = xy[1],
-                y = xy[2],
-                legend = colnames(hapGroup),
-                fill = backGround,
-                cex = cex.legend,
-                ...
-            )
-        }
+        if(show_color_legend)
+            if (!is.null(hapGroup)) {
+                nc <- ncol(hapGroup)
+                co <- if (is.function(backGround)) backGround(nc) else
+                    rep(backGround, length.out = nc)
+                legend(
+                    x = xy[1],
+                    y = xy[2],
+                    legend = colnames(hapGroup),
+                    fill = co,
+                    cex = cex.legend,
+                    ...
+                )
+            }
     }
 
     # Add title
@@ -447,3 +457,4 @@ getHapGroup <- function(hapSummary,
     with(acc.infos,
          table(hap = acc.infos$Hap, group = acc.infos$Type))
 }
+

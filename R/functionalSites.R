@@ -1,3 +1,89 @@
+#' @title Calculation of Sites Effective
+#' @name calcuSiteEffect
+#' @importFrom mrMLM ReadData inputData FASTmrMLM mrMLMFun
+#' @export
+calcuSiteEffect <- function(hap, pheno, phenoNames = names(pheno), quality = FALSE,
+                            method = c("mrMLM","FASTmrMLM","FASTmrEMMA","pLARmEB","pKWmEB"),
+                            p.adj = "none"){
+    Allmethod <- c("mrMLM", "FASTmrMLM", "FASTmrEMMA",
+                   "pLARmEB", "pKWmEB", "ISIS EM-BLASSO")
+    if(!(method %in% Allmethod)){
+        warning(
+        "method should be in 'mrMLM', 'FASTmrMLM', 'FASTmrEMMA',
+'pLARmEB', 'pKWmEB', 'ISIS EM-BLASSO'")
+    }
+
+    if(length(method) > 1){
+        method <- method[1]
+    }
+
+    # format of genotype
+    hmp = hap2hmp(hap)
+    hmp = rbind(names(hmp),hmp)
+
+
+    EFF <- p.value <- hmp[-1,3:4]
+    ind.names <- row.names(pheno)
+    for(p in names(pheno)){
+        # format of Pheno
+        pheno.p <- pheno[, c(p)]
+        pheno.p <- cbind(ind.names, pheno.p)
+        pheno.p <- rbind(c("<Phenotype>", p), pheno.p)
+        pheno.p <- data.frame(pheno.p)
+        head(pheno.p)
+        Readraw=mrMLM::ReadData(fileGen=hmp,filePhe=data.frame(pheno.p),fileKin=NULL,filePS =NULL,
+                                Genformat=3)
+        if ("FASTmrMLM" %in% method) {
+            InputData=mrMLM::inputData(readraw=Readraw,Genformat=3,method="FASTmrMLM",trait=1)
+            result=mrMLM::FASTmrMLM(InputData$doMR$gen,InputData$doMR$phe,
+                             InputData$doMR$outATCG,InputData$doMR$genRaw,
+                             InputData$doMR$kk,InputData$doMR$psmatrix,0.01,svrad=20,
+                             svmlod=3,Genformat=,CLO=1)
+        }
+        if ("mrMLM" %in% method){
+            InputData=mrMLM::inputData(readraw=Readraw,Genformat=3,method="mrMLM",trait=1)
+            result=mrMLM::mrMLMFun(InputData$doMR$gen,InputData$doMR$phe,InputData$doMR$outATCG,
+                            InputData$doMR$genRaw,InputData$doMR$kk,InputData$doMR$psmatrix,
+                            0.01,svrad=20,svmlod=3,Genformat=3,CLO=1)
+        }
+        if ("FASTmrEMMA" %in% method) {
+            InputData=mrMLM::inputData(readraw=Readraw,Genformat=3,method="FASTmrEMMA",trait=1)
+            result=mrMLM::FASTmrEMMA(InputData$doFME$gen,InputData$doFME$phe,
+                              InputData$doFME$outATCG,InputData$doFME$genRaw,
+                              InputData$doFME$kk,InputData$doFME$psmatrix,0.005,
+                              svmlod=3,Genformat=3,Likelihood="REML",CLO=1)
+        }
+        if ( "pLARmEB" %in% method){
+            InputData=mrMLM::inputData(readraw=Readraw,Genformat=3,method="pLARmEB",trait=1)
+            result=mrMLM::pLARmEB(InputData$doMR$gen,InputData$doMR$phe,InputData$doMR$outATCG,
+                           InputData$doMR$genRaw,InputData$doMR$kk,InputData$doMR$psmatrix,
+                           CriLOD=3,lars1=20,Genformat=3,Bootstrap=FALSE,CLO=1)
+        }
+        if ("pKWmEB" %in% method) {
+            InputData=mrMLM::inputData(readraw=Readraw,Genformat=3,method="pKWmEB",trait=1)
+            result=mrMLM::pKWmEB(InputData$doMR$gen,InputData$doMR$phe,InputData$doMR$outATCG,
+                          InputData$doMR$genRaw,InputData$doMR$kk,InputData$doMR$psmatrix,
+                          0.05,svmlod=3,Genformat=3,CLO=1)
+        }
+        if ("ISIS EM-BLASSO" %in% method) {
+            InputData=mrMLM::inputData(readraw=Readraw,Genformat=3,method="ISIS EM-BLASSO",
+                                trait=1)
+            result=mrMLM::ISIS(InputData$doMR$gen,InputData$doMR$phe,InputData$doMR$outATCG,
+                        InputData$doMR$genRaw,InputData$doMR$kk,InputData$doMR$psmatrix,
+                        0.01,svmlod=3,Genformat=3,CLO=1)
+        }
+        EFF <- cbind(EFF, result$result1[,4])
+        p.value <- cbind(p.value, result$result1[,5])
+    }
+    return(list(p = p.value, EFF = EFF))
+}
+
+
+
+
+
+
+
 #' @name siteEFF
 #' @title Calculation of Sites Effective
 #' @param hap object of "hapResult" class
@@ -47,6 +133,11 @@
 #' @export
 siteEFF <- function(hap, pheno, phenoNames, quality = FALSE, method = "auto",
                     p.adj = "none"){
+    message(
+        # "This function has beed detached, please use 'calcuSiteEffect()' instead."
+        "注意：位点效应计算未进行群体结构校正，此部分结果仅供参考！"
+    )
+    Chr = hap[1,2]
     if(missing(phenoNames)) phenoNames <- names(pheno)
     m <- "'quality' length should be equal with 'phenoNames'"
     if(length(quality) == 1)
@@ -170,7 +261,13 @@ siteEFF <- function(hap, pheno, phenoNames, quality = FALSE, method = "auto",
     colnames(results.d) <- colnames(results.p) <- POS
     rownames(results.d) <- rownames(results.p) <- phenoNames
     # results <- cbind(pheno = phenoNames, results)
-    return(list(p = t(results.p), EFF = t(results.d)))
+    results.d$Chr <- results.p$Chr <- Chr
+    results.d$POS <- results.p$POS <- POS
+    results.d <- results.d[,c("Chr", "POS")]
+    df <- data.frame(Chr = rep(Chr, length(POS)), POS = POS)
+    results.p <- cbind(df, t(results.p))
+    results.d <- cbind(df, t(results.d))
+    return(list(p = results.p, EFF = results.d))
 }
 
 
@@ -265,7 +362,9 @@ wilcox.test.ps <- function(phenos){
 
 }
 
-# TODO
+
+
+
 # add delta EFF plot function
 #' @title plotEFF
 #' @name plotEFF
@@ -325,11 +424,19 @@ plotEFF <- function(siteEFF, gff = gff,
     if(par.restore)
         on.exit(par(fig = oldPar.fig, mar = oldPar.mar))
 
+    Chr <- siteEFF$EFF[,1]
+    POS <- as.numeric(siteEFF$EFF[,2])
+
+
+    if(missing(start))
+        start <- min(POS, na.rm = TRUE) - 0.05 * diff(range(POS))
+    if(missing(end))
+        end <- max(POS, na.rm = TRUE) + 0.05 * diff(range(POS))
 
     y <- y[1]
     if(y == "pvalue") {
-        value_c <- as.matrix(siteEFF$EFF)
-        value_y <- -log10(siteEFF$p)
+        value_c <- as.matrix(siteEFF$EFF[,-c(1,2)])
+        value_y <- -log10(siteEFF$p[,-c(1,2)])
         if(missing(ylab))
             ylab <- expression("-log"[10]~italic(p)~"Value")
         if(missing(legendtitle))
@@ -356,12 +463,6 @@ plotEFF <- function(siteEFF, gff = gff,
     t2 <- value_c.max - (value_c.max - value_c.min) / 4 * 2
     t3 <- value_c.max - (value_c.max - value_c.min) / 4 * 3
 
-
-    POS <- suppressWarnings(as.numeric(row.names(value_y)))
-    if(missing(start))
-        start <- min(POS, na.rm = TRUE) - 0.05 * diff(range(POS))
-    if(missing(end))
-        end <- max(POS, na.rm = TRUE) + 0.05 * diff(range(POS))
 
     # set of par
     par.mar <- oldPar.mar.m

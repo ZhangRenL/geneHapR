@@ -10,7 +10,7 @@ hapVsPhenos(hap, pheno,
          title = "Seita.0G000000",
          width = 12,
          height = 8,
-         res = res,
+         res = 300,
          compression = "lzw",
          filename.prefix = filename.prefix,
          filename.surfix = "pdf",
@@ -53,16 +53,18 @@ prefix \code{filename.prefix}, a dot and surfix \code{filename.surfix}}
 
 \item{outlier.rm}{whether remove ouliers, default as TRUE}
 
+\item{mergeFigs}{bool type, indicate whether merge the heat map and box
+plot or not. Default as \code{FALSE}}
+
 \item{...}{
   Arguments passed on to \code{\link[=hapVsPheno]{hapVsPheno}}
   \describe{
     \item{\code{phenoName}}{pheno name for plot, should be one column name of pheno}
-    \item{\code{mergeFigs}}{bool type, indicate whether merge the heat map and box
-plot or not. Default as \code{FALSE}}
     \item{\code{minAcc}}{If observations number of a Hap less than this number will
 not be compared with others or be ploted. Should not less than 3 due to the
 t-test will meaninglessly. default as 5}
     \item{\code{angle}}{the angle of x labels}
+    \item{\code{hjust}}{hjust of x labels}
     \item{\code{comparisons}}{a list contains comparison pairs
 eg. \code{list(c("H001", "H002"), c("H001", "H004"))},
 or a character vector contains haplotype names for comparison,

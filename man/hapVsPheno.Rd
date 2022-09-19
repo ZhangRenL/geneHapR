@@ -14,6 +14,7 @@ hapVsPheno(hap,
            symnum.args = list(),
            mergeFigs = FALSE,
            angle = angle,
+           hjust = 0.5,
            minAcc = 5, outlier.rm = TRUE,
            ...)
 }
@@ -54,6 +55,8 @@ for wilcoxon test.}
 plot or not. Default as \code{FALSE}}
 
 \item{angle}{the angle of x labels}
+
+\item{hjust}{hjust of x labels}
 
 \item{minAcc}{If observations number of a Hap less than this number will
 not be compared with others or be ploted. Should not less than 3 due to the

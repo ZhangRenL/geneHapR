@@ -15,6 +15,8 @@ plotHapNet(hapNet,
            backGround = backGround,
            hapGroup = hapGroup,
            legend = FALSE,
+           show_size_legend = TRUE,
+           show_color_legend = TRUE,
            main = main,
            labels = TRUE,
            ...)
@@ -62,6 +64,8 @@ its number of rows must be equal to the number of haplotypes}
 or a vector of length two giving the coordinates where to draw the legend;
 \code{FALSE} by default.
 If \code{TRUE}, the user is asked to click where to draw the legend.}
+
+\item{show_size_legend, show_color_legend}{wether show size or color legend}
 
 \item{main}{The main title (on top) using font, size (character
     expansion) and color \code{par(c("font.main", "cex.main", "col.main"))}.}

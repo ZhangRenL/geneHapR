@@ -60,8 +60,18 @@ filter_vcf <- function(vcf,
         Chrs <- vcfR::getCHROM(vcf)
         probe <- POS >= min(start, end) & POS <= max(start, end)
         probe <- probe & Chrs == Chr
-        vcf@fix <- vcf@fix[probe,]
-        vcf@gt <- vcf@gt[probe,]
+        nr <- sum(probe)
+        if(nr > 1){
+            vcf@fix <- vcf@fix[probe,]
+            vcf@gt <- vcf@gt[probe,]
+        } else if(nr == 1){
+            nf <- colnames(vcf@fix)
+            ng <- colnames(vcf@gt)
+            vcf@fix <- matrix(vcf@fix[probe,], byrow = TRUE,
+                              dimnames = nf, nrow = nr)
+            vcf@gt <- matrix(vcf@gt[probe,], byrow = TRUE,dimnames = ng,
+                             nrow = nr)
+        } else stop(" No variants after filter by position")
     }
 
     if (mode == "type" | mode == "both") {
@@ -87,8 +97,18 @@ filter_vcf <- function(vcf,
 
         POS_rm <- IRanges::start(POSRange_rm)
         probe <- !(POS %in% POS_rm)
-        vcf@fix <- vcf@fix[probe,]
-        vcf@gt <- vcf@gt[probe,]
+        nr <- sum(probe)
+        if(nr > 1){
+            vcf@fix <- vcf@fix[probe,]
+            vcf@gt <- vcf@gt[probe,]
+        } else if(nr == 1){
+            nf <- colnames(vcf@fix)
+            ng <- colnames(vcf@gt)
+            vcf@fix <- matrix(vcf@fix[probe,], byrow = TRUE, nrow = nr)
+            colnames(vcf@fix) <- nf
+            vcf@gt <- matrix(vcf@gt[probe,], byrow = TRUE, nrow = nr)
+            colnames(vcf@gt) <- ng
+        } else stop(" No variants after filter by ", type)
     }
 
     return(vcf)
@@ -228,7 +248,7 @@ filter_hap <- function(hap,
         if(inherits(hap, "hapSummary")) {
             if(missing(freq.min))
                 warning("freq.min is missing")
-            rm.probe <- hap$freq < 5
+            rm.probe <- as.numeric(hap$freq) < freq.min
             rm.probe <- sapply(rm.probe, function(x) isTRUE(x))
             hap <- hap[which(! rm.probe),]
             AccRemoved <- c(AccRemoved, hap2acc[! names(hap2acc) %in% hap$Hap])

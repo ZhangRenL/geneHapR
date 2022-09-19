@@ -7,12 +7,9 @@
 vcf2hap(vcf,
         hapPrefix = "H",
         filter_Chr = FALSE,
-        Chr = Chr,
         filter_POS = FALSE,
-        startPOS = startPOS,
-        endPOS = endPOS,
         hyb_remove = TRUE,
-        na.drop = TRUE)
+        na.drop = TRUE, ...)
 }
 \arguments{
 \item{vcf}{vcfR object imported by \code{import_vcf()}}
@@ -22,19 +19,21 @@ vcf2hap(vcf,
 \item{filter_Chr}{logical, whether filter vcf by chromosome or not. Default
 as \code{FALSE}. If set as \code{TRUE}, \code{Chr} is needed}
 
-\item{Chr}{Chromosome name, needed when \code{filter_Chr} was set as \code{TRUE}}
-
 \item{filter_POS}{logical, whether filter vcf by position or not. Default
 as \code{FALSE}. If set as \code{TRUE}, \code{startPOS} and \code{endPOS} are needed}
-
-\item{startPOS, endPOS}{start and end position, needed when \code{filter_POS} was
-set as \code{TRUE}. In addition, \code{startPOS} must less than \code{endPOS}}
 
 \item{hyb_remove}{whether remove accessions contains hybrid site or not.
 Default as \code{TRUE}}
 
 \item{na.drop}{whether remove accessions contains unknown allele site or not
 Default as \code{TRUE}.}
+
+\item{...}{Parameters not used}
+
+\item{Chr}{Chromosome name, needed when \code{filter_Chr} was set as \code{TRUE}}
+
+\item{startPOS, endPOS}{start and end position, needed when \code{filter_POS} was
+set as \code{TRUE}. In addition, \code{startPOS} must less than \code{endPOS}}
 }
 \value{
 object of hapResult class

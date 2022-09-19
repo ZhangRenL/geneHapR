@@ -9,7 +9,8 @@ displayVarOnGeneModel(gff,
                       Chr,
                       startPOS, endPOS,
                       type = "pin", cex = 0.7,
-                      CDS_h = 0.05, fiveUTR_h = 0.02, threeUTR_h = 0.01)
+                      CDS_h = 0.05, fiveUTR_h = 0.02, threeUTR_h = 0.01,
+                      geneElement = geneElement)
 }
 \arguments{
 \item{gff}{gff}
@@ -30,6 +31,8 @@ If missing, the first element in the hapSummary will be used}
 
 \item{CDS_h, fiveUTR_h, threeUTR_h}{The height of CDS 5'UTR and 3'UTR
 in gene model}
+
+\item{geneElement}{ploted elements, eg.: c("CDS","five_prime_UTR")}
 }
 \value{
 No return value
