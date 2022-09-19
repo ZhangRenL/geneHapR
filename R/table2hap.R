@@ -94,7 +94,7 @@ table2hap <- function(x,
 
 table2hapdata <- function(x, POS = POS){
     rownames(x) <- POS
-    hap <-  gsub(pattern = "|", replacement = "/", x = x, fixed = TRUE) %>%
+    hap <-  x %>%
         t() %>%
         toupper()
     hap <- hap[-c(1 : 5),]
@@ -109,7 +109,10 @@ table2hapdata <- function(x, POS = POS){
     names(p) <- c("R", "Y", "M", "K", "S", "W",
                   "H", "B", "V", "D")
     hap[hap %in% names(p)] <- p[hap[hap %in% names(p)]]
-    hap[,] <- c("A/A" = "A", "G/G" = "G", "C/C" = "C", "T/T" = "T")[hap]
+    p1 <- c("A", "T", "C", "G")
+    names(p1) <- c("A|A","T|T","C|C","G|G")
+    hap[hap %in% names(p1)] <- p1[hap[hap %in% names(p1)]]
+    hap <- gsub(pattern = "|", replacement = "/", x = hap, fixed = TRUE)
 
     # prepare hapdata
     hap <- data.frame(hap, check.names = FALSE)
