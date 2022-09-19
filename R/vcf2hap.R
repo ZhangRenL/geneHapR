@@ -221,7 +221,7 @@ vcf2hap_data <- function(vcf,
                 update_allS(allS_new, REF = REF[l], ALT = ALT[l])
     }
 
-    hap <- gsub("|","/",hap, fixed = TRUE) %>%
+    hap <- gsub(pattern = "|", replacement = "/", x = hap, fixed = TRUE) %>%
         t() %>%
         toupper()
 

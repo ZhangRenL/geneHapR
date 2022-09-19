@@ -10,7 +10,8 @@ table2hap(x, hapPrefix = "H", hyb_remove = TRUE, na.drop = TRUE)
 \item{x}{a data.frame contains variants information.
 The first four column are fix as Chrome name, position, reference nuclieotide
 and alter nuclieotide. Accession genotype should be in followed columns.
-"-" will be treated as Indel. "." and "N" will be treated as missing data.}
+"-" will be treated as Indel. "." and "N" will be treated as missing data.
+Heterozygotes should be "A/T", "AAA/A"}
 
 \item{hapPrefix}{prefix of haplotype names}
 

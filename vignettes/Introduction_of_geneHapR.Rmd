@@ -58,7 +58,7 @@ data("geneHapR_test")
 
 There are two options to conduct a gene haplotype analysis starts from a VCF file or DNA sequences file. Thus a **VCF** file or **DNA sequences** file is necessary. However, the *GFF*, *phenos* and *accession groups* are strongly recommend for visualization and phenotype associations.
 
-The import functions takes file name/path as input. `import_vcf()` could import VCF file with surfix of ".vcf" and ".vcf.gz". `import_gff()` import file format default as "GFF" and `import_seqs()` file format default as "fasta".
+The import functions takes file path as input. `import_vcf()` could import VCF file with surfix of ".vcf" and ".vcf.gz". `import_gff()` import file format default as "GFF" and `import_seqs()` file format default as "fasta".
 
 ### Import VCF
 
@@ -70,11 +70,26 @@ vcf <- import_vcf("your_vcf_file_path.vcf")
 vcf <- import_vcf("your_vcf_file_path.vcf.gz")
 ```
 
+### Import p.link (ped/map)
+
+```{r import p.link, eval=FALSE, include=TRUE}
+plink <- import_plink.pedmap(mapfile = "p_link.map", pedfile = "p_link.ped", 
+                             sep_ped = "\t", sep_map = "\t")
+plink <- import_plink.pedmap(root = "p_link", sep_ped = "\t", sep_map = "\t")
+```
+
 ### Import GFF
 
 ```{r import gff, eval=FALSE, include=TRUE}
 # import GFFs
 gff <- import_gff("your_gff_file_path.gff", format = "GFF")
+```
+
+### Import BED
+
+```{r import bed, eval=FALSE, include=TRUE}
+# import GFFs
+bed <- import_bed("your_gff_file_path.bed")
 ```
 
 ### Import DNA sequences
@@ -97,7 +112,6 @@ head(pheno)
 ```
 
 ```{r import pheno, eval=FALSE}
-
 # import accession group/location information
 AccINFO <- import_AccINFO("accession_group_file_path.txt")
 ```
@@ -108,7 +122,7 @@ head(AccINFO)
 
 Be aware that the phenotype and accession group are effectively tables. There are more than one ways to import a table format file with `R`. 
 
-Just **Note** that: 
+Be **Note** that: 
 a. the accession/individual names located in first column; 
 b. the first row contents phenotype/accession_group names; 
 c. `NA` is allowed, it's not a wise option to replace `NA` by `0`.
@@ -180,6 +194,13 @@ filterLargeVCF(VCFin = "Ori.vcf.gz",          # surfix should be .vcf.gz or .vcf
                override = TRUE)               # if TRUE, existed file will be override without warning
 ```
 
+### p.link (ped/map) filtration
+
+```{r p.link filtration, eval=FALSE, message=FALSE, warning=FALSE, include=TRUE}
+p.link <- filter_plink.pedmap(p.link, mode = "POS", 
+                              Chr = "Chr08", start = 25947258, end = 25948258)
+```
+
 ### DNA sequences manipulation
 
 The origin DNA sequences must be aligned and trimmed due to haplotype calculation need all sequences have same length. Those operations could be done with `geneHapR`. I still suggest users align and trim DNA sequences with **Mega** software and then save the result as *FASTA* format before import them into 'R'.
@@ -192,6 +213,18 @@ seqs <- allignSeqs(seqs, quiet = TRUE)
 seqs <- trimSeqs(seqs, minFlankFraction = 0.1)
 seqs
 ```
+
+### hapResult/hapSummary filtration
+
+```{r hap filtration, eval=FALSE, message=FALSE, warning=FALSE, include=TRUE}
+hap <- filter_hap(hapSummary,
+                  rm.mode = c("position", "accession", "haplotype", "freq"),
+                  position.rm = c(4879, 4950),
+                  accession.rm = c("C1", "C9"),
+                  haplotype.rm = c("H009", "H008"),
+                  freq.min = 5)
+```
+
 
 ## Haplotype calculation
 
@@ -372,8 +405,9 @@ hapNet <- get_hapNet(hapSummary,
 
 Once we have the `hapNet` object, we can plot it with 'R'.
 
-```{r, eval=NOT_CRAN, fig.height=4, fig.width=6, message=FALSE, warning=FALSE, paged.print=FALSE}
+```{r, eval=NOT_CRAN, fig.height=6, fig.width=7, message=FALSE, warning=FALSE, paged.print=FALSE}
 # plot haploNet
+
 plotHapNet(hapNet,
            size = "freq",                   # circle size
            scale = "log2",                 # scale circle with 'log10(size + 1)'
@@ -381,8 +415,27 @@ plotHapNet(hapNet,
            col.link = 2,                    # link colors
            link.width = 2,                  # link widths
            show.mutation = 2,               # mutation types one of c(0,1,2,3)
-           legend = c(-13,-2))        # legend position
+           legend = c(-12.5, 7))        # legend position
 ```
+
+
+## Geography distribution of main haplotypes
+
+Now we get the haplotype result. 
+There is a new question emerged: how did those main haplotypes distributed, are they related to geography?
+
+
+```{r geo distribution, eval=NOT_CRAN, fig.height=4, fig.width=6, message=FALSE, warning=FALSE, paged.print=FALSE}
+# library(mapdata)
+# library(maptools)
+hapDistribution(hapResult,
+                AccINFO = AccINFO,
+                LON.col = "longitude",
+                LAT.col = "latitude", 
+                hapNames = c("H001", "H002", "H003"), 
+                legend = TRUE)
+```
+
 
 ### Phenotype association analysis
 
@@ -422,9 +475,9 @@ plot(results$fig_Violin)
 
 ### Association analysis of multi-phenotypes once a time
 
-I believe the function of `hapVsPhenos()` will be useful when you have a lot of phenotype need to be associated with haplotype results.
+I believe the function of `hapVsPhenos()` will be useful there are a lot of phenotype need to be associated with haplotype results.
 
-Note that: the pheno name will be added between the file name and surfix.  
+Note that: the pheno name will be added between the file name and surfix.
 
 ```{r eval=FALSE}
 hapVsPhenos(hapResult,
@@ -439,21 +492,12 @@ hapVsPhenos(hapResult,
 ```
 
 
+### Site effect evalution
 
-## Geography distribution of main haplotypes
+Figure out the responsible variants with high-reliability could provide valuable clue for gene functional study.
 
-Now we get the haplotype result and find a few main haplotypes. 
-There is a new question emerged: how did those main haplotypes distributed, are they related to geography?
-
-
-```{r geo distribution, eval=NOT_CRAN, fig.height=4, fig.width=6, message=FALSE, warning=FALSE, paged.print=FALSE}
-# library(mapdata)
-# library(maptools)
-hapDistribution(hapResult,
-                AccINFO = AccINFO,
-                LON.col = "longitude",
-                LAT.col = "latitude", 
-                hapNames = c("H001", "H002", "H003"), 
-                legend = TRUE)
+```{r site effect evaluation, eval=NOT_CRAN, fig.height=4, fig.width=6, message=FALSE, warning=FALSE, paged.print=FALSE}
+EFF <- siteEFF(hap = hapResult, pheno = pheno, quality = FALSE, p.adj = "BH")
+plotEFF(siteEFF = EFF, y = "effect", pch = c(20, 22))
+plotEFF(siteEFF = EFF, y = "pvalue", pch = c(20, 22))
 ```
-

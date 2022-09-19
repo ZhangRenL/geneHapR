@@ -5,6 +5,7 @@
 #' The first four column are fix as Chrome name, position, reference nuclieotide
 #' and alter nuclieotide. Accession genotype should be in followed columns.
 #' "-" will be treated as Indel. "." and "N" will be treated as missing data.
+#' Heterozygotes should be "A/T", "AAA/A"
 #' @param hapPrefix prefix of haplotype names
 #' @param hyb_remove whether remove accessions contains hyb-sites, Character not A T C G
 #' @param na.drop whether drop accessions contains missing data ("N", "NA", ".")
@@ -40,7 +41,7 @@ table2hap <- function(x,
     REF <- x[,3]
     ALT <- x[,4]
     ALLELE <- paste(REF, ALT, sep = "/")
-    INFO <- rep("", nrow(x))
+    INFO <- x[,5]
 
     hap <- table2hapdata(x, POS = POS)
     allS_new <- unique(ALLELE)
@@ -48,6 +49,7 @@ table2hap <- function(x,
     # Drop hyb or N
     if (hyb_remove) {
         hap[grepl("|", hap, fixed = T)] <- NA
+        hap[grepl("/", hap, fixed = T)] <- NA
         hap <- na.omit(hap)
         options <- c(options, hyb_remove = "YES")
     } else
@@ -92,21 +94,22 @@ table2hap <- function(x,
 
 table2hapdata <- function(x, POS = POS){
     rownames(x) <- POS
-    hap <- x %>%
+    hap <-  gsub(pattern = "|", replacement = "/", x = x, fixed = TRUE) %>%
         t() %>%
         toupper()
-    hap <- hap[-c(1:4),]
+    hap <- hap[-c(1 : 5),]
 
     # deal with missing data
     hap[hap == "."] <- "N"
     hap[hap == "NA"] <- "N"
     hap[is.na(hap)] <- "N"
 
-    p <- c("A|G","C|T","A|C","G|T","G|C","A|T",
-           "A|T|C","G|T|C","G|A|C","G|A|T")
-    names(p) <- c("R", "Y","M","K","S","W",
-                  "H","B","V","D")
-    hap[hap %in% names(p)] <- p[hap[hap%in%names(p)]]
+    p <- c("A|G", "C|T", "A|C", "G|T", "G|C", "A|T",
+           "A|T|C", "G|T|C", "G|A|C", "G|A|T")
+    names(p) <- c("R", "Y", "M", "K", "S", "W",
+                  "H", "B", "V", "D")
+    hap[hap %in% names(p)] <- p[hap[hap %in% names(p)]]
+    hap[,] <- c("A/A" = "A", "G/G" = "G", "C/C" = "C", "T/T" = "T")[hap]
 
     # prepare hapdata
     hap <- data.frame(hap, check.names = FALSE)

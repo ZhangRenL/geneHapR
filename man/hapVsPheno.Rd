@@ -9,12 +9,13 @@ hapVsPheno(hap,
            phenoName, hapPrefix = "H",
            title = "",
            comparisons = comparisons,
+           method = "t.test",
            method.args = list(),
            symnum.args = list(),
            mergeFigs = FALSE,
            angle = angle,
            minAcc = 5, outlier.rm = TRUE,
-           method = "t.test", ...)
+           ...)
 }
 \arguments{
 \item{hap}{object of hapResult class, generate with\code{vcf2hap()} or
@@ -32,6 +33,9 @@ hapVsPheno(hap,
 eg. \code{list(c("H001", "H002"), c("H001", "H004"))},
 or a character vector contains haplotype names for comparison,
 or "none" indicates do not add comparisons.}
+
+\item{method}{a character string indicating which method to be used for
+comparing means.}
 
 \item{method.args}{a list of additional arguments used for the test method.
 For example one might use \code{method.args = list(alternative = "greater")}
@@ -56,9 +60,6 @@ not be compared with others or be ploted. Should not less than 3 due to the
 t-test will meaninglessly. default as 5}
 
 \item{outlier.rm}{whether remove ouliers, default as TRUE}
-
-\item{method}{a character string indicating which method to be used for
-comparing means.}
 
 \item{...}{
   Arguments passed on to \code{\link[ggpubr:ggviolin]{ggpubr::ggviolin}}

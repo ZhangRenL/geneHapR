@@ -6,12 +6,13 @@
 #'            phenoName, hapPrefix = "H",
 #'            title = "",
 #'            comparisons = comparisons,
+#'            method = "t.test",
 #'            method.args = list(),
 #'            symnum.args = list(),
 #'            mergeFigs = FALSE,
 #'            angle = angle,
 #'            minAcc = 5, outlier.rm = TRUE,
-#'            method = "t.test", ...)
+#'            ...)
 #' @examples
 #'
 #' \donttest{
@@ -65,13 +66,13 @@ hapVsPheno <- function(hap,
                        hapPrefix = "H",
                        title = "",
                        comparisons = comparisons,
+                       method = "t.test",
                        method.args = list(),
                        symnum.args = list(),
                        mergeFigs = FALSE,
                        angle = angle,
                        minAcc = 5,
                        outlier.rm = TRUE,
-                       method = "t.test",
                        ...)
 {
     if(! inherits(hap, "hapResult"))
