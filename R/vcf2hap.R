@@ -75,7 +75,7 @@ vcf2hap <- function(vcf,
     # extract information from vcf
     CHR <- vcfR::getCHROM(vcf)
     POS <- vcfR::getPOS(vcf)
-    options <- c(options, CHROM = CHR)
+    options <- c(options, CHROM = unique(CHR))
     options <- c(options, POS = paste0(min(POS), "-", max(POS)))
     REF <- vcfR::getREF(vcf)
     ALT <- vcfR::getALT(vcf)

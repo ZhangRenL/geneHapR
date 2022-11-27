@@ -11,7 +11,8 @@
 #'            symnum.args = list(),
 #'            mergeFigs = FALSE,
 #'            angle = angle,
-#'            hjust = 0.5,
+#'            hjust = hjust,
+#'            vjust = vjust,
 #'            minAcc = 5, outlier.rm = TRUE,
 #'            ...)
 #' @examples
@@ -46,7 +47,7 @@
 #' t-test will meaninglessly. default as 5
 #' @param outlier.rm whether remove ouliers, default as TRUE
 #' @param angle the angle of x labels
-#' @param hjust hjust of x labels
+#' @param hjust,vjust hjust and vjust of x labels
 #' @param comparisons a list contains comparison pairs
 #' eg. `list(c("H001", "H002"), c("H001", "H004"))`,
 #' or a character vector contains haplotype names for comparison,
@@ -73,7 +74,8 @@ hapVsPheno <- function(hap,
                        symnum.args = list(),
                        mergeFigs = FALSE,
                        angle = angle,
-                       hjust = 0.5,
+                       hjust = hjust,
+                       vjust = vjust,
                        minAcc = 5,
                        outlier.rm = TRUE,
                        ...)
@@ -102,10 +104,9 @@ hapVsPheno <- function(hap,
     phenop <- na.omit(phenop)
     if (nrow(phenop) == 0)
         stop(
-            "After removed NAs, accession with certain Hap have no
-    observations of ",
+            "After removed NAs, observations for '",
             phenoName,
-            ". Please check your pheno file."
+            "' is not enough."
         )
 
     hps <- table(phenop$Hap)
@@ -246,6 +247,21 @@ hapVsPheno <- function(hap,
 
     if(missing(angle))
         angle <- ifelse(length(hps) >= 6, 45, 0)
+    if(angle > 0 & angle < 90)
+    {
+        if(missing(hjust)) hjust = 1
+        if(missing(vjust)) vjust = 1
+    }
+    if(angle < 0 & angle > -90)
+    {
+        if(missing(hjust)) hjust = 0.1
+        if(missing(vjust)) vjust = 0.1
+    }
+    if(angle == 0)
+    {
+        if(missing(hjust)) hjust = 0.5
+        if(missing(vjust)) vjust = 0.5
+    }
     fig2 <- fig2 +  # do not modify here
         #    stat_compare_means(label.y = max(data[,2]))+
         #    no comparision by remove this line (Kruskal-Wallis test)
@@ -254,7 +270,8 @@ hapVsPheno <- function(hap,
             plot.subtitle = ggplot2::element_text(hjust = 0.5),
             axis.text.x = ggplot2::element_text(
                 angle = angle,
-                hjust = hjust
+                hjust = hjust,
+                vjust = vjust
             ),
             plot.title = ggplot2::element_text(hjust = 0.5)
         ) +

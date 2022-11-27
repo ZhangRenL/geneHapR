@@ -6,7 +6,8 @@
 #'            mode = c("POS", "type", "both"),
 #'            Chr = Chr, start = start, end = end,
 #'            type = c("CDS", "exon", "gene", "genome", "custom"),
-#'            cusTyp = c("CDS", "five_prime_UTR", "three_prime_UTR"))
+#'            cusTyp = c("CDS", "five_prime_UTR", "three_prime_UTR"),
+#'            geneID = geneID)
 #' @param vcf object of vcfR class, VCF file imported by `import_vcf()`
 #' @param gff object of GRanges class, genome annotations imported by
 #' `import_gff()`
@@ -19,6 +20,7 @@
 #' if `type` was set to "custom", then `custom_type` is needed.
 #' @param cusTyp character vector, custom filter type,
 #' needed if `type` set to "custom"
+#' @param geneID gene ID
 #' @importFrom IRanges start
 #' @importFrom IRanges `%over%`
 #' @examples
@@ -47,7 +49,8 @@ filter_vcf <- function(vcf,
                        start = start,
                        end = end,
                        type = c("CDS", "exon", "gene", "genome", "custom"),
-                       cusTyp = c("CDS", "five_prime_UTR", "three_prime_UTR")) {
+                       cusTyp = c("CDS", "five_prime_UTR", "three_prime_UTR"),
+                       geneID = geneID) {
     if (mode == "POS" | mode == "both") {
         if (missing(Chr))
             stop("Chr is missing!")
@@ -86,8 +89,15 @@ filter_vcf <- function(vcf,
         if ("genome" %in% type) {
             gff <- gff
         } else {
-            gff <- gff[gff$type %in% type]
+            if(!missing(geneID)){
+                ids <- tolower(gff$ID)
+                nms <- tolower(gff$Name)
+                id <- tolower(geneID)
+                p <- (stringr:str_detect(ids,id)) | (stringr:str_detect(nms,id))
+            }
+            gff <- gff[(gff$type %in% type) & p]
         }
+
 
         POS <- vcfR::getPOS(vcf)
         POS <- as.numeric(POS)
@@ -122,7 +132,8 @@ filter_vcf <- function(vcf,
 #' filter_plink.pedmap(x,
 #'                     mode = c("POS", "type", "both"),
 #'                     Chr = Chr, start = start, end = end,
-#'                     gff = gff, type = type, cusTyp = cusTyp)
+#'                     gff = gff, type = type, cusTyp = cusTyp,
+#'                     ,geneID = geneID)
 #' @param x a list stored the p.link information
 #' @param mode filtration mode, one of c("POS", "type", "both")
 #' @param Chr the chromosome name, need if mode set as POS or both
@@ -130,13 +141,14 @@ filter_vcf <- function(vcf,
 #' @param gff the imported gff object
 #' @param type should be in `unique(gff$type)`, usually as "CDS", "genome".
 #' @param cusTyp if `type` set as custom, then `cusTyp` is needed
+#' @param geneID geneID
 #' @inherit plink.pedmap2hap examples
 #' @return list, similar with `x`, but filtered
 #' @export
 filter_plink.pedmap <- function(x,
                                 mode = c("POS", "type", "both"),
                                 Chr = Chr, start = start, end = end,
-                                gff = gff, type = type, cusTyp = cusTyp){
+                                gff = gff, type = type, cusTyp = cusTyp,geneID = geneID){
     on.exit(gc(verbose = FALSE))
     if(missing(Chr)) stop("Chr is missing")
     map <- x$map
@@ -163,7 +175,13 @@ filter_plink.pedmap <- function(x,
         if ("genome" %in% type) {
             gff <- gff
         } else {
-            gff <- gff[gff$type %in% type]
+            if(!missing(geneID)){
+                ids <- tolower(gff$ID)
+                nms <- tolower(gff$Name)
+                id <- tolower(geneID)
+                p <- (stringr:str_detect(ids,id)) | (stringr:str_detect(nms,id))
+            }
+            gff <- gff[(gff$type %in% type) & p]
         }
         POSRange <- POS2GRanges(Chr = "scaffold_1", POS = map[, 4])
         probe <- probe & POSRange %over% gff

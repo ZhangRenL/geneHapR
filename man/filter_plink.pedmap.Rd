@@ -7,7 +7,8 @@
 filter_plink.pedmap(x,
                     mode = c("POS", "type", "both"),
                     Chr = Chr, start = start, end = end,
-                    gff = gff, type = type, cusTyp = cusTyp)
+                    gff = gff, type = type, cusTyp = cusTyp,
+                    ,geneID = geneID)
 }
 \arguments{
 \item{x}{a list stored the p.link information}
@@ -23,6 +24,8 @@ filter_plink.pedmap(x,
 \item{type}{should be in \code{unique(gff$type)}, usually as "CDS", "genome".}
 
 \item{cusTyp}{if \code{type} set as custom, then \code{cusTyp} is needed}
+
+\item{geneID}{geneID}
 }
 \value{
 list, similar with \code{x}, but filtered

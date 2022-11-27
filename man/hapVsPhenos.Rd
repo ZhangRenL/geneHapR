@@ -64,7 +64,7 @@ plot or not. Default as \code{FALSE}}
 not be compared with others or be ploted. Should not less than 3 due to the
 t-test will meaninglessly. default as 5}
     \item{\code{angle}}{the angle of x labels}
-    \item{\code{hjust}}{hjust of x labels}
+    \item{\code{hjust,vjust}}{hjust and vjust of x labels}
     \item{\code{comparisons}}{a list contains comparison pairs
 eg. \code{list(c("H001", "H002"), c("H001", "H004"))},
 or a character vector contains haplotype names for comparison,

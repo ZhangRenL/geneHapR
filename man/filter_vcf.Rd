@@ -8,7 +8,8 @@ filter_vcf(vcf, gff = gff,
            mode = c("POS", "type", "both"),
            Chr = Chr, start = start, end = end,
            type = c("CDS", "exon", "gene", "genome", "custom"),
-           cusTyp = c("CDS", "five_prime_UTR", "three_prime_UTR"))
+           cusTyp = c("CDS", "five_prime_UTR", "three_prime_UTR"),
+           geneID = geneID)
 }
 \arguments{
 \item{vcf}{object of vcfR class, VCF file imported by \code{import_vcf()}}
@@ -30,6 +31,8 @@ if \code{type} was set to "custom", then \code{custom_type} is needed.}
 
 \item{cusTyp}{character vector, custom filter type,
 needed if \code{type} set to "custom"}
+
+\item{geneID}{gene ID}
 }
 \value{
 vcfR

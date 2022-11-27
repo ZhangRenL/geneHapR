@@ -496,7 +496,10 @@ displayVarOnGeneModel <- function(gff,
 
     if(missing(geneElement)){
         allType <- unique(gff$type) %>% as.vector()
-        p <- stringr::str_detect(tolower(allType), pattern = c("cds", "utr"))
+        p1 <- stringr::str_detect(tolower(allType), pattern = "promoter")
+        p2 <- stringr::str_detect(tolower(allType), pattern = "utr")
+        p3 <- stringr::str_detect(tolower(allType), pattern = "cds")
+        p <- p1 | p2 | p3
         geneElement <- allType[p]
     }
     SNP.gr <- GenomicRanges::GRanges(
@@ -518,7 +521,7 @@ displayVarOnGeneModel <- function(gff,
 
     over <- gff[gff %over% gene]
     over$height[over$type == "CDS"] <- CDS_h
-    over$height[over$type != "CDS"] <- fiveUTR_h
+    over$height[over$type != "CDS"] <- CDS_h * 0.5
     over$height[over$type == "three_prime_UTR"] <- threeUTR_h
     over$height[over$type == "five_prime_UTR"] <- fiveUTR_h
 
