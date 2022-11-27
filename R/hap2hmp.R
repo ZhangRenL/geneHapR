@@ -44,7 +44,7 @@ hap2hmp <- function(hap){
 #' @name hap2hmp
 #' @export
 hmp2hap <- function(hmp, ...){
-    if(ncol(hmp) < 10) stop("hapmap file ERROR")
+    if(ncol(hmp) < 10) stop("hapmap file column numer should more than 10")
     data <- hmp[, c(3, 4, 2, 2, 2, 11 : ncol(hmp))]
     data[, 2] <- as.numeric(data[, 2])
     table2hap(data)
