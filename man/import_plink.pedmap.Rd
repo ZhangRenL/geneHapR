@@ -40,7 +40,7 @@ used for import small p.link file stored in map and ped format
                                  Chr = "chr08", start = 25948004,
                                  end = 25949944)
    hapResult <- plink.pedmap2hap(p.link, hapPrefix = "H",
-                                 hyb_remove = TRUE,
-                                 na.drop = TRUE)
+                                 hetero_remove = TRUE,
+                                 na_drop = TRUE)
 }
 }

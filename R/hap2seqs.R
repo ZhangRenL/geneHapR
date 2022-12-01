@@ -4,22 +4,22 @@
 #' @usage
 #' seqs2hap(seqs,
 #'          Ref = names(seqs)[1],
-#'          hyb_remove = TRUE, na.drop = TRUE,
+#'          hetero_remove = TRUE, na_drop = TRUE,
 #'          maxGapsPerSeq = 0.25,
 #'          hapPrefix = "H", ...)
 #' @examples
 #' \donttest{
 #' data("geneHapR_test")
-#' seqs <- allignSeqs(seqs)
+#' seqs
 #' seqs <- trimSeqs(seqs,
 #'          minFlankFraction = 0.1)
+#' seqs
 #' hapResult <- seqs2hap(seqs,
 #'                       Ref = names(seqs)[1],
-#'                       hyb_remove = TRUE, na.drop = TRUE,
+#'                       hetero_remove = TRUE, na_drop = TRUE,
 #'                       maxGapsPerSeq = 0.25,
 #'                       hapPrefix = "H")
 #' }
-#' @importFrom muscle muscle
 #' @importFrom Biostrings letterFrequency width
 #' @importFrom methods as
 #' @param seqs object of DNAStringSet or DNAMultipleAlignment class
@@ -29,17 +29,18 @@
 #' @param maxGapsPerSeq value in `[0, 1]` that indicates the maximum
 #' fraction of gaps allowed in each seq after alignment (default as 0.25).
 #' Seqs with gap percent exceed that will be dropped
-#' @param hyb_remove whether remove accessions contains hybrid site or not.
+#' @param hetero_remove whether remove accessions contains hybrid site or not.
 #' Default as `TRUE`
-#' @param na.drop whether drop sequeces contain "N"
+#' @param na_drop whether drop sequeces contain "N"
 #' Default as `TRUE`.
+#' @param ... Parameters not used.
 #' @inherit hap_summary examples
 #' @return
 #' object of hapResult class
 #' @export
 seqs2hap <- function(seqs,
                      Ref = names(seqs)[1],
-                     hyb_remove = TRUE, na.drop = TRUE,
+                     hetero_remove = TRUE, na_drop = TRUE,
                      maxGapsPerSeq = 0.25,
                      hapPrefix = "H",
                      ...) {
@@ -70,13 +71,13 @@ seqs2hap <- function(seqs,
     hap <- hapData$hap
 
     # Drop hyb or N
-    if (hyb_remove) {
+    if (hetero_remove) {
         hap[!hap %in% allS_new$homo] <- NA
         hap <- na.omit(hap)
-        options <- c(options, hyb_remove = "YES")
+        options <- c(options, hetero_remove = "YES")
     } else
-        options <- c(options, hyb_remove = "NO")
-    if (na.drop) {
+        options <- c(options, hetero_remove = "NO")
+    if (na_drop) {
         hap[hap == "N"] <- NA
         hap <- na.omit(hap)
         options <- c(options, NA_remove = "YES")
@@ -118,16 +119,16 @@ seqs2hap <- function(seqs,
 }
 
 
-#' @name seqs2hap
-#' @description allign imported sequences
-#' @usage allignSeqs(seqs, ...)
-#' @param ... parameters will pass to `muscle::muscle()`
-#' @seealso
-#' \code{\link[muscle:muscle]{muscle::muscle()}}
-#' @export
-allignSeqs <- function(seqs, ...) {
-    muscle::muscle(seqs, ...)
-}
+#' #' @name seqs2hap
+#' #' @description allign imported sequences
+#' #' @usage allignSeqs(seqs, ...)
+#' #' @param ... parameters will pass to `muscle::muscle()`
+#' #' @seealso
+#' #' \code{\link[muscle:muscle]{muscle::muscle()}}
+#' #' @export
+#' allignSeqs <- function(seqs, ...) {
+#'     muscle::muscle(seqs, ...)
+#' }
 
 
 

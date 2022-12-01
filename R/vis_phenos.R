@@ -1,20 +1,5 @@
 #' @name hapVsPheno
 #' @title hapVsPheno
-#' @usage
-#' hapVsPheno(hap,
-#'            pheno,
-#'            phenoName, hapPrefix = "H",
-#'            title = "",
-#'            comparisons = comparisons,
-#'            method = "t.test",
-#'            method.args = list(),
-#'            symnum.args = list(),
-#'            mergeFigs = FALSE,
-#'            angle = angle,
-#'            hjust = hjust,
-#'            vjust = vjust,
-#'            minAcc = 5, outlier.rm = TRUE,
-#'            ...)
 #' @examples
 #'
 #' \donttest{
@@ -324,20 +309,6 @@ hapVsPheno <- function(hap,
 
 #' @name hapVsPhenos
 #' @title hapVsPhenos
-#' @usage
-#' hapVsPhenos(hap, pheno,
-#'          outPutSingleFile = TRUE,
-#'          hapPrefix = "H",
-#'          title = "Seita.0G000000",
-#'          width = 12,
-#'          height = 8,
-#'          res = 300,
-#'          compression = "lzw",
-#'          filename.prefix = filename.prefix,
-#'          filename.surfix = "pdf",
-#'          filename.sep = "_",
-#'          outlier.rm = TRUE,
-#'          ...)
 #' @param outPutSingleFile `TRUE` or `FALSE` indicate whether put all figs
 #' into to each pages of single file or generate multi-files.
 #' Only worked while file type is pdf

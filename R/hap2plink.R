@@ -3,13 +3,13 @@
 #' @description convert p.link format data into hapResult
 #' @param p.link list contains p.link information
 #' @param hapPrefix prefix of haplotype names
-#' @param hyb_remove whether remove accessions contains hyb-sites
-#' @param na.drop whether drop accessions contains missing data ("N", NA)
+#' @param hetero_remove whether remove accessions contains hyb-sites
+#' @param na_drop whether drop accessions contains missing data ("N", NA)
 #' @usage
 #'   plink.pedmap2hap(p.link,
 #'                    hapPrefix = "H",
-#'                    hyb_remove = TRUE,
-#'                    na.drop = TRUE)
+#'                    hetero_remove = TRUE,
+#'                    na_drop = TRUE)
 #' @examples
 #' \donttest{
 #'    pedfile <- system.file("extdata",
@@ -24,15 +24,15 @@
 #'                                  Chr = "chr08", start = 25948004,
 #'                                  end = 25949944)
 #'    hapResult <- plink.pedmap2hap(p.link, hapPrefix = "H",
-#'                                  hyb_remove = TRUE,
-#'                                  na.drop = TRUE)
+#'                                  hetero_remove = TRUE,
+#'                                  na_drop = TRUE)
 #' }
 #' @return object of hapSummary class
 #' @export
 plink.pedmap2hap <- function(p.link,
                              hapPrefix = "H",
-                             hyb_remove = TRUE,
-                             na.drop = TRUE) {
+                             hetero_remove = TRUE,
+                             na_drop = TRUE) {
     map <- p.link$map
 
     # set options
@@ -49,14 +49,14 @@ plink.pedmap2hap <- function(p.link,
     ALLELE <- hapData$alleles
 
     # Drop hyb or N
-    if (hyb_remove) {
+    if (hetero_remove) {
         hap[grepl("|", hap, fixed = T)] <- NA
         hap <- na.omit(hap)
-        options <- c(options, hyb_remove = "YES")
+        options <- c(options, hetero_remove = "YES")
     } else
-        options <- c(options, hyb_remove = "NO")
+        options <- c(options, hetero_remove = "NO")
 
-    if (na.drop) {
+    if (na_drop) {
         hap[hap == "N"] <- NA
         hap <- na.omit(hap)
         options <- c(options, NA_remove = "YES")

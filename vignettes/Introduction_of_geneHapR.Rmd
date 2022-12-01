@@ -5,26 +5,112 @@ date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Introduction of 'geneHapR'}
-  %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  markdown: 
+    wrap: sentence
 ---
 
 `geneHapR` is designed for gene haplotype statistics, phenotype association and visualization.
 
-## Preliminaries
+### 1. DATA
+
+#### 1.1 Input data
+
+Dataset required for haplotype statistic, visualization and phenotype association and the import function were listed in Table 1.
+
+The genotype dataset is essential for haplotype identification and could be supplied in VCF, FASTA, P.link, HAPMAP and table format.
+The annotation were used for variants filtration and prepare schematic diagram.
+
+Detailed information of individuals include phenotype data, group/category information and geo-coordinates.
+The phenotype data was used for comparison between different haplotypes.
+The group /category information was used for pie plot with haplotype network (eg. the second column in Table 4).
+And the geo-coordinates only used for demonstration of geographical distribution and include two columns: longitude and latitude (eg. the third and fourth column in Table 4).
+
+**Table 1: The required format of dataset and import functions for geneHapR**
+
+| Dataset                                 | File format                                                                                                                                                       | Import function                                                                                          |
+|------------------|---------------------------|---------------------------|
+| **Genotype**<br>(necessary)             | VCF: \*.vcf, \*.vcf.gz;<br>Sequences: \*.fa, *.fasta;*<br>p.link: (\*.ped & \*.map); <br>hmp: \*.hmp; <br>table <font color=red>(eg. Table2)</font>: .txt, \*.csv | *import_vcf();*<br>import_seqs();<br>import_plink.pedmap();<br>import_hmp();<br>read.table(), read.csv() |
+| **Annotation**<br>(optional)            | GFF: *.gff,* .gff3, <br>BED4/BED6 <font color=red>(eg. Table3)</font>: \*.bed                                                                                     | *import_gff()*<br>import_bed()                                                                           |
+| **Accession information**<br>(optional) | table <font color=red>(eg. Table4)</font>: *.txt,* .csv                                                                                                           | *import_AccINFO()*                                                                                       |
+
+Table 2 is an example of genotypic data in table format: The first five column are fixed as chromosome name (CHROM), position (POS), reference nucleotide (REF), alter nucleotide (ALT) and additional information (INFO).
+Accession genotype should be in followed columns.
+"-" will be treated as Indel.
+"." and "N" will be treated as missing data.
+Field in additional information column should be in format "tag=value", and separated by semicolon ";".
+Heterozygote should be looks like "A/G" or "A\|G".
+
+**Table 2: Table format of the genotypic dataset**
+
+| CHR  |   POS   | REF | Alt |       INFO       | C001 | C002 | C003 | ... |
+|:----:|:-------:|:---:|:---:|:----------------:|:----:|:----:|:----:|-----|
+| Chr7 | 9154754 |  T  |  C  | CDS=G\>A;AA=V\>G |  T   |  T   |  T   | ... |
+| Chr7 | 9154664 |  G  |  T  |     CDS=A\>C     |  G   |  G   |  G   | ... |
+| Chr7 | 9154489 |  C  |  G  |     CDS=C\>G     |  C   |  C   |  C   | ... |
+| Chr7 | 9154469 |  G  |  A  |     CDS=T\>C     |  G   |  G   |  G   | ... |
+|  ︙  |   ︙    | ︙  | ︙  |        ︙        |  ︙  |  ︙  |  ︙  |     |
+
+Table 3 is an example of annotation file in BED6 format.
+As described at [UCSC](http://genome.ucsc.edu/FAQ/FAQformat.html#format1), the BED6 file contains 6 columns: 1) chromosome name, 2) chromosome start, 3) chromosome end, 4) name, 5) score and 6) strand.
+The BED4 contains the first 4 column of BED6.
+
+***BE NOTE THAT***: the fourth column was used to define the name and types, which were separated by a space.
+For example, the first line of Table 3 indicates that: the genomic interval from 9154280 (exclude) to 9154821 (include) on Chr7 chromosome is CDS of "LOC_Os07g15770.1" and the strand is "negative".
+
+**Table 3: An annotation example in BED6 format**
+
+| \# CHROM |  START  |   END   |                   GENEID TYPE                   |  .  | STRAND |
+|:------:|:------:|:------:|:-----------------------------:|:------:|:------:|
+|   Chr7   | 9154380 | 9154821 | LOC_Os07g15770.1<font color=red>**·**</font>CDS |  .  |   \-   |
+|   Chr7   | 9152403 | 9152730 | LOC_Os07g15770.1<font color=red>**·**</font>CDS |  .  |   \-   |
+
+<font size=2>Note: the red dot in fourth column indicate a space.</font>
+
+Table 4 is an example of detailed information of individuals, includes group/category, geo-coordinates and phenotype data.
+First column are names of accessions/individuals, phenotypic information are listed in followed columns.
+
+**Table 4: An example of accession detailed information dataset**
+
+| id   | Subpopulation | Longitude | Latitude | Grain<br>length | Grain<br>width | Grain<br>thickness |
+|:----------|-----------|:----------|:----------|:----------|:----------|:----------|
+| C001 | Indica        | 121       | 14.6     | 8.5             | 2.9            | 1.96               |
+| C002 | Intermediate  | 121       | 14.6     | 10.2            | 2.63           | 1.96               |
+| C003 | Japonica      | 51.3      | 35.45    | 8.75            | 3.32           | 2.12               |
+| C004 | Japonica      | 116.28    | 39.54    | 7.83            | 3.22           | 2.08               |
+| C005 | Japonica      | 121       | 14.6     | 10.47           | 3              | 1.95               |
+| C006 | Indica        | 116.28    | 39.54    | 8.1             | 2.47           | 1.69               |
+
+#### 1.2 Output data
+
+The main results are `hapResult` and `hapSummary` class in R, consist of a matrix which could be divided into three parts as shown in Fig.1, and some additional attributes.
+
+```{r Out Put Format1, echo=FALSE, fig.align='center', fig.cap="Cartoon representation of hapResult and hapSummary contents", fig.height=4, fig.width=6}
+plot(c(0,5),c(0,5), axes = FALSE, type = "n", xlab="", ylab ="", frame.plot = F)
+rect(xleft=0, ybottom=0, xright=0.5, ytop=4.5)
+rect(xleft=0.5, ybottom=3.5, xright=4, ytop=4.5)
+rect(xleft=0.5, ybottom=0, xright=4, ytop=3.5)
+rect(xleft=4, ybottom=0, xright=5, ytop=3.5)
+text(0.25, 4.75, "Part I", cex=1)
+text(2.25, 4.75, "Part II", cex=1)
+text(4.5, 4.75, "Part III", cex=1)
+text(0.25, 3, "Lead column", cex=1, srt = 270)
+text(2.25, 4.15, "Sites information", cex=1)
+text(2.25, 3.85, "(CHROM, POS, INFO, ALLELE)", cex=0.8)
+text(2.25, 2, "Genotypes", cex=1)
+text(4.5, 2, "Accessions (freq)", cex=1, srt= 270)
+```
 
 
-Input files frequently present challenges to analysis.
-A common problem I encounter is that chromosome names and gene IDs are not standardized among **VCF**, **FASTA** and **GFF** files.
-That means additional work for users.
-I suggest reading these files into R, synchronizing the names and then proceeding with downstream analyses.
+Part I consists of only one column.
+And the first four lines were fixed as CHROM (chromosome name), POS (position), INFO (additional information) and ALLELE (allele).
+And followed lines are names of each haplotype.
+Part II consists of at least one column, contains site information (first four lines) and genotypes (followed lines).
+The part III of `hapResult` consists of one column named as Accession, while `hapSummary` consists of two columns named as Accession and freq (frequency of each haplotype).
 
-Large **VCF** or **GFF** file is another important consideration when using `geneHapR.` 
-Usually, the annotation file (GFF) and variants call format (VCF) files are usually at chromosome or genome level. 
-Thus those files may be huge. 
-However, a gene size usually range from hundreds to thousands bp.
-It means the subset for a gene haplotype analysis only occupied a very small portion in the huge file. Import this tiny files rather than huge one will save much of time on personal computer. It's convienient to extract a gene/range from origin files with software in linux. In case the user known a little or nothing about linux, I have developed a function names as `filterLargeVCF()` (see **VCF filtration**) for this purpose.
-
+The differences between `hapResult` and `hapSummary` is that each line of `hapResult` indicate an accession/individual, and each line in `hapSummary` indicate a haplotype.
 
 ```{r include=FALSE}
 NOT_CRAN <- identical(tolower(Sys.getenv("NOT_CRAN")), "true")
@@ -33,15 +119,13 @@ knitr::opts_chunk$set(purl = NOT_CRAN)
 
 ## Installation
 
-`geneHapR` is schemed to submit to CRAN. If accepted, this package could be installed with `install.packages("geneHapR")`.
-`geneHapR` has not published yet, if you use `geneHapR` in your study, please contact [Zhang RenLiang (Maintainer) (email: zhang_renliang@163.com)](mailto: zhang_renliang@163.com) or [Jia GuanQing (jiaguanqing@caas.cn)](mailto: jiaguanqing@caas.cn)
+`geneHapR` is schemed to submit to CRAN.
+If accepted, this package could be installed with `install.packages("geneHapR")`.
+`geneHapR` has not published yet, if you use `geneHapR` in your study, please contact [Zhang RenLiang (Maintainer) (email: zhang_renliang\@163.com)](mailto:%20zhang_renliang@163.com) or [Jia GuanQing (jiaguanqing\@caas.cn)](mailto:%20jiaguanqing@caas.cn)
 
- 
 ```{r eval=FALSE}
 install.packages("geneHapR")
 ```
-
-
 
 ## Data input
 
@@ -56,9 +140,13 @@ library(geneHapR)
 data("geneHapR_test")
 ```
 
-There are two options to conduct a gene haplotype analysis starts from a VCF file or DNA sequences file. Thus a **VCF** file or **DNA sequences** file is necessary. However, the *GFF*, *phenos* and *accession groups* are strongly recommend for visualization and phenotype associations.
+There are two options to conduct a gene haplotype analysis starts from a VCF file or DNA sequences file.
+Thus a **VCF** file or **DNA sequences** file is necessary.
+However, the *GFF*, *phenos* and *accession groups* are strongly recommend for visualization and phenotype associations.
 
-The import functions takes file path as input. `import_vcf()` could import VCF file with surfix of ".vcf" and ".vcf.gz". `import_gff()` import file format default as "GFF" and `import_seqs()` file format default as "fasta".
+The import functions takes file path as input.
+`import_vcf()` could import VCF file with surfix of ".vcf" and ".vcf.gz".
+`import_gff()` import file format default as "GFF" and `import_seqs()` file format default as "fasta".
 
 ### Import VCF
 
@@ -120,12 +208,13 @@ AccINFO <- import_AccINFO("accession_group_file_path.txt")
 head(AccINFO)
 ```
 
-Be aware that the phenotype and accession group are effectively tables. There are more than one ways to import a table format file with `R`. 
+Be aware that the phenotype and accession group are effectively tables.
+There are more than one ways to import a table format file with `R`.
 
-Be **Note** that: 
-a. the accession/individual names located in first column; 
-b. the first row contents phenotype/accession_group names; 
-c. `NA` is allowed, it's not a wise option to replace `NA` by `0`.
+Be **Note** that: a.
+the accession/individual names located in first column; b.
+the first row contents phenotype/accession_group names; c.
+`NA` is allowed, it's not a wise option to replace `NA` by `0`.
 
 eg.
 
@@ -143,7 +232,10 @@ There is a little work need to be done before haplotype calculations: (1) VCF fi
 
 ### VCF filtration
 
-There are three modes to filter a `vcfR` object after import VCF into 'R': a. by position; b. by annotation; c. by both of them.
+There are three modes to filter a `vcfR` object after import VCF into 'R': a.
+by position; b.
+by annotation; c.
+by both of them.
 
 ```{r VCF filtration, eval=FALSE, include=TRUE}
 # filter VCF by position
@@ -164,8 +256,8 @@ vcf_f3 <- filter_vcf(vcf, mode = "both",
                      type = "CDS")
 ```
 
-It's a time consuming work to import and manipulate a very large file with 'R' on personal computer. 
-It'll be more efficiency to extract the target ranges from origin VCF with `filterLargeVCF()` before import. 
+It's a time consuming work to import and manipulate a very large file with 'R' on personal computer.
+It'll be more efficiency to extract the target ranges from origin VCF with `filterLargeVCF()` before import.
 If your VCF file is just a few 'MB', this step was not necessary at all.
 
 **Note:** if extract more than one ranges, length of output file names (`VCFout`) must be equal with `Chr` and `POS`.
@@ -203,7 +295,9 @@ p.link <- filter_plink.pedmap(p.link, mode = "POS",
 
 ### DNA sequences manipulation
 
-The origin DNA sequences must be aligned and trimmed due to haplotype calculation need all sequences have same length. Those operations could be done with `geneHapR`. I still suggest users align and trim DNA sequences with **Mega** software and then save the result as *FASTA* format before import them into 'R'.
+The origin DNA sequences must be aligned and trimmed due to haplotype calculation need all sequences have same length.
+Those operations could be done with `geneHapR`.
+I still suggest users align and trim DNA sequences with **Mega** software and then save the result as *FASTA* format before import them into 'R'.
 
 ```{r DNA alignment and trim, eval=FALSE, message=FALSE, warning=FALSE, include=TRUE}
 # sequences alignment
@@ -225,23 +319,22 @@ hap <- filter_hap(hapSummary,
                   freq.min = 5)
 ```
 
-
 ## Haplotype calculation
 
-As mentioned before, haplotype could be calculated from VCF or sequences with `vcf2hap()` or `seqs2hap()`. The genotype of most sites should be known and homozygous, still, a few site are unknown or heterozygous due to chromosome variant or error cased by sequencing or SNP calling or gaps or other reasons. It's a hard decision whether to drop accessions/individuals contains heterozygous or unknown sites for every haplotype analysis. Hence, I leave the choice to users.
-
-
+As mentioned before, haplotype could be calculated from VCF or sequences with `vcf2hap()` or `seqs2hap()`.
+The genotype of most sites should be known and homozygous, still, a few site are unknown or heterozygous due to chromosome variant or error cased by sequencing or SNP calling or gaps or other reasons.
+It's a hard decision whether to drop accessions/individuals contains heterozygous or unknown sites for every haplotype analysis.
+Hence, I leave the choice to users.
 
 Calculate haplotype result from VCF.
+
 ```{r haplotype calculation from vcf, eval=NOT_CRAN, include=TRUE, message=FALSE, warning=FALSE}
 hapResult <- vcf2hap(vcf,
                      hapPrefix = "H",
-                     hyb_remove = TRUE,
-                     na.drop = TRUE)
+                     hetero_remove = TRUE,
+                     na_drop = TRUE)
 hapResult
 ```
-
-
 
 Calculate haplotype result from aligned DNA sequences.
 
@@ -249,23 +342,29 @@ Calculate haplotype result from aligned DNA sequences.
 hapResult <- seqs2hap(seqs,
                       Ref = names(seqs)[1],
                       hapPrefix = "H",
-                      hyb_remove = TRUE,
-                      na.drop = TRUE,
+                      hetero_remove = TRUE,
+                      na_drop = TRUE,
                       maxGapsPerSeq = 0.25)
 ```
 
 ## Adjustment of `hapResult`
 
 Before visualization, there were a few details need to be adjusted.
-eg. add annotations and adjust position of "ATG"
+eg.
+add annotations and adjust position of "ATG"
 
 ### Add annotations to `hapResult`
 
-While `hapResult` was calculated from `vcfR` object, the **INFO** was taken from `@fix` field. The *VCF INFO* may missing some annotations. or contents format was inappropriate to display. Further more, **INFO** contents nothing if `hapResult` was generated from sequences. Here, we can introduce/replace the origin **INFO** by `addINFO()`.
+While `hapResult` was calculated from `vcfR` object, the **INFO** was taken from `@fix` field.
+The *VCF INFO* may missing some annotations.
+or contents format was inappropriate to display.
+Further more, **INFO** contents nothing if `hapResult` was generated from sequences.
+Here, we can introduce/replace the origin **INFO** by `addINFO()`.
 
 **Note** that: length of `values` must be equal with number of sites.
 
 Let's see how mant sites contains in the `hapResult`.
+
 ```{r check site numbers, eval=NOT_CRAN}
 # Chech number of sites conclude in hapResult
 sites(hapResult)
@@ -318,7 +417,7 @@ Once we have the `hapResult` object, can we summarize and visualize our `hapResu
 ### Summary hapResult
 
 Now, we have the `hapResult` object with INFOs we want display in next step.
-The `hap_summary()` function convert the object of `hapResult` class, which is  a long table format, into a short table belong to `hapSummary` class. 
+The `hap_summary()` function convert the object of `hapResult` class, which is a long table format, into a short table belong to `hapSummary` class.
 In `hapResult` each row represent a accession, while each row represents a hap in `hapSummary`.
 
 ```{r hapSummary, eval=NOT_CRAN, fig.height=4, fig.width=6, message=FALSE, warning=FALSE, paged.print=FALSE}
@@ -366,6 +465,7 @@ plotHapTable(hapSummary,
 ```
 
 Parameter `tag_name` was used to replace the character if `INFO_tag` was too long.
+
 ```{r, eval=NOT_CRAN, fig.height=4, fig.width=6, message=FALSE, warning=FALSE, paged.print=FALSE}
 # add multi annotation
 plotHapTable(hapSummary,
@@ -377,7 +477,6 @@ plotHapTable(hapSummary,
              replaceMultiAllele = TRUE,
              ALLELE.color = "grey90")
 ```
-
 
 ### Display variations on gene model.
 
@@ -418,12 +517,10 @@ plotHapNet(hapNet,
            legend = c(-12.5, 7))        # legend position
 ```
 
-
 ## Geography distribution of main haplotypes
 
-Now we get the haplotype result. 
+Now we get the haplotype result.
 There is a new question emerged: how did those main haplotypes distributed, are they related to geography?
-
 
 ```{r geo distribution, eval=NOT_CRAN, fig.height=4, fig.width=6, message=FALSE, warning=FALSE, paged.print=FALSE}
 # library(mapdata)
@@ -435,7 +532,6 @@ hapDistribution(hapResult,
                 hapNames = c("H001", "H002", "H003"), 
                 legend = TRUE)
 ```
-
 
 ### Phenotype association analysis
 
@@ -456,8 +552,6 @@ results <-hapVsPheno(hapResult,
                      minAcc = 3)
 plot(results$figs)
 ```
-
-
 
 **An example for separated plot:**
 
@@ -491,13 +585,3 @@ hapVsPhenos(hapResult,
             res = 300)
 ```
 
-
-### Site effect evalution
-
-Figure out the responsible variants with high-reliability could provide valuable clue for gene functional study.
-
-```{r site effect evaluation, eval=NOT_CRAN, fig.height=4, fig.width=6, message=FALSE, warning=FALSE, paged.print=FALSE}
-EFF <- siteEFF(hap = hapResult, pheno = pheno, quality = FALSE, p.adj = "BH")
-plotEFF(siteEFF = EFF, y = "effect", pch = c(20, 22))
-plotEFF(siteEFF = EFF, y = "pvalue", pch = c(20, 22))
-```

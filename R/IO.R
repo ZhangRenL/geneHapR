@@ -158,7 +158,6 @@ import_gff <- function(gffFile, format = "gff") {
 #' @param quite whether show message
 #' @importFrom rtracklayer import.bed
 #' @importFrom stringr str_count
-#' @importFrom tidyr separate
 #' @usage
 #' import_bed(con, quite = FALSE)
 #' @examples
@@ -187,12 +186,10 @@ import_bed <- function(con, quite = FALSE){
         cat("  in BED4/BED6 format for haplotype statistics")
     }
 
-    name <- tidyr::separate(tibble::tibble(bed$name),
-                            col = 1,
-                            into = c("name", "type"),
-                            sep = " ")
-    bed$Parent <- bed$Name <- name$name
-    bed$type <- name$type
+    name <- sapply(bed$name, function(x) strsplit(x, " ")[[1]][1]) %>% unlist()
+	type <- sapply(bed$name, function(x) strsplit(x, " ")[[1]][2]) %>% unlist()
+    bed$Parent <- bed$Name <- name
+    bed$type <- type
     return(bed)
 }
 
@@ -378,7 +375,15 @@ write.hap <- function(x, file = file, sep = "\t") {
 }
 
 
-#' @importFrom magrittr `%>%`
+#' @importFrom tidyr `%>%`
 #' @importFrom IRanges `%over%`
-`%>%` <- magrittr::`%>%`
+#' @title pipe operater
+#' @name pipes
+#' @examples
+#' c(1,2,5,1,2,4,1,1,3) %>% unique()
+#'
+#' gff %over% gff[3]
+#' @export
+`%>%` <- tidyr::`%>%`
+#' @export
 `%over%` <- IRanges::`%over%`
