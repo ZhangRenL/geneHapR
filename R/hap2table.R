@@ -2,26 +2,26 @@
 #' @title table2hap
 #' @description convert variants stored in table format into hapResult
 #' @param x a data.frame contains variants information.
-#' The first four column are fix as Chrome name, position, reference nuclieotide
-#' and alter nuclieotide. Accession genotype should be in followed columns.
+#' The first file column are fix as Chrome name, position, reference nuclieotide,
+#' alter nuclieotide and INFO. Accession genotype should be in followed columns.
 #' "-" will be treated as Indel. "." and "N" will be treated as missing data.
 #' Heterozygotes should be "A/T", "AAA/A"
 #' @param hapPrefix prefix of haplotype names
-#' @param hyb_remove whether remove accessions contains hyb-sites, Character not A T C G
-#' @param na.drop whether drop accessions contains missing data ("N", "NA", ".")
+#' @param hetero_remove whether remove accessions contains hyb-sites, Character not A T C G
+#' @param na_drop whether drop accessions contains missing data ("N", "NA", ".")
 #' @examples
 #' \donttest{
 #'    data("geneHapR_test")
 #'    hapResult <- table2hap(gt.geno, hapPrefix = "H",
-#'                           hyb_remove = TRUE,
-#'                           na.drop = TRUE)
+#'                           hetero_remove = TRUE,
+#'                           na_drop = TRUE)
 #' }
 #' @return object of hapSummary class
 #' @export
 table2hap <- function(x,
                       hapPrefix = "H",
-                      hyb_remove = TRUE,
-                      na.drop = TRUE) {
+                      hetero_remove = TRUE,
+                      na_drop = TRUE) {
 
     if(! inherits(x, "data.frame"))
         x <- try(as.data.frame(x))
@@ -47,15 +47,15 @@ table2hap <- function(x,
     allS_new <- unique(ALLELE)
 
     # Drop hyb or N
-    if (hyb_remove) {
+    if (hetero_remove) {
         hap[grepl("|", hap, fixed = T)] <- NA
         hap[grepl("/", hap, fixed = T)] <- NA
         hap <- na.omit(hap)
-        options <- c(options, hyb_remove = "YES")
+        options <- c(options, hetero_remove = "YES")
     } else
-        options <- c(options, hyb_remove = "NO")
+        options <- c(options, hetero_remove = "NO")
 
-    if (na.drop) {
+    if (na_drop) {
         hap[hap == "N"] <- NA
         hap <- na.omit(hap)
         options <- c(options, NA_remove = "YES")

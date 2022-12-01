@@ -74,7 +74,7 @@ hap_summary <- function(hap,
 #'              hapPrefix = "H",
 #'              title = "",
 #'              geneName = geneName,
-#'              INFO_tag = INFO_tag,
+#'              INFO_tag = NULL,
 #'              tag_split = tag_split,
 #'              tag_field = tag_field,
 #'              tag_name = tag_name,
@@ -156,7 +156,7 @@ plotHapTable <- function(hapSummary,
                          hapPrefix = "H",
                          title = "",
                          geneName = geneName,
-                         INFO_tag = INFO_tag,
+                         INFO_tag = NULL,
                          tag_split = tag_split,
                          tag_field = tag_field,
                          tag_name = tag_name,
@@ -257,7 +257,7 @@ plotHapTable <- function(hapSummary,
     }
     hps <- rbind(ALLELE, hps)
     # Add extra information
-    if (! missing(INFO_tag)) {
+    if (! is.null(INFO_tag)) {
         m <- "length of 'tag_split', 'tag_name' and 'tag_field' should be equal with 'INFO_tag'"
         if(! missing(tag_split))
             if(length(INFO_tag) != length(tag_split))

@@ -15,25 +15,25 @@ Authors@R:
            family = "Guanqing",
            email = "jiaguanqing@caas.cn", 
            role = c("aut")))
-Version: 1.1.3
+Version: 1.1.4
 RoxygenNote: 7.2.1
 LazyData: True
 Imports: 
   ape,
   Biostrings,
-  ggpubr, 
+  ggpubr,
+  genetics, 
   GenomicRanges,
-  magrittr,
   maps,
   methods,
-  muscle,
-  mrMLM,
   IRanges,
   pegas,
   reshape2, 
   rlang,
   rtracklayer, 
   trackViewer,
+  shiny,
+  shinyjs,
   stats,
   stringdist,
   stringr, 
@@ -47,6 +47,7 @@ Depends:
 Suggests:
   mapdata,
   maptools,
+  muscle,
   knitr,
   rmarkdown
 License: GPL-3

@@ -3,6 +3,7 @@
 #' for interact with other packages
 #' @param hap object of "hapResult" class
 #' @param hmp object of "data.frame" class in hapmap format
+#' @param ... Parameters not used.
 #' @inheritDotParams table2hap
 #' @return a data.frame in hapmap format.
 #' @usage
@@ -42,10 +43,17 @@ hap2hmp <- function(hap){
 
 
 #' @name hap2hmp
+#' @inheritParams table2hap
 #' @export
-hmp2hap <- function(hmp, ...){
+hmp2hap <- function(hmp,
+                    hapPrefix = "H",
+                    hetero_remove = TRUE,
+                    na_drop = TRUE, ...){
     if(ncol(hmp) < 10) stop("hapmap file column numer should more than 10")
     data <- hmp[, c(3, 4, 2, 2, 2, 11 : ncol(hmp))]
     data[, 2] <- as.numeric(data[, 2])
-    table2hap(data)
+    table2hap(data,
+              hapPrefix = hapPrefix,
+              hetero_remove = hetero_remove,
+              na_drop = na_drop)
 }

@@ -52,17 +52,16 @@ filter_vcf <- function(vcf,
                        cusTyp = c("CDS", "five_prime_UTR", "three_prime_UTR"),
                        geneID = geneID) {
     if (mode == "POS" | mode == "both") {
-        if (missing(Chr))
-            stop("Chr is missing!")
-        if (missing(start))
-            stop("start is missing!")
-        if (missing(end))
-            stop("end is missing!")
-        POS <- vcfR::getPOS(vcf)
-        POS <- as.numeric(POS)
+        POS <- vcfR::getPOS(vcf) %>% as.numeric()
         Chrs <- vcfR::getCHROM(vcf)
-        probe <- POS >= min(start, end) & POS <= max(start, end)
-        probe <- probe & Chrs == Chr
+        probe <- rep(TRUE, length(POS))
+        if(!missing(Chr))
+            probe <- probe & Chrs == Chr
+        if(!missing(start))
+            probe <- probe & (POS >= min(start, end))
+        if(!missing(end))
+            probe <- probe & (POS <= max(start, end))
+
         nr <- sum(probe)
         if(nr > 1){
             vcf@fix <- vcf@fix[probe,]
@@ -93,7 +92,7 @@ filter_vcf <- function(vcf,
                 ids <- tolower(gff$ID)
                 nms <- tolower(gff$Name)
                 id <- tolower(geneID)
-                p <- (stringr:str_detect(ids,id)) | (stringr:str_detect(nms,id))
+                p <- (stringr::str_detect(ids,id)) | (stringr::str_detect(nms,id))
             }
             gff <- gff[(gff$type %in% type) & p]
         }
@@ -125,6 +124,135 @@ filter_vcf <- function(vcf,
 }
 
 
+#' @name filter_table
+#' @title filter variants stored in table
+#' @param x genotype dataset in hapmap format, object of data.frame class
+#' @param gff object of GRanges class, genome annotations imported by
+#' `import_gff()`
+#' @param mode filter mode, one of "POS", "type", "both"
+#' @param Chr chromosome name, needed if mode set to "POS" or "both"
+#' @param start start position, needed if mode set to "POS" or "both"
+#' @param end end position, needed if mode set to "POS" or "both"
+#' @param type filter type, needed if mode set to "type" or "both",
+#' one of "CDS", "exon", "gene", "genome", "custom",
+#' if `type` was set to "custom", then `custom_type` is needed.
+#' @param cusTyp character vector, custom filter type,
+#' needed if `type` set to "custom"
+#' @param geneID gene ID
+#' @export
+filter_table <- function(x,
+                         mode = c("POS", "type", "both"),
+                         Chr = Chr, start = start, end = end,
+                         gff = gff, type = type, cusTyp = cusTyp,
+                         geneID = geneID){
+    probe <- rep(TRUE, nrow(x))
+
+    if(mode %in% c("POS", "both")){
+        if(missing(start) | missing(end)) stop("start or end is missing")
+        POS <- x[,2] %>% as.numeric()
+        if(!missing(Chr))
+            probe <- probe & as.character(x[, 1]) %in% as.character(Chr)
+        if(!missing(start))
+            probe <- probe & x[, 2] > min(start, end)
+        if(!missing(end))
+            probe <- probe & x[, 2] < max(start, end)
+    }
+
+
+    if(mode %in% c("type", "both")){
+        if (missing(gff))
+            stop("gff is missing!")
+        p <- type %in% unique(gff$type)
+        m <- paste(unique(gff$type), collapse = "','")
+        if (!all(p))
+            stop("type should in c('",m,"')")
+        if (type == "custom")
+            type <- cusTyp
+        if ("genome" %in% type) {
+            gff <- gff
+        } else {
+            if(!missing(geneID)){
+                ids <- tolower(gff$ID)
+                nms <- tolower(gff$Name)
+                id <- tolower(geneID)
+                p <- (stringr::str_detect(ids,id)) | (stringr::str_detect(nms,id))
+            }
+            gff <- gff[(gff$type %in% type) & p]
+        }
+        POSRange <- POS2GRanges(Chr = "scaffold_1", POS = as.numeric(x[, 2]))
+        probe <- probe & POSRange %over% gff
+    }
+    if(! any(probe))
+        warning("There is no overlaps")
+
+    return(x[which(probe), ])
+}
+
+
+#' @name filter_hmp
+#' @title filter variants in hapmap format
+#' @inherit filter_table examples
+#' @param x genotype dataset in hapmap format, object of data.frame class
+#' @param gff object of GRanges class, genome annotations imported by
+#' `import_gff()`
+#' @param mode filter mode, one of "POS", "type", "both"
+#' @param Chr chromosome name, needed if mode set to "POS" or "both"
+#' @param start start position, needed if mode set to "POS" or "both"
+#' @param end end position, needed if mode set to "POS" or "both"
+#' @param type filter type, needed if mode set to "type" or "both",
+#' one of "CDS", "exon", "gene", "genome", "custom",
+#' if `type` was set to "custom", then `custom_type` is needed.
+#' @param cusTyp character vector, custom filter type,
+#' needed if `type` set to "custom"
+#' @param geneID gene ID
+#' @export
+filter_hmp <- function(x,
+                       mode = c("POS", "type", "both"),
+                       Chr = Chr, start = start, end = end,
+                       gff = gff, type = type, cusTyp = cusTyp,
+                       geneID = geneID){
+    probe <- rep(TRUE, nrow(x))
+
+    if(mode %in% c("POS", "both")){
+        if(!missing(Chr))
+            probe <- probe & as.character(x[, 3]) %in% as.character(Chr)
+        if(!missing(start))
+            probe <- probe & x[, 4] > min(start, end)
+        if(!missing(end))
+            probe <- probe & x[, 4] < max(start, end)
+    }
+
+
+    if(mode %in% c("type", "both")){
+        if (missing(gff))
+            stop("gff is missing!")
+        p <- type %in% unique(gff$type)
+        m <- paste(unique(gff$type), collapse = "','")
+        if (!all(p))
+            stop("type should in c('",m,"')")
+        if (type == "custom")
+            type <- cusTyp
+        if ("genome" %in% type) {
+            gff <- gff
+        } else {
+            if(!missing(geneID)){
+                ids <- tolower(gff$ID)
+                nms <- tolower(gff$Name)
+                id <- tolower(geneID)
+                p <- (stringr::str_detect(ids,id)) | (stringr::str_detect(nms,id))
+            }
+            gff <- gff[(gff$type %in% type) & p]
+        }
+        POSRange <- POS2GRanges(Chr = "scaffold_1", POS = as.numeric(x[, 4]))
+        probe <- probe & POSRange %over% gff
+    }
+    if(! any(probe))
+        warning("There is no overlaps")
+
+    return(x[which(probe), ])
+}
+
+
 #' @name filter_plink.pedmap
 #' @title filter_plink.pedmap
 #' @description used for filtration of p.link
@@ -133,7 +261,7 @@ filter_vcf <- function(vcf,
 #'                     mode = c("POS", "type", "both"),
 #'                     Chr = Chr, start = start, end = end,
 #'                     gff = gff, type = type, cusTyp = cusTyp,
-#'                     ,geneID = geneID)
+#'                     geneID = geneID)
 #' @param x a list stored the p.link information
 #' @param mode filtration mode, one of c("POS", "type", "both")
 #' @param Chr the chromosome name, need if mode set as POS or both
@@ -148,9 +276,9 @@ filter_vcf <- function(vcf,
 filter_plink.pedmap <- function(x,
                                 mode = c("POS", "type", "both"),
                                 Chr = Chr, start = start, end = end,
-                                gff = gff, type = type, cusTyp = cusTyp,geneID = geneID){
+                                gff = gff, type = type, cusTyp = cusTyp,
+                                geneID = geneID){
     on.exit(gc(verbose = FALSE))
-    if(missing(Chr)) stop("Chr is missing")
     map <- x$map
     probe <- rep(TRUE, nrow(map))
 
@@ -158,8 +286,12 @@ filter_plink.pedmap <- function(x,
     if(mode %in% c("POS", "both")){
         if(missing(start) | missing(end)) stop("start or end is missing")
         POS <- c(start, end)
-        probe <- probe & as.character(map[, 1]) %in% as.character(Chr)
-        probe <- probe & map[, 4] > min(POS) & map[, 4] < max(POS)
+        if(!missing(Chr))
+            probe <- probe & as.character(map[, 1]) %in% as.character(Chr)
+        if(!missing(start))
+            probe <- probe & map[, 4] > min(POS)
+        if(!missing(end))
+            probe <- probe & map[, 4] < max(POS)
     }
 
 
@@ -179,14 +311,14 @@ filter_plink.pedmap <- function(x,
                 ids <- tolower(gff$ID)
                 nms <- tolower(gff$Name)
                 id <- tolower(geneID)
-                p <- (stringr:str_detect(ids,id)) | (stringr:str_detect(nms,id))
+                p <- (stringr::str_detect(ids,id)) | (stringr::str_detect(nms,id))
             }
             gff <- gff[(gff$type %in% type) & p]
         }
         POSRange <- POS2GRanges(Chr = "scaffold_1", POS = map[, 4])
         probe <- probe & POSRange %over% gff
     }
-    if(! TRUE %in% probe)
+    if(! any(probe))
         warning("There is no overlaps")
 
     probe_ped <- c(1:6, which(probe) * 2 + 6, which(probe) * 2 + 5)

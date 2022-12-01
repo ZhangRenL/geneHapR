@@ -8,24 +8,27 @@ for interact with other packages}
 \usage{
 hap2hmp(hap)
 
-hmp2hap(hmp, ...)
+hmp2hap(hmp, hapPrefix = "H", hetero_remove = TRUE, na_drop = TRUE, ...)
 }
 \arguments{
 \item{hap}{object of "hapResult" class}
 
 \item{hmp}{object of "data.frame" class in hapmap format}
 
+\item{hapPrefix}{prefix of haplotype names}
+
+\item{hetero_remove}{whether remove accessions contains hyb-sites, Character not A T C G}
+
+\item{na_drop}{whether drop accessions contains missing data ("N", "NA", ".")}
+
 \item{...}{
   Arguments passed on to \code{\link[=table2hap]{table2hap}}
   \describe{
     \item{\code{x}}{a data.frame contains variants information.
-The first four column are fix as Chrome name, position, reference nuclieotide
-and alter nuclieotide. Accession genotype should be in followed columns.
+The first file column are fix as Chrome name, position, reference nuclieotide,
+alter nuclieotide and INFO. Accession genotype should be in followed columns.
 "-" will be treated as Indel. "." and "N" will be treated as missing data.
 Heterozygotes should be "A/T", "AAA/A"}
-    \item{\code{hapPrefix}}{prefix of haplotype names}
-    \item{\code{hyb_remove}}{whether remove accessions contains hyb-sites, Character not A T C G}
-    \item{\code{na.drop}}{whether drop accessions contains missing data ("N", "NA", ".")}
   }}
 }
 \value{

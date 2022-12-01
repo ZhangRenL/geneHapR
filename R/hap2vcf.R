@@ -10,25 +10,20 @@
 #'         hapPrefix = "H",
 #'         filter_Chr = FALSE,
 #'         filter_POS = FALSE,
-#'         hyb_remove = TRUE,
-#'         na.drop = TRUE, ...)
+#'         hetero_remove = TRUE,
+#'         na_drop = TRUE, ...)
 #' @author Zhangrenl
 #' @examples
 #' data("geneHapR_test")
 #' hapResult <- vcf2hap(vcf)
 #' @param vcf vcfR object imported by `import_vcf()`
-#' @param filter_Chr logical, whether filter vcf by chromosome or not. Default
-#' as `FALSE`. If set as `TRUE`, `Chr` is needed
-#' @param filter_POS logical, whether filter vcf by position or not. Default
-#' as `FALSE`. If set as `TRUE`, `startPOS` and `endPOS` are needed
+#' @param filter_Chr not used
+#' @param filter_POS not used
 #' @param hapPrefix prefix of hap names, default as "H"
-#' @param hyb_remove whether remove accessions contains hybrid site or not.
+#' @param hetero_remove whether remove accessions contains hybrid site or not.
 #' Default as `TRUE`
-#' @param na.drop whether remove accessions contains unknown allele site or not
+#' @param na_drop whether remove accessions contains unknown allele site or not
 #' Default as `TRUE`.
-#' @param Chr Chromosome name, needed when `filter_Chr` was set as `TRUE`
-#' @param startPOS,endPOS start and end position, needed when `filter_POS` was
-#' set as `TRUE`. In addition, `startPOS` must less than `endPOS`
 #' @param ... Parameters not used
 #' @seealso
 #' extract genotype from vcf:
@@ -52,8 +47,8 @@ vcf2hap <- function(vcf,
                     filter_POS = FALSE,
                     # startPOS = startPOS,
                     # endPOS = endPOS,
-                    hyb_remove = TRUE,
-                    na.drop = TRUE, ...) {
+                    hetero_remove = TRUE,
+                    na_drop = TRUE, ...) {
     requireNamespace('tidyr')
     allS_new <- allS
     options <- c(hapPrefix = hapPrefix)
@@ -94,15 +89,15 @@ vcf2hap <- function(vcf,
     allS_new <- hapData$allS_new
     hap <- hapData$hap
     # Drop hyb or N
-    if (hyb_remove) {
+    if (hetero_remove) {
         hap[grepl("|", hap, fixed = T)] <- NA
         hap[grepl("/", hap, fixed = T)] <- NA
         hap <- na.omit(hap)
-        options <- c(options, hyb_remove = "YES")
+        options <- c(options, hetero_remove = "YES")
     } else
-        options <- c(options, hyb_remove = "NO")
+        options <- c(options, hetero_remove = "NO")
 
-    if (na.drop) {
+    if (na_drop) {
         hap[hap == "N"] <- NA
         hap <- na.omit(hap)
         options <- c(options, NA_remove = "YES")
@@ -197,8 +192,6 @@ vcf2hap_data <- function(vcf,
     }
     return(list(hap = hap, allS_new = allS_new))
 }
-
-
 
 
 
