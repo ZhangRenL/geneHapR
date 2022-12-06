@@ -14,13 +14,11 @@ devtools::install_git("https://gitee.com/zhangrenl/genehapr")  # need devtools p
 
 ## Vignettes 
 
-[Introduction of geneHapR](https://gitee.com/zhangrenl/genehapr/wikis/Introduction.html)
+[Introduction of geneHapR](https://gitee.com/zhangrenl/genehapr/wikis/Introduction.md)
 
-[The workflow of geneHapR](https://gitee.com/zhangrenl/genehapr/wikis/workflow.html)
+[An example in *Setaria italica*](https://gitee.com/zhangrenl/genehapr/wikis/An_example_in_Setaria_italica)
 
-[DATA Format of geneHapR](https://gitee.com/zhangrenl/genehapr/wikis/data_format.html)
-
-[An example in *Setaria italica*](https://gitee.com/zhangrenl/genehapr/wikis/An_example)
+[An example with lazy data](https://gitee.com/zhangrenl/genehapr/wikis/An%20example%20using%20lazy%20data%20in%20geneHapR)
 
 ## Issues
 
