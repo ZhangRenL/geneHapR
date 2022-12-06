@@ -377,13 +377,5 @@ write.hap <- function(x, file = file, sep = "\t") {
 
 #' @importFrom tidyr `%>%`
 #' @importFrom IRanges `%over%`
-#' @title pipe operater
-#' @name pipes
-#' @examples
-#' c(1,2,5,1,2,4,1,1,3) %>% unique()
-#'
-#' gff %over% gff[3]
-#' @export
 `%>%` <- tidyr::`%>%`
-#' @export
 `%over%` <- IRanges::`%over%`

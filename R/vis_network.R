@@ -286,8 +286,8 @@ plotHapNet <- function(hapNet,
                     y = xy[2],
                     legend = colnames(hapGroup),
                     fill = co,
-                    cex = cex.legend,
-                    ...
+                    cex = cex.legend
+                    
                 )
             }
     }
