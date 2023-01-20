@@ -53,7 +53,7 @@ on server, such as: 'vcftools' and 'bcftools'.
 \examples{
 \donttest{
  # The filteration of small vcf should be done with `filter_vcf()`.
- # however, here, we use a mini vcf instead just for example
+ # however, here, we use a mini vcf instead just for example and test.
 
  vcfPath <- system.file("extdata", "var.vcf.gz", package = "geneHapR")
 
@@ -61,7 +61,7 @@ on server, such as: 'vcftools' and 'bcftools'.
  setwd(tempdir())
  # extract a single gene/range from large vcf
  filterLargeVCF(VCFin = vcfPath, VCFout = "filtered.vcf.gz",
-                Chr = "scaffold_1", POS = c(4300,500), override = TRUE)
+                Chr = "scaffold_1", POS = c(4300,5000), override = TRUE)
 
  # extract multi genes/ranges from large vcf
  filterLargeVCF(VCFin = vcfPath,

@@ -4,15 +4,20 @@
 \alias{plink.pedmap2hap}
 \title{plink.pedmap2hap}
 \usage{
-plink.pedmap2hap(p.link,
-                   hapPrefix = "H",
-                   hetero_remove = TRUE,
-                   na_drop = TRUE)
+plink.pedmap2hap(
+  p.link,
+  hapPrefix = "H",
+  pad = 3,
+  hetero_remove = TRUE,
+  na_drop = TRUE
+)
 }
 \arguments{
 \item{p.link}{list contains p.link information}
 
 \item{hapPrefix}{prefix of haplotype names}
+
+\item{pad}{The number length in haplotype names should be extend to.}
 
 \item{hetero_remove}{whether remove accessions contains hyb-sites}
 

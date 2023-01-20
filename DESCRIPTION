@@ -2,7 +2,7 @@ Package: geneHapR
 Type: Package
 Title: Gene Haplotype Statistics, Phenotype Association and Visualization
 Description: Import genome variants data and perform gene haplotype Statistics, 
-  visualization and phenotype association with 'R'.
+  visualization and phenotype association with 'R'. 
 biocViews: NucleosomePositioning, DataImport
 Encoding: UTF-8
 Maintainer: Zhang Renliang <zhang_renliang@163.com>
@@ -15,8 +15,8 @@ Authors@R:
            family = "Guanqing",
            email = "jiaguanqing@caas.cn", 
            role = c("aut")))
-Version: 1.1.5
-RoxygenNote: 7.2.1
+Version: 1.1.7
+RoxygenNote: 7.2.3
 LazyData: True
 Imports: 
   ape,
@@ -24,6 +24,7 @@ Imports:
   ggpubr,
   genetics, 
   GenomicRanges,
+  lolliplot,
   maps,
   methods,
   IRanges,
@@ -31,7 +32,6 @@ Imports:
   reshape2, 
   rlang,
   rtracklayer, 
-  trackViewer,
   shiny,
   shinyjs,
   stats,

@@ -4,12 +4,16 @@
 \alias{vcf2hap}
 \title{Generat Haps from VCF}
 \usage{
-vcf2hap(vcf,
-        hapPrefix = "H",
-        filter_Chr = FALSE,
-        filter_POS = FALSE,
-        hetero_remove = TRUE,
-        na_drop = TRUE, ...)
+vcf2hap(
+  vcf,
+  hapPrefix = "H",
+  filter_Chr = FALSE,
+  filter_POS = FALSE,
+  pad = 3,
+  hetero_remove = TRUE,
+  na_drop = TRUE,
+  ...
+)
 }
 \arguments{
 \item{vcf}{vcfR object imported by \code{import_vcf()}}
@@ -19,6 +23,8 @@ vcf2hap(vcf,
 \item{filter_Chr}{not used}
 
 \item{filter_POS}{not used}
+
+\item{pad}{The number length in haplotype names should be extend to.}
 
 \item{hetero_remove}{whether remove accessions contains hybrid site or not.
 Default as \code{TRUE}}

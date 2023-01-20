@@ -70,15 +70,16 @@
 #' @param geneMapLabelY A numeric value specifying the y-coordinate
 #' of the text indicating the total length of the genomic region
 #' being considered. Ignored when \code{add.map = FALSE}.
-#' @param SNP.name A vector of character string(s) of SNP name(s) to
-#' be labelled. Should match the names of SNPs in the provided object
-#' \code{gdat}, otherwise nothing is done.
 #' @param color A range of colors to be used for drawing the heat map. Default
-#' is \code{grDevices::heat.colors(n = 20)}.
+#' is \code{grDevices::colorRampPalette(c("red", "grey"))(30)}.
+#' @param color_gmodel,color_snp,color_snpname the color of gene model and snp and snp names respectively, default as grey80.
+#' @param cex_snpname the size of snp names/labels
 #' @param newpage If \code{TRUE} (default), the heat map will be drawn on a new page.
 #' @param name A character string specifying the name of the LDheatmap
 #' graphical object (\code{grob}) to be produced.
+#' @param SNP.name a logical vector indicated wherther display SNP names using positions.
 #' @param vp.name A character string specifying the name of the viewport
+#' @param snpmarks_height the height of snp marks, if set as NULL, nothing will display on gene model
 #' where the heat map is going to be drawn.
 #' @param pop If \code{TRUE}, the viewport where the heat map is drawn is
 #' \code{pop}ped (i.e. removed) from the viewport tree after drawing.
@@ -155,9 +156,6 @@
 #' display multiple heat maps on one plot without the use
 #' of \code{par()}.
 #'
-#' @author Ji-hyung Shin <shin@sfu.ca>, Sigal Blay <sblay@sfu.ca>, Nicholas
-#' Lewin-Koh <nikko@hailmail.net>, Brad McNeney <mcneney@stat.sfu.ca>, Jinko
-#' Graham <jgraham@cs.sfu.ca>
 #'
 #' @examples # Pass LDheatmap a SnpMatrix object
 #' data(geneHapR_test)
@@ -166,82 +164,121 @@
 #'                Chr = hapResult[1,2],
 #'                start = 4000, end = 8200)
 #' @export
-plot_LDheatmap <- function (hap,gff,Chr,start,end,geneID,
+plot_LDheatmap <- function (hap,
+                            gff,
+                            Chr,
+                            start,
+                            end,
+                            geneID = NULL,
                             distances = "physical",
                             LDmeasure = "r",
                             title = "Pairwise LD",
                             add.map = TRUE,
-                            map.height = map.height,
+                            map.height = 1,
                             colorLegend = TRUE,
                             geneMapLocation = 0.15,
                             geneMapLabelX = NULL,
                             geneMapLabelY = NULL,
-                            SNP.name = NULL,
+                            SNP.name = TRUE,
                             color = NULL,
+                            color_gmodel = "grey",
+                            color_snp = "grey",
+                            color_snpname = "grey40",
+                            cex_snpname = 0.8,
+                            snpmarks_height = NULL,
                             newpage = TRUE,
                             name = "ldheatmap",
                             vp.name = NULL,
                             pop = FALSE,
-                            text = FALSE){
+                            text = FALSE) {
     # TO remove flip option
     flip = TRUE
-    if(inherits(hap, "hapResult")){
+    if (inherits(hap, "hapResult")) {
         gdat <- data.frame(hap)
-        if(missing("SNP.name"))
-            SNP.name <- t(hap[4,-c(1, ncol(hap))])[,1]
-        genetic.distances <- suppressWarnings(as.numeric(gdat[2,])) %>%
+
+        if(isFALSE(SNP.name)) SNP.name <- NULL else
+            if(isTRUE(SNP.name))
+                SNP.name <- t(hap[4, -c(1, ncol(hap))])[, 1]
+
+        genetic.distances <-
+            suppressWarnings(as.numeric(gdat[2, ])) %>%
             na.omit()
-        gdat <- gdat[-c(1:4), -c(1,ncol(gdat))]
-        for(i in seq_len(ncol(gdat))){
-            gdat[,i] <- sapply(gdat[,i],
-                           function(x) {
-                               if(stringr::str_detect(x,"[|]")) {
-                                   stringr::str_replace(x,"[|]","/")
-                               } else {
-                                   paste0(x,"/",x)
-                               }
-                           }) %>% unlist()
-            gdat[,i] <- genetics::as.genotype(gdat[,i])
+        gdat <- gdat[-c(1:4),-c(1, ncol(gdat))]
+        for (i in seq_len(ncol(gdat))) {
+            gdat[, i] <- sapply(gdat[, i],
+                                function(x) {
+                                    if (stringr::str_detect(x, "[|]")) {
+                                        stringr::str_replace(x, "[|]", "/")
+                                    } else {
+                                        paste0(x, "/", x)
+                                    }
+                                }) %>% unlist()
+            gdat[, i] <- genetics::as.genotype(gdat[, i])
         }
 
 
-    } else return("Use hapResult instead of hapSummary")
+    } else
+        return("Use hapResult instead of hapSummary")
 
-    LDheatmap(gdat,gff=gff,Chr=Chr,start=start,end=end,geneID=geneID,
-              genetic.distances = genetic.distances,
-              distances = distances,
-              LDmeasure = LDmeasure,
-              title = title,
-              add.map = add.map,
-              colorLegend = colorLegend,
-              geneMapLocation = geneMapLocation,
-              geneMapLabelX = geneMapLabelX,
-              geneMapLabelY = geneMapLabelY,
-              SNP.name = SNP.name,
-              color = color,
-              newpage = newpage,
-              name = "ldheatmap",
-              vp.name = vp.name,
-              pop = pop,
-              flip = flip,
-              text = text)
+    LDheatmap(
+        gdat,
+        gff = gff,
+        Chr = Chr,
+        start = start,
+        end = end,
+        geneID = geneID,
+        genetic.distances = genetic.distances,
+        distances = distances,
+        LDmeasure = LDmeasure,
+        title = title,
+        add.map = add.map,
+        map.height = map.height,
+        colorLegend = colorLegend,
+        geneMapLocation = geneMapLocation,
+        geneMapLabelX = geneMapLabelX,
+        geneMapLabelY = geneMapLabelY,
+        SNP.name = SNP.name,
+        color = color,
+        color_gmodel = color_gmodel,
+        color_snp = color_snp,
+        color_snpname = color_snpname,
+        cex_snpname = cex_snpname,
+        snpmarks_height = snpmarks_height,
+        newpage = newpage,
+        name = "ldheatmap",
+        vp.name = vp.name,
+        pop = pop,
+        flip = flip,
+        text = text
+    )
 }
 
 
 #' @import grid
 #' @importFrom graphics plot.new
-LDheatmap <- function (gdat,gff,Chr,start,end,geneID,
+LDheatmap <- function (gdat,
+                       gff,
+                       Chr,
+                       start,
+                       end,
+                       geneID,
                        genetic.distances = NULL,
                        distances = "physical",
-                       LDmeasure = "r",
+                       LDmeasure = LDmeasure,
                        title = "Pairwise LD",
-                       add.map = TRUE, map.height = 0.02,
+                       add.map = TRUE,
+                       map.height = 0.02,
                        colorLegend = TRUE,
                        geneMapLocation = 0.15,
                        geneMapLabelX = NULL,
                        geneMapLabelY = NULL,
                        SNP.name = NULL,
                        color = NULL,
+                       color_gmodel = color_gmodel,
+                       color_snp = color_snp,
+                       color_snpname = color_snpname,
+                       cex_snpname = cex_snpname,
+                       snpmarks_height = snpmarks_height,
                        newpage = TRUE,
                        name = "ldheatmap",
                        vp.name = NULL,
@@ -253,7 +290,9 @@ LDheatmap <- function (gdat,gff,Chr,start,end,geneID,
 
     # Draw the Color Key
     if (is.null(color)) {
-        color <- grDevices::heat.colors(n = 40)
+        color <- grDevices::colorRampPalette(c("red","blue", "grey20"))(30)
+    } else if (length(color) < 10) {
+        color <- grDevices::colorRampPalette(c(color))(30)
     }
 
 
@@ -263,18 +302,6 @@ LDheatmap <- function (gdat,gff,Chr,start,end,geneID,
         flip <- FALSE
     }
 
-    ## If genetic.distances is missing, calculate an equispaced default:
-    if (is.null(genetic.distances)) {
-        if (inherits(gdat, "data.frame"))
-            genetic.distances <- 1000 * (1:ncol(gdat))
-        else if (inherits(gdat, "matrix"))
-            genetic.distances <- 1000 * (1:length(gdat[1, ]))
-        else
-            # gdat is of class LDheatmap
-            genetic.distances <- gdat$genetic.distances
-    }
-
-
     ## Calculate or extract LDmatrix, then stored in LDMatrix as an upper triangular matrix
     # using a data.frame
     if (inherits(gdat, "data.frame")) {
@@ -283,10 +310,18 @@ LDheatmap <- function (gdat,gff,Chr,start,end,geneID,
                 stop("column ", i, " is not a genotype object\n")
         }
 
-        ## Exclude SNPs with less than 2 alleles:
+        ## Exclude SNPs with more or less than 2 alleles:
         gvars <-
             unlist(sapply(gdat, function(x)
                 genetics::nallele(x) == 2))
+        if (any(!gvars))
+            warning(
+                "Only bi-alleles supported,",
+                "Variables with less or more than 2 allels will be omitted."
+            )
+
+        if (sum(gvars) < 2)
+            stop("Variants number is less than two after removed non-bialleles")
         genetic.distances <- genetic.distances[gvars]
         gdat <- gdat[gvars]
 
@@ -301,8 +336,9 @@ LDheatmap <- function (gdat,gff,Chr,start,end,geneID,
         myLD <- genetics::LD(gdat)
         if (LDmeasure == "r")
             LDmatrix <- myLD[[LDmeasure]] ^ 2
-        else if (LDmeasure == "D'")
-            LDmatrix <- abs(myLD[[LDmeasure]])
+        else
+            if (LDmeasure == "D'")
+                LDmatrix <- abs(myLD[[LDmeasure]])
         else
             stop("Invalid LD measurement, choose r or D'.")
     }
@@ -364,7 +400,11 @@ LDheatmap <- function (gdat,gff,Chr,start,end,geneID,
                       round(imgLDmatrix, digits = 2),
                       name = "heatmaptext")
     title <-
-        grid::textGrob(title, 0.5, 1.05, gp = grid::gpar(cex = 1.0), name = "title")
+        grid::textGrob(title,
+                       0.5,
+                       1.05,
+                       gp = grid::gpar(cex = 1.0),
+                       name = "title")
 
     if (flip) {
         ImageRect <- grid::editGrob(ImageRect, vp = flipVP)
@@ -392,30 +432,43 @@ LDheatmap <- function (gdat,gff,Chr,start,end,geneID,
     # Updates heatmap in the gTree
     heatMap <-
         grid::gTree(children = grid::gList(ImageRect, ImageText, title),
-              name = "heatMap")
+                    name = "heatMap")
 
     # Draw a diagonal line indicating the physical or genetic map positions of the SNPs
     nsnps <- ncol(LDmatrix)
     step <- 1 / (nsnps - 1)
-    ind <- match(SNP.name, row.names(LDmatrix), nomatch = 0)
+    SNP.name <- names(SNP.name)
+    p <- paste0("X", SNP.name)
+    ind <- match(p, row.names(LDmatrix), nomatch = 0)
     geneMapVP <- NULL
     if (flip)
         geneMapVP <- flipVP
+
+
     geneMap <-
         LDheatmapMapNew.add (
             nsnps,
             genetic.distances = genetic.distances,
             geneMapLocation = geneMapLocation,
-            add.map,
+            add.map = add.map,
             geneMapLabelX = geneMapLabelX,
             geneMapLabelY = geneMapLabelY,
             distances = distances,
             vp = geneMapVP,
             SNP.name = SNP.name,
             ind = ind,
+            color_gmodel = color_gmodel,
+            color_snp = color_snp,
+            color_snpname = color_snpname,
+            cex_snpname = cex_snpname,
+            snpmarks_height = snpmarks_height,
             flip = flip,
-            gff=gff,Chr=Chr,
-            start=start,end=end,geneID=geneID,map.height = map.height
+            gff = gff,
+            Chr = Chr,
+            start = start,
+            end = end,
+            geneID = geneID,
+            map.height = map.height
         )
 
     # Draw the Color Key
@@ -454,7 +507,8 @@ LDheatmap <- function (gdat,gff,Chr,start,end,geneID,
 
 
 preDrawDetails.ldheatmap <- function(x) {
-    fontsize <- grid::convertX(unit(1 / 20, "grobwidth", grid::rectGrob()), "points")
+    fontsize <-
+        grid::convertX(unit(1 / 20, "grobwidth", grid::rectGrob()), "points")
     grid::pushViewport(grid::viewport(gp = grid::gpar(fontsize = fontsize)))
 }
 
@@ -465,7 +519,8 @@ postDrawDetails.ldheatmap <- function(x) {
 
 
 preDrawDetails.symbols <- function(x) {
-    fontsize <- grid::convertX(unit(1 / 20, "grobwidth", grid::rectGrob()), "points")
+    fontsize <-
+        grid::convertX(unit(1 / 20, "grobwidth", grid::rectGrob()), "points")
     grid::pushViewport(grid::viewport(gp = grid::gpar(fontsize = fontsize)))
 }
 
@@ -550,7 +605,7 @@ LDheatmapLegend.add <- function(color, LDmeasure, vp) {
             x = 0.5,
             y = 1.25,
             name = "title",
-            gp = grid::gpar(cex = 0.8)
+            gp = grid::gpar(cex = 0.7)
         )
 
     #Adding labels to the color key
@@ -591,7 +646,8 @@ LDheatmapLegend.add <- function(color, LDmeasure, vp) {
 }
 
 LDheatmapMapNew.add <- function(nsnps,
-                                add.map,map.height = 0.02,
+                                add.map,
+                                map.height = 0.02,
                                 genetic.distances,
                                 geneMapLocation = 0.15,
                                 geneMapLabelX = NULL,
@@ -600,15 +656,27 @@ LDheatmapMapNew.add <- function(nsnps,
                                 vp = NULL,
                                 SNP.name = NULL,
                                 ind = 0,
+                                color_gmodel = color_gmodel,
+                                color_snp = color_snp,
+                                color_snpname = color_snpname,
+                                cex_snpname = cex_snpname,
+                                snpmarks_height = snpmarks_height,
                                 flip = FALSE,
-                                gff,Chr,start,end,geneID) {
+                                gff,
+                                Chr,
+                                start,
+                                end,
+                                geneID) {
     snp <- ((1:nsnps - 1) + 0.5) / nsnps
     #####################
     if (add.map) {
-        if(missing(start) | missing(end)){
+        # min.dist: the minimum coordinate of SNPs or start position
+        # max.dist: the maximum coordinate of SNPs or start position
+        # total.dist: the distance between min.dist and max.dist
+        if (missing(start) | missing(end)) {
             min.dist <- min(genetic.distances)
             max.dist <- max(genetic.distances)
-        }else{
+        } else{
             min.dist <- min(genetic.distances, start, end)
             max.dist <- max(genetic.distances, start, end)
         }
@@ -620,43 +688,57 @@ LDheatmapMapNew.add <- function(nsnps,
 
         # Drawing the diagonal line
         i <- 0.01
+
+        # seq.x <- c(0.5 * geneMapLocation + 1 / (nsnps * 2),
+        #            1 + 0.5 * geneMapLocation - 1 / (nsnps * 2))
+        # seq.y <- c(-0.5 * geneMapLocation  + 1 / (nsnps * 2),
+        #            1 - 0.5 * geneMapLocation - 1 / (nsnps * 2))
         seq.x <- c(0.5 * geneMapLocation + 1 / (nsnps * 2),
-                   1 + 0.5 * geneMapLocation - 1 / (nsnps * 2))
-        seq.y <- c(-0.5 * geneMapLocation + 1 / (nsnps * 2),
+                   1 + 0.5 * geneMapLocation + 1 / (nsnps * 2))
+        seq.y <- c(-0.5 * geneMapLocation  - 1 / (nsnps * 2),
                    1 - 0.5 * geneMapLocation - 1 / (nsnps * 2))
         diagonal <-
             grid::linesGrob(
                 seq.x,
                 seq.y,
-                gp = grid::gpar(lty = 1),
+                gp = grid::gpar(lty = 1, col = color_snp),
                 name = "diagonal",
                 vp = vp
             ) # we draw the line with linesGrob, based on geneMapLocation seq
 
         xs <- ys <- c()
         w <- map.height
-        if(!missing(Chr) | !missing(gff)){
+        # the input dataset contains Chromosome name, annotations,
+        # and add the gene map/model
+        if (!missing(Chr) & !missing(gff) & add.map) {
             gene <- GenomicRanges::GRanges(Chr,
-                                           IRanges::IRanges(
-                                               start = min.dist,
-                                               end = max.dist))
+                                           IRanges::IRanges(start = min.dist,
+                                                            end = max.dist))
             gff <- gff[gff %over% gene]
             type <- tolower(gff$type)
-            probe1 <- stringr::str_detect(type, "cds") | stringr::str_detect(type, "utr")
+            probe1 <-
+                stringr::str_detect(type, "cds") | stringr::str_detect(type, "utr")
             gff <- gff[probe1]
-            if(!missing(geneID)){
+            if (!is.null(geneID)) {
                 ids <- tolower(gff$ID)
                 nms <- tolower(gff$Name)
                 geneID <- tolower(geneID)
-                probe2 <- stringr::str_detect(nms, geneID) | stringr::str_detect(ids, geneID)
+                probe2 <-
+                    stringr::str_detect(nms, geneID) | stringr::str_detect(ids, geneID)
                 gff <- gff[probe2]
             }
             gff$Parent <- unlist(gff$Parent)
             strand <- unique(gff@strand)[1]
             ps <- unique(gff$Parent)
-            for(p in seq_len(length(ps))){
+            for (p in seq_len(length(ps))) {
+                # p: the number of transcripts
+                # w: the gene model height
+                # v: the relative height of CDS and non-CDS region
+                # x1,x1: the position of exon edge1
+                # x2,y2:the position of exon edge2
+                # r1,r2: the relative position on gene map
                 gffp <- gff[gff$Parent == ps[p]]
-                for(i in seq_len(length(gffp@ranges))){
+                for (i in seq_len(length(gffp@ranges))) {
                     start <- gffp@ranges[i]@start
                     wid <- gffp@ranges[i]@width
                     end <- start + wid
@@ -664,22 +746,37 @@ LDheatmapMapNew.add <- function(nsnps,
                     r2 <- (end - min.dist) / total.dist
                     x1 <- seq.x[1] + (seq.x[2] - seq.x[1]) * r1
                     x2 <- seq.x[1] + (seq.x[2] - seq.x[1]) * r2
-                    if(stringr::str_detect(tolower(gff$type[i]),"cds"))
-                        v <- 1 else v <- 1/2
-                    xsp <- c(x1-w*v,x1+w*v,x2+w*v,x2-w*v) - w * (p * 3 - 1.5)
-                    ysp <- c(x1+w*v,x1-w*v,x2-w*v,x2+w*v) + w * (p * 3 - 1.5)
+                    y1 <- seq.y[1] + (seq.y[2] - seq.y[1]) * r1
+                    y2 <- seq.y[1] + (seq.y[2] - seq.y[1]) * r2
+                    if (stringr::str_detect(tolower(gff$type[i]), "cds"))
+                        v <- 1
+                    else
+                        v <- 1 / 2
+                    xsp <-
+                        c(x1 - w * v, x1 + w * v, x2 + w * v, x2 - w * v) - w * (p * 3 - 1.5)
+                    ysp <-
+                        c(y1 + w * v, y1 - w * v, y2 - w * v, y2 + w * v) + w * (p * 3 - 1.5)
                     xs <- c(xs, xsp, NA)
                     ys <- c(ys, ysp, NA)
                 }
-                xsp <- c(seq.x[1]-0.002,seq.x[1]+0.002,seq.x[2]+0.002,seq.x[2]-0.002)
-                ysp <- c(seq.x[1]+0.002,seq.x[1]-0.002,seq.x[2]-0.002,seq.x[2]+0.002)
-                xs <- c(xs,NA,xsp - w * (p * 3 - 1.5),NA)
-                ys <- c(ys,NA,ysp + w * (p * 3 - 1.5),NA)
+                xsp <-
+                    c(seq.x[1] - 0.002,
+                      seq.x[1] + 0.002,
+                      seq.x[2] + 0.002,
+                      seq.x[2] - 0.002)
+                ysp <-
+                    c(seq.y[1] + 0.002,
+                      seq.y[1] - 0.002,
+                      seq.y[2] - 0.002,
+                      seq.y[2] + 0.002)
+                xs <- c(xs, NA, xsp - w * (p * 3 - 1.5), NA)
+                ys <- c(ys, NA, ysp + w * (p * 3 - 1.5), NA)
             }
-            gmodel <- grid::polygonGrob(x = xs,
-                                        y = ys + 0.15,
-                                        gp = gpar(fill = "blue", lty = 0), vp = vp)
-        } else  gmodel <- NULL
+
+            xs <- xs + 0.2 * geneMapLocation +  1 / (nsnps * 2)
+            ys <- ys - 0.2 * geneMapLocation -  1 / (nsnps * 2)
+        } else
+            gmodel <- NULL
 
 
 
@@ -692,13 +789,7 @@ LDheatmapMapNew.add <- function(nsnps,
         regiony <- seq.y[1] +
             ((genetic.distances - min.dist) / total.dist) * (seq.y[2] -
                                                                  seq.y[1])
-        segments <-
-            grid::segmentsGrob(snp,
-                         snp,
-                         regionx,
-                         regiony,
-                         name = "segments",
-                         vp = vp)
+
 
         ## Adding the text indicating Physical length of the region under study
         if (distances == "physical")
@@ -710,7 +801,9 @@ LDheatmapMapNew.add <- function(nsnps,
             paste("Genetic Map Length:", round(total.dist, 1), "cM", sep = "")
 
 
-        if(strand == "+") mapLabel <- paste0(mapLabel, "\n5' -> 3'") else
+        if (strand == "+")
+            mapLabel <- paste0(mapLabel, "\n5' -> 3'")
+        else
             mapLabel <- paste0(mapLabel, "\n3' <- 5'")
         if (!flip) {
             if (is.null(geneMapLabelY))
@@ -733,45 +826,58 @@ LDheatmapMapNew.add <- function(nsnps,
             name = "title"
         )
 
-        geneMap <-
-            grid::gTree(children = grid::gList(diagonal,gmodel,segments, title),
-                  name = "geneMap")
-
         ## Labelling some SNPs
-        if (!is.null(SNP.name) && (any(ind!= 0))) {
+        if (!is.null(SNP.name) && (any(ind != 0))) {
             if (flip) {
                 length_SNP_name <- max(nchar(SNP.name))
                 long_SNP_name <-
                     paste(rep(8, length_SNP_name), collapse = "")
                 name_gap <-
-                    grid::convertWidth(grid::grobWidth(grid::textGrob(long_SNP_name)), "npc", valueOnly = TRUE) /
-                    sqrt(2)
+                    grid::convertWidth(grid::grobWidth(grid::textGrob(long_SNP_name)),
+                                       "npc",
+                                       valueOnly = TRUE)
                 diagonal <-
                     grid::linesGrob(
-                        seq.x,
-                        seq.y,
+                        seq.x - name_gap,
+                        seq.y + name_gap,
                         gp = grid::gpar(lty = 1),
                         name = "diagonal",
                         vp = vp
                     )
-                #diagonal <- grid::linesGrob(seq.x+name_gap, seq.y-name_gap, gp = grid::gpar(lty = 1), name = "diagonal", vp = vp)
+
                 segments <-
-                    grid::segmentsGrob(snp,
-                                 snp,
-                                 regionx,
-                                 regiony,
-                                 name = "segments",
-                                 vp = vp)
-                #segments <- segmentsGrob(snp+name_gap, snp-name_gap, regionx+name_gap, regiony-name_gap, name = "segments", vp = vp)
+                    segmentsGrob(
+                        snp - name_gap,
+                        snp + name_gap,
+                        regionx - name_gap,
+                        regiony + name_gap,
+                        name = "segments",
+                        vp = vp
+                    )
+                ## Adding SNP line segments to the plot: (point1 <- > point2)
+                ## point1: relative position of a SNP on the scaled line
+                ## point2: relative position of a SNP on the gene model
+                if(is.null(snpmarks_height))
+                    snpmarks <- NULL else
+                        snpmarks <-
+                    grid::segmentsGrob(
+                        x0 = regionx - name_gap,
+                        y0 = regiony + name_gap,
+                        x1 = regionx - w * (p * 3 + 2) - snpmarks_height,
+                        y1 = regiony + w * (p * 3 + 2) + snpmarks_height,
+                        name = "snpmarks",
+                        vp = vp,
+                        gp = gpar(col = color_snp)
+                    )
 
                 ############################################
                 # Bug: symbols was set to NULL here for some reason
                 symbols <- grid::pointsGrob(
-                    snp[ind],
-                    snp[ind],
-                    pch = "*",
+                    snp[ind] - name_gap,
+                    snp[ind] + name_gap,
+                    pch = "",
                     gp = grid::gpar(
-                        cex = 1.25,
+                        cex = 0.25,
                         bg = "blue",
                         col = "blue"
                     ),
@@ -783,66 +889,63 @@ LDheatmapMapNew.add <- function(nsnps,
                 SNPnames <-
                     grid::textGrob(
                         SNP.name,
-                        just = "left",
+                        just = -0.1,
                         rot = -45,
-                        regionx[ind] - sqrt(2 + 0.5) * name_gap,
-                        regiony[ind] + sqrt(2 + 0.5) * name_gap,
-                        gp = grid::gpar(cex = 0.6, col = "blue"),
+                        snp[ind] - name_gap,
+                        # the position of SNP names
+                        snp[ind] + name_gap,
+                        # the position of SNP names
+                        gp = grid::gpar(cex = cex_snpname, col = color_snpname),
                         name = "SNPnames",
                         vp = vp
                     )
                 # Think of better reason to use the +0.5
                 # snp[ind], snp[ind], gp = grid::gpar(cex = 0.6, col = "blue"), name = "SNPnames", vp = vp)
                 title <-
-                    grid::editGrob(title, y = unit(geneMapLabelY + name_gap, "npc"))
-            }
-            else{
-                symbols <- grid::pointsGrob(
-                    snp[ind],
-                    snp[ind],
-                    pch = "*",
-                    gp = grid::gpar(
-                        cex = 1.25,
-                        bg = "blue",
-                        col = "blue"
-                    ),
-                    name = "symbols",
-                    vp = vp
-                )
-                SNPnames <-
-                    grid::textGrob(
-                        paste(" ", SNP.name),
-                        just = "left",
-                        rot = -45,
-                        regionx[ind],
-                        regiony[ind],
-                        gp = grid::gpar(cex = 0.6, col = "blue"),
-                        name = "SNPnames",
+                    grid::editGrob(title,
+                                   y = unit(geneMapLabelY + name_gap + 0.05, "npc"))
+
+                # gene model
+                if ((!is.null(xs)) & (!is.null(ys)))
+                    gmodel <- grid::polygonGrob(
+                        x = xs - name_gap,
+                        y = ys + name_gap,
+                        gp = gpar(fill = color_gmodel, lty = 0),
                         vp = vp
                     )
             }
             geneMap <-
                 grid::gTree(
-                    children = grid::gList(diagonal, segments, title, symbols, SNPnames),
+                    children = grid::gList(
+                        diagonal,
+                        segments,
+                        title,
+                        gmodel,
+                        snpmarks,
+                        symbols,
+                        SNPnames
+                    ),
                     name = "geneMap"
                 )
         }
-    } # if(add.map) end
+    } else # if(add.map) end
 
-    else if (!add.map && !is.null(SNP.name) && (any(ind!= 0))) {
+
+    # do not display gene model nor gene map
+    # but display only snp names
+    if (!add.map && !is.null(SNP.name) && (any(ind != 0))) {
         geneMap <- grid::textGrob(
             paste(" ", SNP.name),
             just = "left",
             rot = -45,
-            snp[ind],
-            snp[ind],
-            gp = grid::gpar(cex = 0.6, col = "blue"),
+            snp[ind] - name_gap,
+            snp[ind] + name_gap,
+            gp = grid::gpar(cex = cex_snpname, col = color_snpname),
             name = "SNPnames"
         )
         if (flip)
             geneMap <- grid::editGrob(geneMap, vp = vp)
-    }
-    else
+    } else
         geneMap <- NULL
 
     geneMap

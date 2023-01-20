@@ -29,6 +29,7 @@ The first file column are fix as Chrome name, position, reference nuclieotide,
 alter nuclieotide and INFO. Accession genotype should be in followed columns.
 "-" will be treated as Indel. "." and "N" will be treated as missing data.
 Heterozygotes should be "A/T", "AAA/A"}
+    \item{\code{pad}}{The number length in haplotype names should be extend to.}
   }}
 }
 \value{

@@ -42,3 +42,12 @@ needed if \code{type} set to "custom"}
 \description{
 filter variants in hapmap format
 }
+\examples{
+# create a dataset of genotype in hapmap format
+hmp <- hap2hmp(hapResult);
+
+# example
+hmp <- filter_hmp(hmp, mode = "POS",
+                      Chr = "scaffold_1", start = 4100, end = 5000)
+
+}

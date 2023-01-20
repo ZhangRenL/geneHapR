@@ -5,11 +5,7 @@
 #' @param hapPrefix prefix of haplotype names
 #' @param hetero_remove whether remove accessions contains hyb-sites
 #' @param na_drop whether drop accessions contains missing data ("N", NA)
-#' @usage
-#'   plink.pedmap2hap(p.link,
-#'                    hapPrefix = "H",
-#'                    hetero_remove = TRUE,
-#'                    na_drop = TRUE)
+#' @param pad The number length in haplotype names should be extend to.
 #' @examples
 #' \donttest{
 #'    pedfile <- system.file("extdata",
@@ -31,6 +27,7 @@
 #' @export
 plink.pedmap2hap <- function(p.link,
                              hapPrefix = "H",
+                             pad = 3,
                              hetero_remove = TRUE,
                              na_drop = TRUE) {
     map <- p.link$map
@@ -63,7 +60,7 @@ plink.pedmap2hap <- function(p.link,
     } else
         options <- c(options, NA_remove = "NO")
 
-    hap <- assign_hapID(hap, hapPrefix)
+    hap <- assign_hapID(hap, hapPrefix, pad)
 
     # add infos
     meta <- rbind(c("CHR", CHR, ""),

@@ -91,3 +91,17 @@ is.multiallelic.allele <- function(allele.vector) {
     probe[is.na(probe)] <- FALSE
     return(probe)
 }
+
+#' @importFrom stats IQR quantile
+removeOutlier <- function(x){
+    outlier_limup <-
+        quantile(x, 3 / 4, na.rm = TRUE, names = FALSE) +
+        3 * IQR(x, na.rm = TRUE) # Q3+k(Q3-Q1)
+
+    outlier_limdown <-
+        quantile(x, 1 / 4, na.rm = TRUE, names = FALSE) -
+        3 * IQR(x , na.rm = TRUE) # Q1-k(Q3-Q1)
+
+    x[x >= outlier_limup | x <= outlier_limdown] = NA
+    return(x)
+}

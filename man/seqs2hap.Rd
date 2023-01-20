@@ -5,11 +5,16 @@
 \alias{trimSeqs}
 \title{Generate Hap Results from Seqs}
 \usage{
-seqs2hap(seqs,
-         Ref = names(seqs)[1],
-         hetero_remove = TRUE, na_drop = TRUE,
-         maxGapsPerSeq = 0.25,
-         hapPrefix = "H", ...)
+seqs2hap(
+  seqs,
+  Ref = names(seqs)[1],
+  hetero_remove = TRUE,
+  na_drop = TRUE,
+  maxGapsPerSeq = 0.25,
+  hapPrefix = "H",
+  pad = 3,
+  ...
+)
 
 trimSeqs(seqs,
          minFlankFraction = 0.1)
@@ -31,6 +36,8 @@ fraction of gaps allowed in each seq after alignment (default as 0.25).
 Seqs with gap percent exceed that will be dropped}
 
 \item{hapPrefix}{prefix of hap names. Default as "H"}
+
+\item{pad}{The number length in haplotype names should be extend to.}
 
 \item{...}{Parameters not used.}
 

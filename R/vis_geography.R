@@ -4,14 +4,6 @@
 #' show distribution of intereted haplotypes on maps
 #' @importFrom maps map
 #' @importFrom graphics polygon
-#' @usage
-#' hapDistribution(hap, AccINFO, LON.col, LAT.col, hapNames,
-#'                 database = "world", regions = ".",
-#'                 zColours = zColours,
-#'                 legend = TRUE, symbolSize = 1,
-#'                 ratio = 1, cex.legend = 0.8,
-#'                 lwd.pie = 1,
-#'                 ...)
 #' @examples
 #' \donttest{
 #' data("geneHapR_test")
@@ -22,6 +14,7 @@
 #'                 hapNames = c("H001", "H002", "H003"))
 #' }
 #' @param hap an object of hapResult class
+#' @param lty.pie the line type of pie border
 #' @param AccINFO a data.frame contains accession information
 #' @param LON.col,LAT.col column names of
 #' longitude(`LON.col`) and latitude(`LAT.col`)
@@ -34,6 +27,7 @@
 #' @param cex.legend character expansion factor for legend relative to current `par("cex")`
 #' @param ratio the ratio of Y to N in the output map, set to 1 as default
 #' @param lwd.pie line width of the pies
+#' @param borderCol.pie The color of pie's border, default is NA, which means no border will be plotted
 #' @inheritParams maps::map
 #' @return No return value
 #' @export
@@ -51,6 +45,8 @@ hapDistribution <-
              ratio = 1,
              cex.legend = 0.8,
              lwd.pie = 1,
+             borderCol.pie = NA,
+             lty.pie = 1,
              ...) {
         hap <- na.omit(hap)
         if (missing(zColours))
@@ -71,11 +67,23 @@ hapDistribution <-
         AccINFO$Hap <- acc2hap[row.names(AccINFO)]
         geoData <- AccINFO[, c("Hap", LON.col, LAT.col)]
         geoData$value <- 1
+        # Check the column data format
         if(! inherits(geoData[,LAT.col], "numeric")){
-            warning("Longitude and Latitude shuld be numeric")
-            geoData[,LON.col] <- as.numeric(geoData[,LON.col])
-            geoData[,LAT.col] <- as.numeric(geoData[,LAT.col])
+            warning("The '", LAT.col, "' column should be numeric")
+            geoData[,LAT.col] <- suppressWarnings(as.numeric(geoData[,LAT.col]))
+            if(! inherits(geoData[,LAT.col], "numeric"))
+                stop("We couldn't conver the '", LAT.col,
+                     "' column as 'numeric'")
         }
+        if(! inherits(geoData[,LON.col], "numeric")){
+            warning("The '", LON.col, "' column should be numeric")
+            geoData[,LON.col] <- suppressWarnings(as.numeric(geoData[,LON.col]))
+            if(! inherits(geoData[,LON.col], "numeric"))
+                stop("We couldn't conver the '", LON.col,
+                     "' column as 'numeric'")
+        }
+
+
         # reshape the data
         formu <- paste0(LON.col, "+", LAT.col, "~Hap")
         dF <-
@@ -122,8 +130,8 @@ hapDistribution <-
                     )
                 graphics::polygon(c(P$x, dF[locationNum, LON.col]),
                                   c(P$y, dF[locationNum, LAT.col]),
-                                  col = zColours[sliceNum],
-                                  lwd = lwd.pie)
+                                  col = zColours[sliceNum], lty = lty.pie,
+                                  lwd = lwd.pie, border = borderCol.pie)
             }
         }
 

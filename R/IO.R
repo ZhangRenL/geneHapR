@@ -26,8 +26,8 @@ import_vcf <- function(file = file, ...) {
 
 #' @title import_plink.pedmap
 #' @name import_plink.pedmap
-#' @description used for import small p.link file stored in map and ped format
-#' @param root this function only support p.link file
+#' @description used for import regular p.link file stored in map and ped format
+#' @param root The file name without suffix. This function only support p.link file
 #'   format stored in "map" and "ped" format, the file names after removed suffix
 #'   should be same with each other.
 #' @param sep_ped a character indicate the separation of ped file
@@ -375,7 +375,7 @@ write.hap <- function(x, file = file, sep = "\t") {
 }
 
 
-#' @importFrom tidyr `%>%`
+#' @importFrom tidyr `%>%` unite pivot_wider matches chop
 #' @importFrom IRanges `%over%`
 `%>%` <- tidyr::`%>%`
 `%over%` <- IRanges::`%over%`

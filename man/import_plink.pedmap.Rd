@@ -9,7 +9,7 @@ import_plink.pedmap(root = root,
                       pedfile = pedfile, mapfile = mapfile)
 }
 \arguments{
-\item{root}{this function only support p.link file
+\item{root}{The file name without suffix. This function only support p.link file
 format stored in "map" and "ped" format, the file names after removed suffix
 should be same with each other.}
 
@@ -24,7 +24,7 @@ list, contains map information stored in data.frame and ped
 information stored in data.frame
 }
 \description{
-used for import small p.link file stored in map and ped format
+used for import regular p.link file stored in map and ped format
 }
 \examples{
 \donttest{

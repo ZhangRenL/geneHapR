@@ -1,12 +1,6 @@
 #' @name seqs2hap
 #' @title Generate Hap Results from Seqs
 #' @description generate hapResults from aligned and trimed sequences
-#' @usage
-#' seqs2hap(seqs,
-#'          Ref = names(seqs)[1],
-#'          hetero_remove = TRUE, na_drop = TRUE,
-#'          maxGapsPerSeq = 0.25,
-#'          hapPrefix = "H", ...)
 #' @examples
 #' \donttest{
 #' data("geneHapR_test")
@@ -33,6 +27,7 @@
 #' Default as `TRUE`
 #' @param na_drop whether drop sequeces contain "N"
 #' Default as `TRUE`.
+#' @param pad The number length in haplotype names should be extend to.
 #' @param ... Parameters not used.
 #' @inherit hap_summary examples
 #' @return
@@ -42,7 +37,7 @@ seqs2hap <- function(seqs,
                      Ref = names(seqs)[1],
                      hetero_remove = TRUE, na_drop = TRUE,
                      maxGapsPerSeq = 0.25,
-                     hapPrefix = "H",
+                     hapPrefix = "H", pad = 3,
                      ...) {
     seqs <- as(seqs, "DNAStringSet")
     options <- c(hapPrefix = hapPrefix)
@@ -93,7 +88,7 @@ seqs2hap <- function(seqs,
     INFO <- CHR <- rep(NA, ncol(hap))
 
     # assign hapID
-    hap <- assign_hapID(hap, hapPrefix)
+    hap <- assign_hapID(hap, hapPrefix, pad)
     hap <- rbind(
         CHR = c("CHR", CHR, ""),
         POS = c("POS", POS, ""),
@@ -181,15 +176,30 @@ seq2hap_data <- function(seqs,
                          RefSeq = RefSeq) {
     # get refSeq trimed length
     Ref <- names(RefSeq)
-    aRefSeq <- as(seqs, "DNAStringSet")[Ref]
-    aRefSeq <- stringr::str_remove_all(aRefSeq, "-")
-    range <- stringr::str_locate(as.character(RefSeq), aRefSeq)
-    trimedLen <- range[1, "start"] - 1
-
     # convert DNAset into matrix
     RefSeq <- as.matrix(RefSeq)
     mseqs <- as.matrix(seqs)
     mRef <- mseqs[Ref, ]
+
+    # trim addtional oligonucleotide exceed than Ref
+    trimLength <- 0
+    for(i in mRef){
+        if(i == "-") trimLength <- trimLength + 1 else break
+    }
+    if(trimLength > 0) {
+        probe <- seq_len(trimLength)
+        mseqs <- mseqs[, -probe]
+        mRef <- mRef[-probe]
+    }
+    trimLength <- 0
+    for(i in rev(mRef)){
+        if(i == "-") trimLength <- trimLength + 1 else break
+    }
+    if(trimLength > 0) {
+        probe <- ncol(mseqs) - seq_len(trimLength) + 1
+        mseqs <- mseqs[, -probe]
+        mRef <- mRef[-probe]
+    }
 
     # deal with indels
     newmseqs <-

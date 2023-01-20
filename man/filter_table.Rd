@@ -42,3 +42,9 @@ needed if \code{type} set to "custom"}
 \description{
 filter variants stored in table
 }
+\examples{
+# example
+data("geneHapR_test")
+table <- filter_table(gt.geno, mode = "POS",
+                      Chr = "scaffold_1", start = 4100, end = 5000)
+}

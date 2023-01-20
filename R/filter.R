@@ -139,6 +139,11 @@ filter_vcf <- function(vcf,
 #' @param cusTyp character vector, custom filter type,
 #' needed if `type` set to "custom"
 #' @param geneID gene ID
+#' @examples
+#' # example
+#' data("geneHapR_test")
+#' table <- filter_table(gt.geno, mode = "POS",
+#'                       Chr = "scaffold_1", start = 4100, end = 5000)
 #' @export
 filter_table <- function(x,
                          mode = c("POS", "type", "both"),
@@ -191,7 +196,6 @@ filter_table <- function(x,
 
 #' @name filter_hmp
 #' @title filter variants in hapmap format
-#' @inherit filter_table examples
 #' @param x genotype dataset in hapmap format, object of data.frame class
 #' @param gff object of GRanges class, genome annotations imported by
 #' `import_gff()`
@@ -205,6 +209,14 @@ filter_table <- function(x,
 #' @param cusTyp character vector, custom filter type,
 #' needed if `type` set to "custom"
 #' @param geneID gene ID
+#' @examples
+#' # create a dataset of genotype in hapmap format
+#' hmp <- hap2hmp(hapResult);
+#'
+#' # example
+#' hmp <- filter_hmp(hmp, mode = "POS",
+#'                       Chr = "scaffold_1", start = 4100, end = 5000)
+#'
 #' @export
 filter_hmp <- function(x,
                        mode = c("POS", "type", "both"),
@@ -403,7 +415,12 @@ filter_hap <- function(hap,
             hap <- hap[which(! rm.probe),]
             AccRemoved <- c(AccRemoved, hap2acc[! names(hap2acc) %in% hap$Hap])
         } else {
-            warning("only 'hapSummary' class surrport filtered by 'freq'")
+            freq <- table(hap$Hap[-c(1:4)])
+            rm.probe <- freq < freq.min
+            rm.probe <- hap$Hap %in% names(freq)[which(rm.probe)]
+            hap <- hap[which(!rm.probe),]
+            # warning("only 'hapSummary' class surrport filtered by 'freq'")
+            AccRemoved <- c(AccRemoved, hap$Accession[which(rm.probe)])
         }
     }
 

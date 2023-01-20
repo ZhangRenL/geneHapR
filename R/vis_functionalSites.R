@@ -33,12 +33,12 @@
 #         head(pheno.p)
 #         Readraw=mrMLM::ReadData(fileGen=hmp,filePhe=data.frame(pheno.p),fileKin=NULL,filePS =NULL,
 #                                 Genformat=3)
-#         if ("FASTmrMLM" %in% method) {
+#         if ("FASTmrMLM" %in% method) { # FAIL
 #             InputData=mrMLM::inputData(readraw=Readraw,Genformat=3,method="FASTmrMLM",trait=1)
 #             result=mrMLM::FASTmrMLM(InputData$doMR$gen,InputData$doMR$phe,
 #                              InputData$doMR$outATCG,InputData$doMR$genRaw,
 #                              InputData$doMR$kk,InputData$doMR$psmatrix,0.01,svrad=20,
-#                              svmlod=3,Genformat=,CLO=1)
+#                              svmlod=3,Genformat=3,CLO=1)
 #         }
 #         if ("mrMLM" %in% method){
 #             InputData=mrMLM::inputData(readraw=Readraw,Genformat=3,method="mrMLM",trait=1)
@@ -263,9 +263,9 @@ siteEFF <- function(hap, pheno, phenoNames, quality = FALSE, method = "auto",
     colnames(results.d) <- colnames(results.p) <- POS
     rownames(results.d) <- rownames(results.p) <- phenoNames
     # results <- cbind(pheno = phenoNames, results)
-    results.d$Chr <- results.p$Chr <- Chr
-    results.d$POS <- results.p$POS <- POS
-    results.d <- results.d[,c("Chr", "POS")]
+    # results.d$Chr <- results.p$Chr <- Chr
+    # results.d$POS <- results.p$POS <- POS
+    # results.d <- results.d[,c("Chr", "POS")]
     df <- data.frame(Chr = rep(Chr, length(POS)), POS = POS)
     results.p <- cbind(df, t(results.p))
     results.d <- cbind(df, t(results.d))
@@ -371,30 +371,19 @@ wilcox.test.ps <- function(phenos){
 #' @title plotEFF
 #' @name plotEFF
 #' @importFrom graphics par strwidth rect points
-#' @importFrom grDevices heat.colors
-#' @usage
-#' plotEFF(siteEFF, gff = gff,
-#'         Chr = Chr, start = start, end = end,
-#'         showType = c("five_prime_UTR", "CDS", "three_prime_UTR"),
-#'         CDS.height = CDS.height, cex = 0.1, col = col, pch = 20,
-#'         main = main, legend.cex = 0.8, gene.legend = TRUE,
-#'         markMutants = TRUE, mutants.col = 1, mutants.type = 1,
-#'         y = c("pvalue","effect"), ylab = ylab,
-#'         legendtitle = legendtitle,
-#'         par.restore = TRUE)
+#' @importFrom grDevices colorRampPalette
 #' @inherit siteEFF examples
 #' @param siteEFF matrix, column name are pheno names and row name are site position
-#' @param gff gff
+#' @param gff gff annotation
 #' @param Chr the chromosome name
-#' @param start start postion
+#' @param start start position
 #' @param end end position
 #' @param showType character vector, eg.: "CDS", "five_prime_UTR",
 #' "three_prime_UTR"
 #' @param CDS.height numeric indicate the height of CDS in gene model,
 #' range: `[0,1]`
 #' @param cex a numeric control the size of point
-#' @param col vector controls points color, see
-#' \code{\link[graphics:points]{points()}}
+#' @param col vector specified the color bar
 #' @param pch vector controls points type, see
 #' \code{\link[graphics:par]{par()}}
 #' @param main main title
@@ -411,7 +400,7 @@ wilcox.test.ps <- function(phenos){
 plotEFF <- function(siteEFF, gff = gff,
                     Chr = Chr, start = start, end = end,
                     showType = c("five_prime_UTR", "CDS", "three_prime_UTR"),
-                    CDS.height = CDS.height, cex = 0.1, col = col, pch = 20,
+                    CDS.height = CDS.height, cex = 0.1, col = c("red", "yellow"), pch = 20,
                     main = main, legend.cex = 0.8, gene.legend = TRUE,
                     markMutants = TRUE, mutants.col = 1, mutants.type = 1,
                     y = c("pvalue","effect"), ylab = ylab,
@@ -438,14 +427,14 @@ plotEFF <- function(siteEFF, gff = gff,
     y <- y[1]
     if(y == "pvalue") {
         value_c <- as.matrix(siteEFF$EFF[,-c(1,2)])
-        value_y <- -log10(siteEFF$p[,-c(1,2)])
+        value_y <- -log10(siteEFF$p[,-c(1,2)]) %>% as.matrix()
         if(missing(ylab))
             ylab <- expression("-log"[10]~italic(p)~"Value")
         if(missing(legendtitle))
             legendtitle <- "effect"
     } else if(y == "effect") {
-        value_c <- -log10(siteEFF$p)
-        value_y <- as.matrix(siteEFF$EFF)
+        value_c <- -log10(siteEFF$p[,-c(1,2)]) %>% as.matrix()
+        value_y <- as.matrix(siteEFF$EFF[,-c(1,2)])
         if(missing(ylab))
             ylab <- "effect"
         if(missing(legendtitle))
@@ -455,11 +444,11 @@ plotEFF <- function(siteEFF, gff = gff,
     }
 
     # legend text and colors
-    heatcols <- rev(heat.colors(1000))
+    heatcols <- rev(grDevices::colorRampPalette(col)(1000))
     value_c.max <- max(value_c, na.rm = TRUE)
     value_c.min <- min(value_c, na.rm = TRUE)
     cols <- round((value_c - value_c.min + 1) / (value_c.max - value_c.min + 1) * 1000)
-    cols[,] <- heatcols[cols]
+    cols <- matrix(heatcols[cols], ncol = ncol(cols))
 
     t1 <- value_c.max - (value_c.max - value_c.min) / 4 * 1
     t2 <- value_c.max - (value_c.max - value_c.min) / 4 * 2
@@ -523,7 +512,7 @@ plotEFF <- function(siteEFF, gff = gff,
             anno <- ifelse(gffs@strand[1] == "-", "3'<-5'", "5'->3'")
 
             ln <- ln + 1.1
-            lines(c(start,end),c(ln,ln))
+            lines(c(start,end),c(ln,ln), col = "grey")
             text(start - strwidth(anno), ln, anno, xpd = TRUE)
             s.col <- rainbow(nsplicement)[n]
             n <- n + 1
@@ -534,7 +523,8 @@ plotEFF <- function(siteEFF, gff = gff,
                 h <- ifelse(gffi$type == "CDS", CDS.height, CDS.height * 0.5) * 0.5
                 xl <- gffi@ranges@start
                 xr <- xl + gffi@ranges@width - 1
-                rect(xleft = xl, xright = xr, ybottom = ln - h, ytop = ln + h, col = s.col)
+                # rect(xleft = xl, xright = xr, ybottom = ln - h, ytop = ln + h, col = s.col)
+                rect(xleft = xl, xright = xr, ybottom = ln - h, ytop = ln + h, col = "grey", lty = 0)
             }
             Parents.txt <- c(Parents.txt, s)
             Parents.y <- c(Parents.y, ln)
@@ -775,17 +765,4 @@ pscale <- function(x){
     return(100 * x)
 }
 
-#' @importFrom stats IQR quantile
-removeOutlier <- function(x){
-    outlier_limup <-
-        3 * IQR(x, na.rm = TRUE) +
-        quantile(x, 3 / 4, na.rm = TRUE, names = FALSE)# Q3+k(Q3-Q1)
-
-    outlier_limdown <-
-        quantile(x, 1 / 4, na.rm = TRUE, names = FALSE) -
-        3 * IQR(x , na.rm = TRUE) # Q1-k(Q3-Q1)
-
-    x[x >= outlier_limup | x <= outlier_limdown] = NA
-    return(x)
-}
 

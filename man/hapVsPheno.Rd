@@ -18,7 +18,8 @@ hapVsPheno(
   angle = angle,
   hjust = hjust,
   vjust = vjust,
-  minAcc = 5,
+  minAcc = minAcc,
+  freq.min = freq.min,
   outlier.rm = TRUE,
   ...
 )
@@ -50,7 +51,7 @@ for wilcoxon test.}
 \item{symnum.args}{a list of arguments to pass to the function
  \code{\link[stats]{symnum}} for symbolic number coding of p-values. For
  example, \code{symnum.args <- list(cutpoints = c(0, 0.0001, 0.001,
- 0.01, 0.05, 1), symbols = c("****", "***", "**", "*",  "ns"))}.
+ 0.01, 0.05, Inf), symbols = c("****", "***", "**", "*",  "ns"))}.
 
  In other words, we use the following convention for symbols indicating
  statistical significance: \itemize{ \item \code{ns}: p > 0.05 \item
@@ -63,9 +64,9 @@ plot or not. Default as \code{FALSE}}
 
 \item{hjust, vjust}{hjust and vjust of x labels}
 
-\item{minAcc}{If observations number of a Hap less than this number will
+\item{minAcc, freq.min}{If observations number of a Hap less than this number will
 not be compared with others or be ploted. Should not less than 3 due to the
-t-test will meaninglessly. default as 5}
+t-test will meaninglessly. Default as 5}
 
 \item{outlier.rm}{whether remove ouliers, default as TRUE}
 
@@ -149,8 +150,10 @@ c('A', 'B')")}. } }}
 text labels or not.}
     \item{\code{label.rectangle}}{logical value. If TRUE, add rectangle underneath the
 text, making it easier to read.}
-    \item{\code{position}}{Position adjustment, either as a string, or the result of
-a call to a position adjustment function.}
+    \item{\code{position}}{Position adjustment, either as a string naming the adjustment
+(e.g. \code{"jitter"} to use \code{position_jitter}), or the result of a call to a
+position adjustment function. Use the latter if you need to change the
+settings of the adjustment.}
     \item{\code{ggtheme}}{function, ggplot2 theme name. Default value is theme_pubr().
 Allowed values include ggplot2 official themes: theme_gray(), theme_bw(),
 theme_minimal(), theme_classic(), theme_void(), ....}

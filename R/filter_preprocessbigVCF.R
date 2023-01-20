@@ -39,7 +39,7 @@
 #' @examples
 #' \donttest{
 #'  # The filteration of small vcf should be done with `filter_vcf()`.
-#'  # however, here, we use a mini vcf instead just for example
+#'  # however, here, we use a mini vcf instead just for example and test.
 #'
 #'  vcfPath <- system.file("extdata", "var.vcf.gz", package = "geneHapR")
 #'
@@ -47,7 +47,7 @@
 #'  setwd(tempdir())
 #'  # extract a single gene/range from large vcf
 #'  filterLargeVCF(VCFin = vcfPath, VCFout = "filtered.vcf.gz",
-#'                 Chr = "scaffold_1", POS = c(4300,500), override = TRUE)
+#'                 Chr = "scaffold_1", POS = c(4300,5000), override = TRUE)
 #'
 #'  # extract multi genes/ranges from large vcf
 #'  filterLargeVCF(VCFin = vcfPath,
@@ -146,7 +146,7 @@ filterLargeVCF_One <- function(VCFin = VCFin,
             iz <- file(VCFin, "rb")
     else
         stop("Input should with surfix 'vcf' or '.vcf.gz'")
-    on.exit(close(oz))
+    on.exit(close(iz))
     if (endsWith(VCFout, "gz"))
         oz <- gzcon(file(VCFout, "wb"))
     else
@@ -154,7 +154,7 @@ filterLargeVCF_One <- function(VCFin = VCFin,
             oz <- file(VCFout, "wb")
     else
         stop("Output should with surfix 'vcf' or '.vcf.gz'")
-    on.exit(close(iz), add = TRUE)
+    on.exit(close(oz), add = TRUE)
 
     nl <- 0
 
@@ -274,3 +274,208 @@ filterLargeVCF_Multi <- function(VCFin = VCFin,
     # close con
     message("Processed ", nl, " lines. \nExit")
 }
+
+
+
+# File Checked
+#' @name filterLargep.link
+#' @title Pre-process of Large VCF File(s)
+#' @description
+#' Filter/extract one or multiple gene(s)/range(s) from a large
+#' `p.link` file.
+#' @param root The file name without suffix. This function only support p.link file
+#'   format stored in "map" and "ped" format, the file names after removed suffix
+#'   should be same with each other.
+#' @param rootOut Path(s) of output `p.link` file stored in "ped&map" format.
+#' @param Chr a single CHROM name or CHROM names vector.
+#' @param POS,start,end provide the chromosome name should be extract from orignal p.link dataset.
+#'  `POS`: a vector consist with start and end position, eg.: `c(1,200)`
+#'  indicates 3 ranges (1~200, 300~500 and 300~400).
+#'  if `POS` is `NULL`, `start` and `end` are needed.
+#' @param override whether override existed file or not, default as `TRUE`.
+#' @param sep a character indicate the separation of map and ped file, default is `\t`.
+#' @details
+#' This package import P.link files. However, import a large P.link file is time and
+#' memory consuming. It's suggested that extract variants in target
+#' range with `filterLargeP.link()` before identification of haplotype.
+#'
+#' When filter/extract multi genes/ranges, the parameter of `Chr` and `POS`
+#' must have equal length. Results will save to a single file if the user
+#' provide a single file path or save to multiple P.link file(s) when a equal length
+#' vector consist with file paths is provided.
+#' @examples
+#' \donttest{
+#'  # The filteration of P.link of regular size should be done with `filter_plink.pedmap()`.
+#'  # however, here, we use a mini vcf instead just for example and test
+#'
+#'  pedfile <- system.file("extdata",
+#'                         "snp3kvars-CHR8-25947258-25951166-plink.ped",
+#'                         package = "geneHapR")
+#'  mapfile <- system.file("extdata",
+#'                         "snp3kvars-CHR8-25947258-25951166-plink.map",
+#'                         package = "geneHapR")
+#'  oldDir <- getwd()
+#'  tmpdir <- tempdir()
+#'  setwd(tmpdir)
+#'  file.copy(pedfile, "test.ped")
+#'  file.copy(mapfile, "test.map")
+#'
+#'  # extract a single gene/range from large vcf
+#'  filterLargeP.link(root = "test",
+#'                    rootOut = "filtered_test",
+#'                    Chr = "scaffold_1", POS = c(4300,5000), override = TRUE)
+#'
+#' setwd(oldDir)
+#'
+#' # delete tempDir
+#' unlink(tmpdir, recursive = TRUE)
+#' }
+#' @return No return value
+#' @export
+filterLargeP.link <- function(root, rootOut = rootOut,
+                              Chr = Chr,
+                              POS = NULL,
+                              start = start,
+                              end = end,
+                              override = TRUE,
+                              sep = "\t")
+{
+    if (missing(Chr))
+        stop("Chr is missing")
+    if (is.null(POS) && (missing(start) | missing(end)))
+        stop("POS is null, please provide start(s) and end(s)")
+    if (!file.exists(paste0(root, ".ped")))
+        stop("Can't find '", root, ".ped', please check input")
+    if (!file.exists(paste0(root, ".map")))
+        stop("Can't find '", root, ".map', please check input")
+    if (!override)
+        if (TRUE %in% file.exists(rootOut))
+            stop("One of '",
+                 paste(rootOut[file.exists(rootOut)], collapse = "', '"),
+                 "' existed, please check 'rootOut'")
+
+    if(is.null(POS)){
+        if(length(start) != length(end) | length(start) != length(POS))
+            stop("length of 'POS', 'start', 'end' should be equal")
+        if(!is.numeric(start) | !is.numeric(end))
+            stop("'start' and 'end' should be numeric")
+        if(length(Chr) == 1) POS <- c(start, end) else{
+            POS <- list()
+            for(i in seq_len(length(start))) POS <- c(POS, c(start[i], end[i]))
+        }
+    } else {
+        if (length(Chr) == 1)
+            if (length(POS) != 2 | !is.numeric(POS)) {
+                stop("'POS' should be interger vector consist with start and end position")
+                if (!is.numeric(POS))
+                    stop("'POS' should be a numeric vector")
+            }
+        if (length(Chr) > 1)
+            if (length(POS) != length(Chr) | ! inherits(POS,"list"))
+                stop("'POS' should be a list have length equal with 'Chr'")
+    }
+
+    # set input file name
+    # map file name
+    if (file.exists(paste0(root, ".map"))){
+        mapFile <- paste0(root, ".map")
+    } else if (file.exists(paste0(root, ".Map"))){
+            mapFile <- paste0(root, ".Map")
+        } else if (file.exists(paste0(root, ".MAP"))) {
+                mapFile <- paste0(root, ".MAP")
+            } else stop("Input should with surfix 'map'")
+
+    # ped file name
+    if (file.exists(paste0(root, ".ped"))) {
+        pedFile <- paste0(root, ".ped")
+    } else
+        if (file.exists(paste0(root, ".Ped"))) {
+        pedFile <- paste0(root, ".Ped")
+    } else
+        if (file.exists(paste0(root, ".PED"))) {
+        pedFile <- paste0(root, ".PED")
+    } else
+        stop("Input should with surfix 'PED'")
+
+    # number of conditions and file paths
+    nCond <- length(Chr)
+    if (nCond == 1) {
+        filterLargeP.link_One(
+            mapFile = mapFile,
+            pedFile = pedFile,
+            rootOut = rootOut,
+            Chr = Chr,
+            POS = POS,
+            override = override,
+            sep = sep
+        )
+    }
+    # else if (nCond > 1) {
+    #     if (length(VCFout) != nCond)
+    #         stop("length of 'VCFout' should be equal with 'Chr' and 'POS'")
+    #     filterLargeVCF_Multi(
+    #         mapFile = mapFile,
+    #         pedFile = pedFile,
+    #         rootOut = rootOut,
+    #         Chr = Chr,
+    #         POS = POS,
+    #         override = override,
+    #         sep = sep
+    #     )
+    # }
+
+}
+
+
+filterLargeP.link_One <- function(mapFile = mapFile,
+                                  pedFile = pedFile,
+                                  rootOut = rootOut,
+                                  Chr = Chr,
+                                  POS = POS,
+                                  override = override,
+                                  sep = sep)
+{
+    start <- min(POS)
+    end <- max(POS)
+    t0 <- Sys.time()
+
+    iz.map <- file(mapFile, "rb")
+    iz.ped <- file(pedFile, "rb")
+    on.exit(close(iz.map), add = TRUE)
+    on.exit(close(iz.ped), add = TRUE)
+
+    oz.ped <- file(paste0(rootOut, ".ped"), "wb")
+    on.exit(close(oz.ped), add = TRUE)
+
+    # process map
+    map <- read.table(file = mapFile, header = FALSE, sep = sep)
+    probe <- rep(TRUE, nrow(map))
+    probe <- probe & map[,1] %in% Chr
+    probe <- probe & map[,4] >= start
+    probe <- probe & map[,4] <= end
+    probe <- which(probe)
+    map <- map[probe, ]
+    write.table(map, file = paste0(rootOut, ".map"), sep = sep,
+                col.names = FALSE, row.names = FALSE)
+
+    # process variant information (ped file)
+    nl <- 0
+    probe_ped <- c(1:6, probe * 2 + 6, probe * 2 + 5)
+    probe_ped <- probe_ped[order(probe_ped)]
+    l <- readLines(iz.ped, n = 1)
+    while (TRUE) {
+        if (length(l) == 0)
+            break
+        if (nl %% 1e4 == 0)
+            message("Processed ", nl, " lines,", " used ", Sys.time() - t0)
+        lc <- unlist(strsplit(l, split = sep))
+        lc <- lc[probe_ped]
+        writeLines(l, con = oz.ped)
+
+        l <- readLines(iz.ped, n = 1)
+        nl <- nl + 1
+    }
+    cat("\n")
+    cat("Processed ", nl, " lines. \nExit")
+}
+
