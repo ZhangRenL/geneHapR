@@ -4,7 +4,7 @@
 \alias{table2hap}
 \title{table2hap}
 \usage{
-table2hap(x, hapPrefix = "H", hetero_remove = TRUE, na_drop = TRUE)
+table2hap(x, hapPrefix = "H", pad = 3, hetero_remove = TRUE, na_drop = TRUE)
 }
 \arguments{
 \item{x}{a data.frame contains variants information.
@@ -14,6 +14,8 @@ alter nuclieotide and INFO. Accession genotype should be in followed columns.
 Heterozygotes should be "A/T", "AAA/A"}
 
 \item{hapPrefix}{prefix of haplotype names}
+
+\item{pad}{The number length in haplotype names should be extend to.}
 
 \item{hetero_remove}{whether remove accessions contains hyb-sites, Character not A T C G}
 

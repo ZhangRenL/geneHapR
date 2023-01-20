@@ -27,9 +27,9 @@
 #' @param title a charater which will used for figure title
 #' @param mergeFigs bool type, indicate whether merge the heat map and box
 #' plot or not. Default as `FALSE`
-#' @param minAcc If observations number of a Hap less than this number will
+#' @param minAcc,freq.min If observations number of a Hap less than this number will
 #' not be compared with others or be ploted. Should not less than 3 due to the
-#' t-test will meaninglessly. default as 5
+#' t-test will meaninglessly. Default as 5
 #' @param outlier.rm whether remove ouliers, default as TRUE
 #' @param angle the angle of x labels
 #' @param hjust,vjust hjust and vjust of x labels
@@ -61,7 +61,8 @@ hapVsPheno <- function(hap,
                        angle = angle,
                        hjust = hjust,
                        vjust = vjust,
-                       minAcc = 5,
+                       minAcc = minAcc,
+                       freq.min = freq.min,
                        outlier.rm = TRUE,
                        ...)
 {
@@ -74,6 +75,7 @@ hapVsPheno <- function(hap,
     if (!(phenoName %in% colnames(pheno))) {
         stop("Could not find ", phenoName, " in colnames of pheno")
     }
+
     result <- list()
     hap <- hap[stringr::str_starts(hap[, 1], hapPrefix),]
     Accessions <- hap[, colnames(hap) == "Accession"]
@@ -86,6 +88,7 @@ hapVsPheno <- function(hap,
     # remove outliers
     if(outlier.rm)
         phenop[, phenoName] <- removeOutlier(phenop[, phenoName])
+
     phenop <- na.omit(phenop)
     if (nrow(phenop) == 0)
         stop(
@@ -95,7 +98,7 @@ hapVsPheno <- function(hap,
         )
 
     hps <- table(phenop$Hap)
-
+    if(missing(minAcc)) minAcc <- 5
     # filter Haps for plot
     if (max(hps) < minAcc)
         stop("there is no haps to plot (no Haps with observations more than ",
@@ -115,6 +118,7 @@ hapVsPheno <- function(hap,
     colnames(T.Result) <- hpsnm
     row.names(T.Result) <- hpsnm
     nr = nrow(T.Result)
+
     for (m in seq_len(nr)) {
         for (n in nr:m) {
             i <- hpsnm[m]
@@ -330,6 +334,7 @@ hapVsPheno <- function(hap,
 #' @inheritParams hapVsPheno
 #' @inheritDotParams hapVsPheno
 #' @examples
+#' \donttest{
 #' data("geneHapR_test")
 #'
 #' oriDir <- getwd()
@@ -345,6 +350,7 @@ hapVsPheno <- function(hap,
 #'             height = 8,
 #'             res = 300)
 #' setwd(oriDir)
+#' }
 #' @importFrom stats na.omit t.test
 #' @import grDevices
 #' @export

@@ -403,7 +403,12 @@ filter_hap <- function(hap,
             hap <- hap[which(! rm.probe),]
             AccRemoved <- c(AccRemoved, hap2acc[! names(hap2acc) %in% hap$Hap])
         } else {
-            warning("only 'hapSummary' class surrport filtered by 'freq'")
+            freq <- table(hap$Hap[-c(1:4)])
+            rm.probe <- freq < freq.min
+            rm.probe <- hap$Hap %in% names(freq)[which(rm.probe)]
+            hap <- hap[which(!rm.probe),]
+            # warning("only 'hapSummary' class surrport filtered by 'freq'")
+            AccRemoved <- c(AccRemoved, hap$Accession[which(rm.probe)])
         }
     }
 

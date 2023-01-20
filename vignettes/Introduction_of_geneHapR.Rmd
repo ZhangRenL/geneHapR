@@ -10,7 +10,6 @@ vignette: >
 editor_options: 
   markdown: 
     wrap: sentence
----
 
 `geneHapR` is designed for gene haplotype statistics, phenotype association and visualization.
 

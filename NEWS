@@ -1,3 +1,6 @@
+V 1.1.1
+
+filterLargeVcf -> extractLargeFile()
 
 V 1.0.9
 TODO:

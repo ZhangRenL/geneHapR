@@ -33,7 +33,8 @@ get_hapNet <-
              groupName = groupName,
              na.label = "Unknown") {
         if (!inherits(hapSummary, "hapSummary"))
-            stop("'hapSummary' should be of 'hapSummary' class")
+            if (inherits(hapSummary, 'hapResult'))
+                hapSummary <- hap_summary(hapSummary)
         d <- getStringDist(hapSummary)
         hapNet <- pegas::haploNet(as.haplotype(hapSummary), d)
         if (!missing(AccINFO)) {
@@ -222,7 +223,7 @@ plotHapNet <- function(hapNet,
     if(legend[1]){
         # get position
         if (is.logical(legend)) {
-            cat("Click where you want to draw the legend (lefttop)")
+            cat("Click where you want to draw the legend.")
             xy <- unlist(locator(1))
             cat("\nThe coordinates x = ", xy[1],
                 ", y = ", xy[2], " are used\n", sep = "")
@@ -287,7 +288,6 @@ plotHapNet <- function(hapNet,
                     legend = colnames(hapGroup),
                     fill = co,
                     cex = cex.legend
-                    
                 )
             }
     }
@@ -315,10 +315,9 @@ plotHapNet <- function(hapNet,
 #' @return haplotype class
 #' @export
 as.haplotype <- function(hap) {
-    if (inherits(hap, "hapResult"))
-        hap <- hap_summary(hap)
     if (!inherits(hap, "hapSummary"))
-        stop("'hap' must be of 'hapResult' or 'hapSummary' class")
+        if (inherits(hap, 'hapResult'))
+            hap <- hap_summary(hap)
     # get freq
     freq <- hap$freq
     names(freq) <- hap$Hap

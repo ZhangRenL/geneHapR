@@ -4,24 +4,37 @@
 \alias{plotEFF}
 \title{plotEFF}
 \usage{
-plotEFF(siteEFF, gff = gff,
-        Chr = Chr, start = start, end = end,
-        showType = c("five_prime_UTR", "CDS", "three_prime_UTR"),
-        CDS.height = CDS.height, cex = 0.1, col = col, pch = 20,
-        main = main, legend.cex = 0.8, gene.legend = TRUE,
-        markMutants = TRUE, mutants.col = 1, mutants.type = 1,
-        y = c("pvalue","effect"), ylab = ylab,
-        legendtitle = legendtitle,
-        par.restore = TRUE)
+plotEFF(
+  siteEFF,
+  gff = gff,
+  Chr = Chr,
+  start = start,
+  end = end,
+  showType = c("five_prime_UTR", "CDS", "three_prime_UTR"),
+  CDS.height = CDS.height,
+  cex = 0.1,
+  col = c("red", "yellow"),
+  pch = 20,
+  main = main,
+  legend.cex = 0.8,
+  gene.legend = TRUE,
+  markMutants = TRUE,
+  mutants.col = 1,
+  mutants.type = 1,
+  y = c("pvalue", "effect"),
+  ylab = ylab,
+  legendtitle = legendtitle,
+  par.restore = TRUE
+)
 }
 \arguments{
 \item{siteEFF}{matrix, column name are pheno names and row name are site position}
 
-\item{gff}{gff}
+\item{gff}{gff annotation}
 
 \item{Chr}{the chromosome name}
 
-\item{start}{start postion}
+\item{start}{start position}
 
 \item{end}{end position}
 
@@ -33,8 +46,7 @@ range: \verb{[0,1]}}
 
 \item{cex}{a numeric control the size of point}
 
-\item{col}{vector controls points color, see
-\code{\link[graphics:points]{points()}}}
+\item{col}{vector specified the color bar}
 
 \item{pch}{vector controls points type, see
 \code{\link[graphics:par]{par()}}}

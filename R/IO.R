@@ -375,7 +375,7 @@ write.hap <- function(x, file = file, sep = "\t") {
 }
 
 
-#' @importFrom tidyr `%>%`
+#' @importFrom tidyr `%>%` unite pivot_wider matches chop
 #' @importFrom IRanges `%over%`
 `%>%` <- tidyr::`%>%`
 `%over%` <- IRanges::`%over%`

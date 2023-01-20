@@ -64,9 +64,9 @@ plot or not. Default as \code{FALSE}}
   Arguments passed on to \code{\link[=hapVsPheno]{hapVsPheno}}
   \describe{
     \item{\code{phenoName}}{pheno name for plot, should be one column name of pheno}
-    \item{\code{minAcc}}{If observations number of a Hap less than this number will
+    \item{\code{minAcc,freq.min}}{If observations number of a Hap less than this number will
 not be compared with others or be ploted. Should not less than 3 due to the
-t-test will meaninglessly. default as 5}
+t-test will meaninglessly. Default as 5}
     \item{\code{angle}}{the angle of x labels}
     \item{\code{hjust,vjust}}{hjust and vjust of x labels}
     \item{\code{comparisons}}{a list contains comparison pairs
@@ -81,7 +81,7 @@ for wilcoxon test.}
     \item{\code{symnum.args}}{a list of arguments to pass to the function
  \code{\link[stats]{symnum}} for symbolic number coding of p-values. For
  example, \code{symnum.args <- list(cutpoints = c(0, 0.0001, 0.001,
- 0.01, 0.05, 1), symbols = c("****", "***", "**", "*",  "ns"))}.
+ 0.01, 0.05, Inf), symbols = c("****", "***", "**", "*",  "ns"))}.
 
  In other words, we use the following convention for symbols indicating
  statistical significance: \itemize{ \item \code{ns}: p > 0.05 \item
@@ -95,6 +95,7 @@ No return value
 hapVsPhenos
 }
 \examples{
+\donttest{
 data("geneHapR_test")
 
 oriDir <- getwd()
@@ -110,4 +111,5 @@ hapVsPhenos(hapResult,
             height = 8,
             res = 300)
 setwd(oriDir)
+}
 }

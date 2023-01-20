@@ -14,6 +14,7 @@ if(tools:::.OStype() == "windows"){
 if(tools:::.OStype() == "windows"){
     p <-"
 <b>TODO:</b>
+ Reduce: ggpubr
  optimize: UI
  add: save as hmp
  add: filter largeVCF

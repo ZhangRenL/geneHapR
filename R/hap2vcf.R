@@ -5,13 +5,6 @@
 #' A simple filter by position was provided in this function,
 #' however it's prefer to filter VCF (vcfR object) through
 #' \code{\link[geneHapR:filter_vcf]{filter_vcf()}}.
-#' @usage
-#' vcf2hap(vcf,
-#'         hapPrefix = "H",
-#'         filter_Chr = FALSE,
-#'         filter_POS = FALSE,
-#'         hetero_remove = TRUE,
-#'         na_drop = TRUE, ...)
 #' @author Zhangrenl
 #' @examples
 #' data("geneHapR_test")
@@ -22,6 +15,7 @@
 #' @param hapPrefix prefix of hap names, default as "H"
 #' @param hetero_remove whether remove accessions contains hybrid site or not.
 #' Default as `TRUE`
+#' @param pad The number length in haplotype names should be extend to.
 #' @param na_drop whether remove accessions contains unknown allele site or not
 #' Default as `TRUE`.
 #' @param ... Parameters not used
@@ -35,8 +29,7 @@
 #' \code{\link[geneHapR:filter_vcf]{filter_vcf()}}
 #' @return
 #' object of hapResult class
-#' @import tidyr
-#' @import vcfR
+#' @importFrom vcfR getPOS getCHROM getREF getALT getINFO extract_gt_tidy is.indel is.biallelic read.vcfR
 #' @importFrom rlang .data
 #' @importFrom stats na.omit
 #' @export
@@ -47,6 +40,7 @@ vcf2hap <- function(vcf,
                     filter_POS = FALSE,
                     # startPOS = startPOS,
                     # endPOS = endPOS,
+                    pad = 3,
                     hetero_remove = TRUE,
                     na_drop = TRUE, ...) {
     requireNamespace('tidyr')
@@ -104,7 +98,7 @@ vcf2hap <- function(vcf,
     } else
         options <- c(options, NA_remove = "NO")
 
-    hap <- assign_hapID(hap, hapPrefix)
+    hap <- assign_hapID(hap, hapPrefix, pad)
 
     # add infos
     meta <- rbind(c("CHR", CHR, ""),
@@ -195,7 +189,7 @@ vcf2hap_data <- function(vcf,
 
 
 
-assign_hapID <- function(hap, hapPrefix) {
+assign_hapID <- function(hap, hapPrefix, pad) {
     # name haps
     hap <- data.frame(hap, check.rows = FALSE, check.names = FALSE)
 
@@ -210,7 +204,7 @@ assign_hapID <- function(hap, hapPrefix) {
     haps <- table(hap$Hap)
     haps <- haps[order(haps, decreasing = TRUE)]
     n_hs <- length(haps)
-    hapnms <- stringr::str_pad(seq_len(n_hs), 3, "left", "0")
+    hapnms <- stringr::str_pad(seq_len(n_hs), pad, "left", "0")
     hapnms <- paste0(hapPrefix, hapnms)
     names(hapnms) <- names(haps)
     hap$Hap <- hapnms[hap$Hap]

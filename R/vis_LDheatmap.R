@@ -70,11 +70,9 @@
 #' @param geneMapLabelY A numeric value specifying the y-coordinate
 #' of the text indicating the total length of the genomic region
 #' being considered. Ignored when \code{add.map = FALSE}.
-#' @param SNP.name A vector of character string(s) of SNP name(s) to
-#' be labelled. Should match the names of SNPs in the provided object
-#' \code{gdat}, otherwise nothing is done.
 #' @param color A range of colors to be used for drawing the heat map. Default
-#' is \code{grDevices::heat.colors(n = 20)}.
+#' is \code{grDevices::colorRampPalette(c("red", "grey"))(30)}.
+#' @param color_gmodel,color_snp color of genemodel and snp, default as grey80.
 #' @param newpage If \code{TRUE} (default), the heat map will be drawn on a new page.
 #' @param name A character string specifying the name of the LDheatmap
 #' graphical object (\code{grob}) to be produced.
@@ -155,9 +153,6 @@
 #' display multiple heat maps on one plot without the use
 #' of \code{par()}.
 #'
-#' @author Ji-hyung Shin <shin@sfu.ca>, Sigal Blay <sblay@sfu.ca>, Nicholas
-#' Lewin-Koh <nikko@hailmail.net>, Brad McNeney <mcneney@stat.sfu.ca>, Jinko
-#' Graham <jgraham@cs.sfu.ca>
 #'
 #' @examples # Pass LDheatmap a SnpMatrix object
 #' data(geneHapR_test)
@@ -171,13 +166,14 @@ plot_LDheatmap <- function (hap,gff,Chr,start,end,geneID,
                             LDmeasure = "r",
                             title = "Pairwise LD",
                             add.map = TRUE,
-                            map.height = map.height,
+                            map.height = 1,
                             colorLegend = TRUE,
                             geneMapLocation = 0.15,
                             geneMapLabelX = NULL,
                             geneMapLabelY = NULL,
-                            SNP.name = NULL,
                             color = NULL,
+                            color_gmodel="grey",
+                            color_snp = "grey",
                             newpage = TRUE,
                             name = "ldheatmap",
                             vp.name = NULL,
@@ -187,8 +183,7 @@ plot_LDheatmap <- function (hap,gff,Chr,start,end,geneID,
     flip = TRUE
     if(inherits(hap, "hapResult")){
         gdat <- data.frame(hap)
-        if(missing("SNP.name"))
-            SNP.name <- t(hap[4,-c(1, ncol(hap))])[,1]
+        SNP.name <- t(hap[4,-c(1, ncol(hap))])[,1]
         genetic.distances <- suppressWarnings(as.numeric(gdat[2,])) %>%
             na.omit()
         gdat <- gdat[-c(1:4), -c(1,ncol(gdat))]
@@ -212,13 +207,15 @@ plot_LDheatmap <- function (hap,gff,Chr,start,end,geneID,
               distances = distances,
               LDmeasure = LDmeasure,
               title = title,
-              add.map = add.map,
+              add.map = add.map,map.height = map.height,
               colorLegend = colorLegend,
               geneMapLocation = geneMapLocation,
               geneMapLabelX = geneMapLabelX,
               geneMapLabelY = geneMapLabelY,
               SNP.name = SNP.name,
               color = color,
+              color_gmodel = color_gmodel,
+              color_snp = color_snp,
               newpage = newpage,
               name = "ldheatmap",
               vp.name = vp.name,
@@ -233,7 +230,7 @@ plot_LDheatmap <- function (hap,gff,Chr,start,end,geneID,
 LDheatmap <- function (gdat,gff,Chr,start,end,geneID,
                        genetic.distances = NULL,
                        distances = "physical",
-                       LDmeasure = "r",
+                       LDmeasure = LDmeasure,
                        title = "Pairwise LD",
                        add.map = TRUE, map.height = 0.02,
                        colorLegend = TRUE,
@@ -242,6 +239,8 @@ LDheatmap <- function (gdat,gff,Chr,start,end,geneID,
                        geneMapLabelY = NULL,
                        SNP.name = NULL,
                        color = NULL,
+                       color_gmodel = color_gmodel,
+                       color_snp = color_snp,
                        newpage = TRUE,
                        name = "ldheatmap",
                        vp.name = NULL,
@@ -253,7 +252,9 @@ LDheatmap <- function (gdat,gff,Chr,start,end,geneID,
 
     # Draw the Color Key
     if (is.null(color)) {
-        color <- grDevices::heat.colors(n = 40)
+        color <- grDevices::colorRampPalette(c("red", "grey"))(30)
+    } else if(length(color) < 10) {
+        color <- grDevices::colorRampPalette(c(color))(30)
     }
 
 
@@ -263,18 +264,6 @@ LDheatmap <- function (gdat,gff,Chr,start,end,geneID,
         flip <- FALSE
     }
 
-    ## If genetic.distances is missing, calculate an equispaced default:
-    if (is.null(genetic.distances)) {
-        if (inherits(gdat, "data.frame"))
-            genetic.distances <- 1000 * (1:ncol(gdat))
-        else if (inherits(gdat, "matrix"))
-            genetic.distances <- 1000 * (1:length(gdat[1, ]))
-        else
-            # gdat is of class LDheatmap
-            genetic.distances <- gdat$genetic.distances
-    }
-
-
     ## Calculate or extract LDmatrix, then stored in LDMatrix as an upper triangular matrix
     # using a data.frame
     if (inherits(gdat, "data.frame")) {
@@ -283,10 +272,16 @@ LDheatmap <- function (gdat,gff,Chr,start,end,geneID,
                 stop("column ", i, " is not a genotype object\n")
         }
 
-        ## Exclude SNPs with less than 2 alleles:
+        ## Exclude SNPs with more or less than 2 alleles:
         gvars <-
             unlist(sapply(gdat, function(x)
                 genetics::nallele(x) == 2))
+        if(any(! gvars))
+            warning("Only bi-alleles supported,",
+                    "Variables with less or more than 2 allels will be omitted.")
+
+        if(sum(gvars) < 2)
+            stop("Variants number is less than two after removed non-bialleles")
         genetic.distances <- genetic.distances[gvars]
         gdat <- gdat[gvars]
 
@@ -406,13 +401,14 @@ LDheatmap <- function (gdat,gff,Chr,start,end,geneID,
             nsnps,
             genetic.distances = genetic.distances,
             geneMapLocation = geneMapLocation,
-            add.map,
+            add.map=add.map,
             geneMapLabelX = geneMapLabelX,
             geneMapLabelY = geneMapLabelY,
             distances = distances,
             vp = geneMapVP,
             SNP.name = SNP.name,
             ind = ind,
+            color_gmodel = color_gmodel,color_snp = color_snp,
             flip = flip,
             gff=gff,Chr=Chr,
             start=start,end=end,geneID=geneID,map.height = map.height
@@ -550,7 +546,7 @@ LDheatmapLegend.add <- function(color, LDmeasure, vp) {
             x = 0.5,
             y = 1.25,
             name = "title",
-            gp = grid::gpar(cex = 0.8)
+            gp = grid::gpar(cex = 0.7)
         )
 
     #Adding labels to the color key
@@ -600,6 +596,8 @@ LDheatmapMapNew.add <- function(nsnps,
                                 vp = NULL,
                                 SNP.name = NULL,
                                 ind = 0,
+                                color_gmodel = color_gmodel,
+                                color_snp = color_snp,
                                 flip = FALSE,
                                 gff,Chr,start,end,geneID) {
     snp <- ((1:nsnps - 1) + 0.5) / nsnps
@@ -628,7 +626,7 @@ LDheatmapMapNew.add <- function(nsnps,
             grid::linesGrob(
                 seq.x,
                 seq.y,
-                gp = grid::gpar(lty = 1),
+                gp = grid::gpar(lty = 1,col=color_snp),
                 name = "diagonal",
                 vp = vp
             ) # we draw the line with linesGrob, based on geneMapLocation seq
@@ -678,7 +676,7 @@ LDheatmapMapNew.add <- function(nsnps,
             }
             gmodel <- grid::polygonGrob(x = xs,
                                         y = ys + 0.15,
-                                        gp = gpar(fill = "blue", lty = 0), vp = vp)
+                                        gp = gpar(fill = color_gmodel, lty = 0), vp = vp)
         } else  gmodel <- NULL
 
 
@@ -698,7 +696,8 @@ LDheatmapMapNew.add <- function(nsnps,
                          regionx,
                          regiony,
                          name = "segments",
-                         vp = vp)
+                         vp = vp,
+                         gp = gpar(col = color_snp))
 
         ## Adding the text indicating Physical length of the region under study
         if (distances == "physical")
@@ -847,4 +846,3 @@ LDheatmapMapNew.add <- function(nsnps,
 
     geneMap
 }
-
