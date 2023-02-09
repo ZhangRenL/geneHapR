@@ -408,19 +408,11 @@ plotHapTable <- function(hapSummary,
 #' @title Display Variants on Gene Model
 #' @description
 #' show variants on gene model using hapSummary and gene annotations
-#' @usage
-#' displayVarOnGeneModel(hapSummary,
-#'                       gff,
-#'                       Chr,
-#'                       startPOS, endPOS,
-#'                       type = "pin", cex = 0.7,
-#'                       CDS_h = 0.05, fiveUTR_h = 0.02, threeUTR_h = 0.01,
-#'                       geneElement = geneElement)
 #' @examples
 #' \donttest{
 #' data("geneHapR_test")
 #' hapSummary <- hap_summary(hapResult)
-#' displayVarOnGeneModel(gff, hapSummary,
+#' displayVarOnGeneModel(hapSummary, gff,
 #'                       startPOS = 4100,
 #'                       endPOS = 8210,
 #'                       cex = 0.75)
@@ -454,7 +446,7 @@ displayVarOnGeneModel <- function(hapSummary,
                                   CDS_h = 0.05,
                                   fiveUTR_h = 0.02,
                                   threeUTR_h = 0.01,
-                                  geneElement = geneElement,hap)
+                                  geneElement = geneElement, hap)
 {
     # lolliplot
     requireNamespace("tidyr")

@@ -19,7 +19,7 @@ hapDistribution(
   cex.legend = 0.8,
   lwd.pie = 1,
   borderCol.pie = NA,
-  lty.pie = "n",
+  lty.pie = 1,
   ...
 )
 }

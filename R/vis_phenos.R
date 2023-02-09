@@ -483,7 +483,7 @@ hapVsPhenos <- function(hap,
                                   ...))
         if(!inherits(resulti, "try-error")) {
             if(mergeFigs) plot(resulti$figs) else plot(resulti$fig_Violin)
-            }else resulti
+        }else resulti
         if (!probe)
             dev.off()
         resulti <- NULL
@@ -498,3 +498,150 @@ hapVsPhenos <- function(hap,
 #     surFix <- stringr::str_to_lower(surFix)
 #     return(surFix)
 # }
+
+
+#' @title hapVsPhenoPerSite
+#' @description Comparie phenotype site by site.
+#' @param hap an R object of hapresult class
+#' @param pheno,phenoName pheno, a data.frame contains the phenotypes;
+#' Only one phenotype name is required.
+#' @param sitePOS the coordinate of site
+#' @param fileName,fileType file name and file type will be needed for saving result,
+#' file type could be one of "png, tiff, jpg"
+#' @param freq.min miner allies frequency less than freq.min will not be skipped
+#' @param ... addtional params will be passed to plot saving function like `tiff()`, `png()`, `pdf()`
+#' @importFrom unitls askYesNo
+#' @examples
+#' data("geneHapR_test")
+#' hapVsPhenoPerSite(hapResult, pheno, sitePOS = "4300")
+#' @export
+hapVsPhenoPerSite <- function(hap, pheno, phenoName, sitePOS,
+                              fileName,fileType = NULL, freq.min = 5, ...){
+    if(! inherits(hap, "hapResult"))
+        stop("hap should be object of 'hapResult' class")
+    if(missing(hap) | missing(pheno))
+        stop("missing parameters, please check your input")
+    ids <- row.names(pheno)
+    if(missing(phenoName)){
+        message("phenoName is missing, the first phenotype in pheno will be used")
+        phenoName <- names(pheno)[1]
+    }
+    if(is.vector(pheno))
+        if(is.null(names(pheno)))
+            stop("Required a named vector!") else {
+                nmsp <- names(pheno)
+                pheno <- data.frame(pheno = pheno)
+                row.names(pheno) <- nmsp
+                phenoName <- "pheno"
+            }
+    pheno <- pheno[, phenoName]
+
+    names(pheno) <- ids
+
+    if(! is.null(fileType))
+        if(missing(fileName))
+            stop("File name is missing!!!")
+    pos <- suppressWarnings(as.numeric(names(hap)))
+    if(missing(sitePOS)){
+        i <- 1
+        while (TRUE) {
+            if(i > ncol(hap)) break
+            if(is.na(pos[i])){
+                i <- i + 1
+                next
+            }
+            hapi <- hap[-c(1:4),c(i, ncol(hap))]
+            p <- suppressWarnings(plotHapi(hapi, pheno, freq.min, phenoName))
+
+            # save result
+            if(is.null(p)) {
+                i <- i + 1
+                next
+            } else {
+                if(! is.null(fileType)){
+                    f <- get(tolower(fileType))
+                    fileName <- paste0(fileName, "_", pos[i], ".", fileType)
+                    f(fileName, ...)
+                    suppressWarnings(plot(p))
+                    dev.off()
+                }
+
+                suppressWarnings(plot(p))
+            }
+            # break or continue
+            l = readline("proceed? 'Y' for yes, 'N' for no")
+            if(l != "" & l != "Y") break
+            i <- i + 1
+        }
+    } else {
+        if(as.character(sitePOS) %in% names(hap))
+            k <- which(names(hap) == as.character(sitePOS)) else
+                stop("Wrong site postion not found in haps")
+        hapi <- hap[-c(1:4),c(k, ncol(hap))]
+        p <- suppressWarnings(plotHapi(hapi, pheno, freq.min, phenoName))
+
+        # save result
+        if(! is.null(p)) {
+            if(! is.null(fileType)){
+                f <- get(tolower(fileType))
+                fileName <- paste0(fileName, "_", pos[i], ".", fileType)
+                f(fileName, ...)
+                suppressWarnings(plot(p))
+                dev.off()
+            }
+
+            suppressWarnings(plot(p))
+        }
+
+    }
+}
+
+
+
+plotHapi <- function(hapi, pheno, freq.min, phenoName){
+    # pheno: a named vector
+    hapi$pheno <- pheno[hapi$Accession]
+    pos <- names(hapi)[1]
+    hapi <- data.frame(hapi)
+    hapi <- na.omit(hapi)
+    c <- 0 # count for acc numbers
+    als <- unique(hapi[,1])
+    ph <- c(paste0("pheno_", als))
+    names(ph) <- als
+    for(i in als){
+        tmp <- data.frame(hapi)
+        tmp <- hapi[hapi[,1] == i, "pheno"]
+        tmp <- na.omit(tmp)
+        if(length(tmp) >= freq.min) c <- c + 1
+        assign(ph[i], tmp)
+    }
+    if(c < 2) return(NULL)
+
+    compares <- list()
+    for(i in seq_len(length(als)))
+        for (j in i:length(als)){
+            if (i != j) {
+                compares <- c(compares, list(c(als[i], als[j])))
+            }
+        }
+
+    hapi <- as.data.frame(hapi)
+    names(hapi) <- c("Allele","Accession","Pheno")
+
+    fig2 <- ggpubr::ggviolin(
+        hapi,
+        "Allele",
+        "Pheno",
+        color = "Allele",
+        legend = "right",
+        legend.title = "",
+        xlab = paste("position:",pos),
+        ylab = phenoName,
+        add = "boxplot")
+    fig2 + ggpubr::stat_compare_means(
+        comparisons = unique(compares),
+        method = "t.test"
+    )
+}
+
+

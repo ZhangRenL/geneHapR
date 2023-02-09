@@ -4,18 +4,25 @@
 \alias{displayVarOnGeneModel}
 \title{Display Variants on Gene Model}
 \usage{
-displayVarOnGeneModel(gff,
-                      hapSummary,
-                      Chr,
-                      startPOS, endPOS,
-                      type = "pin", cex = 0.7,
-                      CDS_h = 0.05, fiveUTR_h = 0.02, threeUTR_h = 0.01,
-                      geneElement = geneElement)
+displayVarOnGeneModel(
+  hapSummary,
+  gff,
+  Chr,
+  startPOS,
+  endPOS,
+  type = "pin",
+  cex = 0.7,
+  CDS_h = 0.05,
+  fiveUTR_h = 0.02,
+  threeUTR_h = 0.01,
+  geneElement = geneElement,
+  hap
+)
 }
 \arguments{
-\item{gff}{gff}
+\item{hapSummary, hap}{haplotype result}
 
-\item{hapSummary}{object of hapSummary class}
+\item{gff}{gff}
 
 \item{Chr}{the chromosome name.
 If missing, the first element in the hapSummary will be used}
@@ -44,7 +51,7 @@ show variants on gene model using hapSummary and gene annotations
 \donttest{
 data("geneHapR_test")
 hapSummary <- hap_summary(hapResult)
-displayVarOnGeneModel(gff, hapSummary,
+displayVarOnGeneModel(hapSummary, gff,
                       startPOS = 4100,
                       endPOS = 8210,
                       cex = 0.75)
