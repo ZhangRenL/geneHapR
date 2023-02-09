@@ -27,6 +27,7 @@ plot_LDheatmap(
   color_snp = "grey",
   color_snpname = "grey40",
   cex_snpname = 0.8,
+  snpmarks_height = NULL,
   newpage = TRUE,
   name = "ldheatmap",
   vp.name = NULL,
@@ -94,13 +95,15 @@ is \code{grDevices::colorRampPalette(c("red", "grey"))(30)}.}
 
 \item{cex_snpname}{the size of snp names/labels}
 
+\item{snpmarks_height}{the height of snp marks, if set as NULL, nothing will display on gene model
+where the heat map is going to be drawn.}
+
 \item{newpage}{If \code{TRUE} (default), the heat map will be drawn on a new page.}
 
 \item{name}{A character string specifying the name of the LDheatmap
 graphical object (\code{grob}) to be produced.}
 
-\item{vp.name}{A character string specifying the name of the viewport
-where the heat map is going to be drawn.}
+\item{vp.name}{A character string specifying the name of the viewport}
 
 \item{pop}{If \code{TRUE}, the viewport where the heat map is drawn is
 \code{pop}ped (i.e. removed) from the viewport tree after drawing.

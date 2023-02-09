@@ -482,8 +482,7 @@ plotHapTable(hapSummary,
 I think it's a good idea to figure out where are the variants by marking them on gene model.
 
 ```{r display variations on gene model, eval=NOT_CRAN, fig.height=4, fig.width=6, message=FALSE, warning=FALSE, paged.print=FALSE}
-displayVarOnGeneModel(gff,
-                      hapSummary,
+displayVarOnGeneModel(hapSummary, gff,
                       Chr = "scaffold_1",
                       startPOS = 4300, endPOS = 7910,
                       type = "pin", cex = 0.7,
