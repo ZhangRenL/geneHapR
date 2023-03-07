@@ -44,7 +44,10 @@
 #'  vcfPath <- system.file("extdata", "var.vcf.gz", package = "geneHapR")
 #'
 #'  oldDir <- getwd()
-#'  setwd(tempdir())
+#'  temp_dir <- tempdir()
+#'  if(! dir.exists(temp_dir))
+#'    dir.create(temp_dir)
+#'  setwd(temp_dir)
 #'  # extract a single gene/range from large vcf
 #'  filterLargeVCF(VCFin = vcfPath, VCFout = "filtered.vcf.gz",
 #'                 Chr = "scaffold_1", POS = c(4300,5000), override = TRUE)
@@ -315,8 +318,10 @@ filterLargeVCF_Multi <- function(VCFin = VCFin,
 #'                         "snp3kvars-CHR8-25947258-25951166-plink.map",
 #'                         package = "geneHapR")
 #'  oldDir <- getwd()
-#'  tmpdir <- tempdir()
-#'  setwd(tmpdir)
+#'  temp_dir <- tempdir()
+#'  if(! dir.exists(temp_dir))
+#'    dir.create(temp_dir)
+#'  setwd(temp_dir)
 #'  file.copy(pedfile, "test.ped")
 #'  file.copy(mapfile, "test.map")
 #'
@@ -327,8 +332,8 @@ filterLargeVCF_Multi <- function(VCFin = VCFin,
 #'
 #' setwd(oldDir)
 #'
-#' # delete tempDir
-#' unlink(tmpdir, recursive = TRUE)
+#' # delete temp_dir
+#' unlink(temp_dir, recursive = TRUE)
 #' }
 #' @return No return value
 #' @export

@@ -118,6 +118,8 @@ importFrom(vcfR,getREF)
 importFrom(vcfR,is.biallelic)
 importFrom(vcfR,is.indel)
 importFrom(vcfR,read.vcfR)
+importFrom(shiny, checkboxGroupInput)
+importFrom(shinyjs,hidden)
 
 
 
@@ -125,7 +127,6 @@ if(tools:::.OStype() == "windows"){
     importFrom(shiny, HTML)
     importFrom(shiny, actionButton)
     importFrom(shiny, br)
-    importFrom(shiny, checkboxGroupInput)
     importFrom(shiny, checkboxInput)
     importFrom(shiny, column)
     importFrom(shiny, eventReactive)
@@ -170,7 +171,6 @@ if(tools:::.OStype() == "windows"){
     importFrom(utils,choose.dir)
     importFrom(utils,choose.files)
     importFrom(utils,read.csv)
-    importFrom(shinyjs,hidden)
     importFrom(shinyjs,hide)
     importFrom(shinyjs,show)
     importFrom(shinyjs,toggle)

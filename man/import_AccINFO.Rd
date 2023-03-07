@@ -56,7 +56,10 @@ and the latter will be set as foot when plot figures.
 \examples{
 
 oldDir <- getwd()
-setwd(tempdir())
+temp_dir <- tempdir()
+if(! dir.exists(temp_dir))
+  dir.create(temp_dir)
+setwd(temp_dir)
 data("geneHapR_test")
 write.table(pheno, file = "test.pheno.txt", sep = "\t")
 pheno <- import_AccINFO("test.pheno.txt")

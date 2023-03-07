@@ -156,12 +156,6 @@ the \code{image()} function have been adopted, in which horizontal
 coordinates correspond to the rows of the matrix and vertical coordinates
 correspond to columns, and vertical coordinates are indexed in increasing
 order from bottom to top.
-For the argument \code{color}, an appropriate
-color palette for quantitative data is recommended,
-as outlined in the help page of
-the \code{\link[RColorBrewer:ColorBrewer]{brewer.pal}()} function of
-the
-\pkg{RColorBrewer} package.
 See the package vignette \code{LDheatmap} for more examples and details
 of the implementation. Examples of adding ``tracks'' of genomic
 annotation above a flipped heatmap are in the package vignette
