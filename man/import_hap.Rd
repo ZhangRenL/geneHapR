@@ -31,7 +31,10 @@ In addtion, the accessions of each haplotype in hap summary result were separate
 \examples{
 
 oldDir <- getwd()
-setwd(tempdir())
+temp_dir <- tempdir()
+if(! dir.exists(temp_dir))
+  dir.create(temp_dir)
+setwd(temp_dir)
 data("geneHapR_test")
 write.hap(hapResult, file = "test.pheno.txt", sep = "\t")
 hap <- import_hap("test.pheno.txt")

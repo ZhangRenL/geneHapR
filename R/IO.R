@@ -76,7 +76,10 @@ import_plink.pedmap <- function(root = root,
 #' @examples
 #'
 #' oldDir <- getwd()
-#' setwd(tempdir())
+#' temp_dir <- tempdir()
+#' if(! dir.exists(temp_dir))
+#'   dir.create(temp_dir)
+#' setwd(temp_dir)
 #' data("geneHapR_test")
 #' write.table(pheno, file = "test.pheno.txt", sep = "\t")
 #' pheno <- import_AccINFO("test.pheno.txt")
@@ -271,7 +274,10 @@ import_MultipleAlignment <- function(filepath,
 #' @examples
 #'
 #' oldDir <- getwd()
-#' setwd(tempdir())
+#' temp_dir <- tempdir()
+#' if(! dir.exists(temp_dir))
+#'   dir.create(temp_dir)
+#' setwd(temp_dir)
 #' data("geneHapR_test")
 #' write.hap(hapResult, file = "test.pheno.txt", sep = "\t")
 #' hap <- import_hap("test.pheno.txt")
@@ -342,7 +348,10 @@ the 'freq' column (ususlly the last column) contains nonnumeric data.")
 #'
 #'
 #' oriDir <- getwd()
-#' setwd(tempdir())
+#'  temp_dir <- tempdir()
+#'  if(! dir.exists(temp_dir))
+#'    dir.create(temp_dir)
+#'  setwd(temp_dir)
 #' data("geneHapR_test")
 #' write.hap(hapResult, file = "hapResult.txt")
 #' setwd(oriDir)

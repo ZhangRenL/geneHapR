@@ -340,7 +340,10 @@ hapVsPheno <- function(hap,
 #' data("geneHapR_test")
 #'
 #' oriDir <- getwd()
-#' setwd(tempdir())
+#' temp_dir <- tempdir()
+#' if(! dir.exists(temp_dir))
+#'   dir.create(temp_dir)
+#' setwd(temp_dir)
 #' # analysis all pheno in the data.frame of pheno
 #' hapVsPhenos(hapResult,
 #'             pheno,

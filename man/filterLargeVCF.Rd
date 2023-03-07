@@ -58,7 +58,10 @@ on server, such as: 'vcftools' and 'bcftools'.
  vcfPath <- system.file("extdata", "var.vcf.gz", package = "geneHapR")
 
  oldDir <- getwd()
- setwd(tempdir())
+ temp_dir <- tempdir()
+ if(! dir.exists(temp_dir))
+   dir.create(temp_dir)
+ setwd(temp_dir)
  # extract a single gene/range from large vcf
  filterLargeVCF(VCFin = vcfPath, VCFout = "filtered.vcf.gz",
                 Chr = "scaffold_1", POS = c(4300,5000), override = TRUE)

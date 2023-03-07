@@ -63,8 +63,10 @@ vector consist with file paths is provided.
                         "snp3kvars-CHR8-25947258-25951166-plink.map",
                         package = "geneHapR")
  oldDir <- getwd()
- tmpdir <- tempdir()
- setwd(tmpdir)
+ temp_dir <- tempdir()
+ if(! dir.exists(temp_dir))
+   dir.create(temp_dir)
+ setwd(temp_dir)
  file.copy(pedfile, "test.ped")
  file.copy(mapfile, "test.map")
 
@@ -75,7 +77,7 @@ vector consist with file paths is provided.
 
 setwd(oldDir)
 
-# delete tempDir
-unlink(tmpdir, recursive = TRUE)
+# delete temp_dir
+unlink(temp_dir, recursive = TRUE)
 }
 }
