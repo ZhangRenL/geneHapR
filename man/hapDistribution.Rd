@@ -15,6 +15,7 @@ hapDistribution(
   zColours = zColours,
   legend = TRUE,
   symbolSize = 1,
+  symbol.lim = c(10, 100),
   ratio = 1,
   cex.legend = 0.8,
   lwd.pie = 1,
@@ -67,6 +68,8 @@ longitude(\code{LON.col}) and latitude(\code{LAT.col})}
 or a numeric vector of length two contains x,y coordinate of the legend}
 
 \item{symbolSize}{a numeric specified the symbol size}
+
+\item{symbol.lim}{a numeric vector give the maximum and minimum size  of each symbol}
 
 \item{ratio}{the ratio of Y to N in the output map, set to 1 as default}
 

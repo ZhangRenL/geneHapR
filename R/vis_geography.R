@@ -21,6 +21,7 @@
 #' @param hapNames haplotype names used for display
 #' @param zColours colours to apply to the pie section for each attribute column
 #' @param symbolSize a numeric specified the symbol size
+#' @param symbol.lim a numeric vector give the maximum and minimum size  of each symbol
 #' @param legend a keyword specified the position of legend, one of
 #' "bottomright", "bottom", "bottomleft", "left", "topleft", "top", "topright", "right" and "center";
 #' or a numeric vector of length two contains x,y coordinate of the legend
@@ -42,6 +43,7 @@ hapDistribution <-
              zColours = zColours,
              legend = TRUE,
              symbolSize = 1,
+             symbol.lim = c(10,100),
              ratio = 1,
              cex.legend = 0.8,
              lwd.pie = 1,
@@ -95,9 +97,17 @@ hapDistribution <-
             )
 
 
-        symbolScale <- 1
         maps::map(database = database, regions = regions, ...)
-        for (locationNum in 1:length(dF[, hapNames[1]])) {
+        # maps::map(database = database, regions = regions)
+        # scale the circle size using symbol.lim instead of symbolSize
+        symbolSize <- 1
+        freqs <- apply(dF[,hapNames], 1, sum)
+        mx <- sqrt(max(freqs))
+        mn <- sqrt(min(freqs[freqs > 0]))
+        dif <- mx - mn
+
+        # plotting
+        for (locationNum in 1:nrow(dF)) {
             sliceValues <- as.numeric(dF[locationNum, hapNames])
             if (sum(sliceValues, na.rm = TRUE) == 0)
                 next
@@ -105,10 +115,11 @@ hapDistribution <-
                 c(0,
                   cumsum(sliceValues) / sum(sliceValues,
                                             na.rm = TRUE))
-            pointsInCircle = 360
+            pointsInCircle <- 360
             radius <-
-                sqrt(sum(sliceValues, na.rm = TRUE)) * symbolScale
-            radius <- radius * symbolSize
+                sqrt(sum(sliceValues, na.rm = TRUE)) * symbolSize
+            # scale the circle size
+            radius <- (radius - mn) / dif * abs(diff(symbol.lim)) + min(symbol.lim)
             for (sliceNum in 1:length(sliceValues)) {
                 n <- max(2, floor((
                     pointsInCircle *
