@@ -331,6 +331,7 @@ the 'freq' column (ususlly the last column) contains nonnumeric data.")
     # set colnames
     colnames(hap) <- colnms
 
+
     # set attr options
     attr(hap, "options") <- c(Source = "Read from file")
     return(hap)

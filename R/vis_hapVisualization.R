@@ -453,14 +453,22 @@ displayVarOnGeneModel <- function(hapSummary,
     if (missing(gff))
         stop("gff is missing!")
 
-    if (missing('hapSummary'))
-        stop("hapSummary is missing!")
-    if(missing(hapSummary))
+    if (missing('hapSummary')){
+        if(missing("hap"))
+            stop("hapSummary is missing!") else
+                hapSummary <- hap
+    }
+    if(missing(hapSummary)){
         if(missing(hap)) stop("Please provide your haplotype result!") else
             hapSummary <- hap
-    if (!inherits(hapSummary, "hapSummary"))
-        if (inherits(hapSummary, 'hapResult'))
+    }
+    if (!inherits(hapSummary, "hapSummary")){
+        if (inherits(hapSummary, 'hapResult')){
             hapSummary <- hap_summary(hapSummary)
+        } else {
+            stop("please check your inputs")
+        }
+    }
 
     s <- sites(hapSummary)
     meta <- hapSummary[seq_len(4), -1]

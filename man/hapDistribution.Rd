@@ -12,14 +12,22 @@ hapDistribution(
   hapNames,
   database = "world",
   regions = ".",
+  hap.color = hap.color,
   zColours = zColours,
   legend = TRUE,
   symbolSize = 1,
+  symbol.lim = c(1, 10),
   ratio = 1,
   cex.legend = 0.8,
   lwd.pie = 1,
   borderCol.pie = NA,
   lty.pie = 1,
+  showlabel = TRUE,
+  label.col = "black",
+  label.cex = 0.8,
+  label.font = 1,
+  label.adj = c(0.5, 0.5),
+  map.fill.color = 1,
   ...
 )
 }
@@ -60,13 +68,17 @@ longitude(\code{LON.col}) and latitude(\code{LAT.col})}
     The default selects all polygons in the database.
   }
 
-\item{zColours}{colours to apply to the pie section for each attribute column}
+\item{hap.color, zColours}{colors to apply to the pie section for each attribute column,
+"zColours" will be detached in future.}
 
 \item{legend}{a keyword specified the position of legend, one of
 "bottomright", "bottom", "bottomleft", "left", "topleft", "top", "topright", "right" and "center";
 or a numeric vector of length two contains x,y coordinate of the legend}
 
-\item{symbolSize}{a numeric specified the symbol size}
+\item{symbolSize}{a numeric specified the symbol size.
+It will be detached in future. Please use "symbol.lim" instead.}
+
+\item{symbol.lim}{a numeric vector give the maximum and minimum size  of each symbol}
 
 \item{ratio}{the ratio of Y to N in the output map, set to 1 as default}
 
@@ -77,6 +89,27 @@ or a numeric vector of length two contains x,y coordinate of the legend}
 \item{borderCol.pie}{The color of pie's border, default is NA, which means no border will be plotted}
 
 \item{lty.pie}{the line type of pie border}
+
+\item{showlabel}{a bool vector indicates whether show the labels
+which represens number of individuals. Default as TRUE.}
+
+\item{label.col}{color of the labels, default as "black"}
+
+\item{label.cex}{a number indicates the text size in label, default as 0.8}
+
+\item{label.font}{Font of label, 1 for normal, 2 for bold, 3 for italica, 4 for bold-italica}
+
+\item{label.adj}{the position of label, default as c(0.5, 0.5)}
+
+\item{map.fill.color}{vector of colors. If fill is FALSE, the first color is
+used for plotting all lines, and any other colors are ignored. Otherwise,
+the colors are matched one-one with the polygons that get selected by the
+region argument (and are reused cyclically, if necessary). If fill = TRUE,
+the default boundary line colour is given by par("fg"). To change this,
+you can use the border argument (see '...'). A color of NA causes the
+corresponding region to be deleted from the list of polygons to be drawn.
+Polygon colors are assigned after polygons are deleted due to values of the
+xlim and ylim arguments}
 
 \item{...}{Extra arguments passed to \code{polygon} or \code{lines}. Of particular interest may be the options \code{border} and\code{lty} that control the color and line type of the polygon borders when \code{fill = TRUE}.}
 }

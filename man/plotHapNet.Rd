@@ -4,22 +4,30 @@
 \alias{plotHapNet}
 \title{plotHapNet}
 \usage{
-plotHapNet(hapNet,
-           size = "freq",
-           scale = 1,
-           cex = 0.8,
-           cex.legend = 0.6,
-           col.link = 1,
-           link.width = 1,
-           show.mutation = 1,
-           backGround = backGround,
-           hapGroup = hapGroup,
-           legend = FALSE,
-           show_size_legend = TRUE,
-           show_color_legend = TRUE,
-           main = main,
-           labels = TRUE,
-           ...)
+plotHapNet(
+  hapNet,
+  size = "freq",
+  scale = 1,
+  cex = 0.8,
+  cex.legend = 0.6,
+  col.link = 1,
+  link.width = 1,
+  show.mutation = 2,
+  backGround = backGround,
+  hapGroup = hapGroup,
+  legend = FALSE,
+  show_size_legend = TRUE,
+  show_color_legend = TRUE,
+  pie.lim = c(0.5, 2),
+  main = main,
+  labels = TRUE,
+  legend_version = 0,
+  labels.cex = 0.8,
+  labels.col = "blue",
+  labels.adj = NULL,
+  labels.font = 2,
+  ...
+)
 }
 \arguments{
 \item{hapNet}{an object of class "haploNet"}
@@ -67,11 +75,26 @@ If \code{TRUE}, the user is asked to click where to draw the legend.}
 
 \item{show_size_legend, show_color_legend}{wether show size or color legend}
 
+\item{pie.lim}{A numeric vector define the maximum and minmum pie size,
+which will be avoid the pie to samll or too large}
+
 \item{main}{The main title (on top) using font, size (character
     expansion) and color \code{par(c("font.main", "cex.main", "col.main"))}.}
 
 \item{labels}{a logical specifying whether to identify the haplotypes
 with their labels (default as TRUE)}
+
+\item{legend_version}{the size legened style, default as 0}
+
+\item{labels.cex}{the size of labels}
+
+\item{labels.col}{the labels color}
+
+\item{labels.adj}{a named list contains two length vectors defining the adjustment of labels.
+The names should be exactly matched with the haplotype names.
+default as NULL.}
+
+\item{labels.font}{the font of labels, default as 2}
 
 \item{...}{other parameters will pass to \code{plot} function}
 }
@@ -80,6 +103,33 @@ No return value
 }
 \description{
 plotHapNet
+}
+\details{
+Additional parameters control the network features:
+labels.cex = 1,
+labels.font = 2,
+link.color = "black",
+link.type = 1,
+link.type.alt = 2,
+link.width = 1,
+link.width.alt = 1,
+haplotype.inner.color = "white",
+haplotype.outer.color = "black",
+mutations.cex = 1,
+mutations.font = 1,
+mutations.frame.background = "#0000FF4D",
+mutations.frame.border = "black",
+mutations.text.color = 1,
+mutations.arrow.color = "black",
+mutations.arrow.type = "triangle",
+mutations.sequence.color = "#BFBFBF4D",
+mutations.sequence.end = "round",
+mutations.sequence.length = 0.3,
+mutations.sequence.width = 5,
+pie.inner.segments.color = "black",
+pie.colors.function = rainbow,
+scale.ratio = 1,
+show.mutation = 2
 }
 \examples{
 

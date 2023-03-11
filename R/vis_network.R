@@ -55,23 +55,6 @@ get_hapNet <-
 #' @title plotHapNet
 #' @importFrom graphics lines locator strheight text legend
 #' @importFrom stats median
-#' @usage
-#' plotHapNet(hapNet,
-#'            size = "freq",
-#'            scale = 1,
-#'            cex = 0.8,
-#'            cex.legend = 0.6,
-#'            col.link = 1,
-#'            link.width = 1,
-#'            show.mutation = 1,
-#'            backGround = backGround,
-#'            hapGroup = hapGroup,
-#'            legend = FALSE,
-#'            show_size_legend = TRUE,
-#'            show_color_legend = TRUE,
-#'            main = main,
-#'            labels = TRUE,
-#'            ...)
 #' @param hapNet an object of class "haploNet"
 #' @param size a numeric vector giving the diameter of the circles
 #'  representing the haplotypes: this is in the same unit than the
@@ -144,6 +127,41 @@ get_hapNet <-
 #' }
 #' @return No return value
 #' @export
+#' @param pie.lim A numeric vector define the maximum and minmum pie size,
+#' which will be avoid the pie to samll or too large
+#' @details
+#' Additional parameters control the network features:
+#' labels.cex = 1,
+#' labels.font = 2,
+#' link.color = "black",
+#' link.type = 1,
+#' link.type.alt = 2,
+#' link.width = 1,
+#' link.width.alt = 1,
+#' haplotype.inner.color = "white",
+#' haplotype.outer.color = "black",
+#' mutations.cex = 1,
+#' mutations.font = 1,
+#' mutations.frame.background = "#0000FF4D",
+#' mutations.frame.border = "black",
+#' mutations.text.color = 1,
+#' mutations.arrow.color = "black",
+#' mutations.arrow.type = "triangle",
+#' mutations.sequence.color = "#BFBFBF4D",
+#' mutations.sequence.end = "round",
+#' mutations.sequence.length = 0.3,
+#' mutations.sequence.width = 5,
+#' pie.inner.segments.color = "black",
+#' pie.colors.function = rainbow,
+#' scale.ratio = 1,
+#' show.mutation = 2
+#' @param labels.col the labels color
+#' @param labels.adj a named list contains two length vectors defining the adjustment of labels.
+#' The names should be exactly matched with the haplotype names.
+#' default as NULL.
+#' @param labels.cex the size of labels
+#' @param legend_version the size legened style, default as 0
+#' @param labels.font the font of labels, default as 2
 plotHapNet <- function(hapNet,
                        size = "freq",
                        scale = 1,
@@ -151,14 +169,18 @@ plotHapNet <- function(hapNet,
                        cex.legend = 0.6,
                        col.link = 1,
                        link.width = 1,
-                       show.mutation = 1,
+                       show.mutation = 2,
                        backGround = backGround,
                        hapGroup = hapGroup,
                        legend = FALSE,
                        show_size_legend = TRUE,
                        show_color_legend = TRUE,
+                       pie.lim = c(0.5, 2),
                        main = main,
                        labels = TRUE,
+                       legend_version = 0,
+                       labels.cex = 0.8, labels.col = "blue",
+                       labels.adj = NULL, labels.font = 2,
                        ...) {
     if (! (inherits(hapNet, "haploNet") | inherits(hapNet, "hapNet")))
         stop("'hapNet' must be of 'hapNet' class")
@@ -184,21 +206,30 @@ plotHapNet <- function(hapNet,
                 "scale will reset as 1")
     }
 
+    if(length(unique(size.sc)) > 1){
+        difSize.sc <- max(size.sc) - min(size.sc)
+        min.Size.sc <- min(size.sc)
+        size.sc.lim <- (size.sc - min.Size.sc) / difSize.sc *
+            abs(diff(pie.lim)) + min(pie.lim)
+    }
+
 
     if (!is.null(hapGroup)) {
         if (missing(backGround))
             backGround <- rainbow
 
-        plot(
+        haploNetPloter(
             hapNet,
             col.link = col.link,
-            size = size.sc,
+            size = size.sc.lim,
             cex = cex,
             show.mutation = show.mutation,
             lwd = link.width,
             bg = backGround,
             pie = hapGroup,
             labels = labels,
+            labels.cex = labels.cex, labels.col = labels.col,
+            labels.adj = labels.adj, labels.font = labels.font,
             ...
         )
 
@@ -206,15 +237,17 @@ plotHapNet <- function(hapNet,
         if (missing(backGround))
             backGround <- "grey90"
 
-        plot(
+        haploNetPloter(
             hapNet,
             col.link = col.link,
             bg = backGround,
-            size = size.sc,
+            size = size.sc.lim,
             cex = cex,
             show.mutation = show.mutation,
             lwd = link.width,
             labels = labels,
+            labels.cex = labels.cex, labels.col = labels.col,
+            labels.adj = labels.adj, labels.font = labels.font,
             ...
         )
     }
@@ -237,43 +270,73 @@ plotHapNet <- function(hapNet,
         SZ <- unique(size)
         SZ.sc <- unique(size.sc)
 
-        if(show_size_legend)
+
+        if(show_size_legend){
             if (length(SZ) > 1) {
-            # calculate size legend
-            SZ.sc.50 <- (min(SZ.sc) + max(SZ.sc)) * 0.5
-            SZ.sc.25 <- (min(SZ.sc) + SZ.sc.50) * 0.5
-            SZ.sc.75 <- (SZ.sc.50 + max(SZ.sc)) * 0.5
-            SZ.sc <- unique(c(min(SZ.sc),
-                              SZ.sc.25,
-                              SZ.sc.50,
-                              SZ.sc.75,
-                              max(SZ.sc)))
-            if(is.numeric(scale)) SZ <- SZ.sc * scale else
-                SZ <- switch (scale,
-                              "log10" = 10^SZ.sc - 1,
-                              "log2" = 2^SZ.sc - 1)
-            SZ <- ceiling(SZ)
-
-            # plot size legend
-            SHIFT <- max(SZ.sc)
-            vspace <- strheight(" ", cex = cex.legend)
-            hspace <- strwidth(" ", cex = cex.legend)
-            for (sz.sc in SZ.sc) {
-                seqx <- seq(-sz.sc/2, sz.sc/2, length.out = 150)
-                seqy <- sqrt((sz.sc/2)^2 - seqx^2)
-                seqx <- c(seqx, rev(seqx))
-                seqy <- c(seqy, -seqy)
-
-                xy[2] <- xy[2] - max(seqy)
-                lines(seqx + SHIFT / 2 + xy[1], xy[2] + seqy)
-                text(xy[1] + SHIFT + hspace * 2,
-                     xy[2] + seqy[150],
-                     SZ[match(sz.sc, SZ.sc)],
-                     adj = c(0, 0.5), cex = cex.legend)
-                xy[2] <- xy[2] - max(seqy) - vspace
-
+                # calculate size legend
+                SZ.sc.50 <- (min(SZ.sc) + max(SZ.sc)) * 0.5
+                SZ.sc.25 <- (min(SZ.sc) + SZ.sc.50) * 0.5
+                SZ.sc.75 <- (SZ.sc.50 + max(SZ.sc)) * 0.5
+                SZ.sc <- unique(c(min(SZ.sc),
+                                  #SZ.sc.25,
+                                  SZ.sc.50,
+                                  #SZ.sc.75,
+                                  max(SZ.sc)))
+                if(is.numeric(scale)) SZ <- SZ.sc * scale else
+                    SZ <- switch (scale,
+                                  "log10" = 10^SZ.sc - 1,
+                                  "log2" = 2^SZ.sc - 1)
+                SZ.sc <- (SZ.sc - min.Size.sc) / difSize.sc *
+                    abs(diff(pie.lim)) + min(pie.lim)
+                SZ <- ceiling(SZ)
             }
-            xy[2] <- xy[2] - 0.5 * vspace
+            if(legend_version == 1){
+                #### size legend V1 ####
+                if (length(SZ) > 0) {
+                    # plot size legend
+                    SHIFT <- max(SZ.sc)
+                    vspace <- strheight(" ", cex = cex.legend)
+                    hspace <- strwidth(" ", cex = cex.legend)
+                    for (sz.sc in SZ.sc) {
+                        seqx <- seq(-sz.sc/2, sz.sc/2, length.out = 150)
+                        seqy <- sqrt((sz.sc/2)^2 - seqx^2)
+                        seqx <- c(seqx, rev(seqx))
+                        seqy <- c(seqy, -seqy)
+
+                        xy[2] <- xy[2] - max(seqy)
+                        lines(seqx + SHIFT / 2 + xy[1], xy[2] + seqy)
+                        text(xy[1] + SHIFT + hspace * 2,
+                             xy[2] + seqy[150],
+                             SZ[match(sz.sc, SZ.sc)],
+                             adj = c(0, 0.5), cex = cex.legend)
+                        xy[2] <- xy[2] - max(seqy) - vspace
+
+                    }
+                    xy[2] <- xy[2] - 0.5 * vspace
+                }
+                #### size legend V1 End####
+            } else {
+                #### size legend V0 ####
+                # draw size legend
+                if (length(SZ) > 1) {
+                    SZ <- c(SZ, 0)
+                    SZ.sc <- c(SZ.sc, 0)
+
+                    SHIFT <- max(SZ.sc) * 0.5
+                    vspace <- strheight(" ")
+                    for (sz.sc in SZ.sc) {
+                        seqx <- seq(-sz.sc/2, 0, length.out = 100)
+                        seqy <- sqrt((sz.sc/2)^2 - seqx^2)
+                        seqx <- seqx + xy[1] + SHIFT
+                        seqy <- xy[2] + seqy - SHIFT
+                        lines(seqx, seqy)
+                        if(sz.sc == 0) next
+                        text(seqx[100], seqy[100], SZ[match(sz.sc, SZ.sc)], adj = c(-0.1, 0.5), cex = cex.legend)
+                    }
+                    xy[2] <- xy[2] - SHIFT - vspace
+                }
+                #### size legend V0 End ####
+            }
         }
 
         # add color legend
@@ -455,5 +518,584 @@ getHapGroup <- function(hapSummary,
 
     with(acc.infos,
          table(hap = acc.infos$Hap, group = acc.infos$Type))
+}
+
+
+
+haploNetPloter <- function(x, size = 1, col, bg, col.link, lwd, lty,
+                           # pie.lim = c(0.5, 2),
+                           shape = "circles", pie = NULL, labels, font, cex,
+                           scale.ratio, asp = 1, fast = FALSE,
+                           show.mutation = 2, threshold = c(1, 2), xy = NULL,
+                           labels.cex = labels.cex, labels.col = 2,
+                           labels.adj = NULL,labels.font = 2, ...)
+{
+    if (missing(col)) col <- OPTS$haplotype.outer.color
+    if (missing(bg)) {
+        bg <- if (is.null(pie)) OPTS$haplotype.inner.color else OPTS$pie.colors.function
+    }
+    if (missing(col.link)) col.link <- OPTS$link.color
+    if (missing(lwd)) lwd <- OPTS$link.width
+    if (missing(lty)) lty <- OPTS$link.type
+    if (missing(labels)) labels <- OPTS$labels
+    if (missing(labels.font)) labels.font <- OPTS$labels.font
+    if (missing(cex)) cex <- OPTS$labels.cex
+    if (missing(scale.ratio)) scale.ratio <- OPTS$scale.ratio
+    if (missing(show.mutation)) show.mutation <- OPTS$show.mutation
+
+    SHAPES <- c(c = "circles", s = "squares", d = "diamonds")
+    shape <- SHAPES[substr(tolower(shape), 1L, 1L)]
+    ## par(xpd = TRUE) # normalement plus utile...
+    link <- x[, 1:2, drop = FALSE]
+    l1 <- x[, 1]
+    l2 <- x[, 2]
+    ld <- x[, 3] * scale.ratio
+
+    tab <- tabulate(link)
+    n <- length(tab)
+    show.mutation <- as.integer(show.mutation)
+
+    ## adjust 'ld' wrt the size of the symbols:
+    size <- rep(size, length.out = n)
+    # if(length(unique(size)) > 1)
+    #     size <- (size - min(size)) / (max(size) - min(size)) *
+    #     abs(diff(pie.lim)) + min(pie.lim)
+    ld <- ld + (size[l1] + size[l2])/2
+
+    if (!is.null(xy)) {
+        xx <- xy$x
+        yy <- xy$y
+        fast <- TRUE
+    } else {
+        if (n < 3) {
+            xx <- c(-ld, ld)/2
+            yy <- rep(0, 2)
+            fast <- TRUE
+        } else {
+            xx <- yy <- angle <- theta <- r <- numeric(n)
+            avlb <- !logical(length(ld))
+
+            H <- vector("list", n) # the list of hierarchy of nodes...
+
+            ## the recursive function to allocate quadrants
+            foo <- function(i) {
+                j <- integer() # indices of the haplotypes linked to 'i'
+                for (ii in 1:2) { # look at both columns
+                    ll <- which(link[, ii] == i & avlb)
+                    if (length(ll)) {
+                        newj <- link[ll, -ii]
+                        r[newj] <<- ld[ll]
+                        j <- c(j, newj)
+                        avlb[ll] <<- FALSE
+                    }
+                }
+                if (nlink <- length(j)) {
+                    H[[i]] <<- j
+                    start <- theta[i] - angle[i]/2
+                    by <- angle[i]/nlink
+                    theta[j] <<- seq(start, by = by, length.out = nlink)
+                    angle[j] <<- by
+                    xx[j] <<- r[j] * cos(theta[j]) + xx[i]
+                    yy[j] <<- r[j] * sin(theta[j]) + yy[i]
+                    for (ii in j) foo(ii)
+                }
+            }
+
+            ## start with the haplotype with the most links:
+            central <- which.max(tab)
+            angle[central] <- 2*pi
+            foo(central)
+        }
+    }
+
+    if (!fast) {
+        fCollect <- function(i) {
+            ## find all nodes to move simultaneously
+            ii <- H[[i]]
+            if (!is.null(ii)) {
+                j <<- c(j, ii)
+                for (jj in ii) fCollect(jj)
+            }
+        }
+
+        ## NOTE: moving this function outside of the body of plot.haploNet() is not more efficient
+        energy <- function(xx, yy) {
+            ## First, check line crossings
+            nlink <- length(l1)
+            ## rounding makes it work better (why???)
+            x0 <- round(xx[l1])
+            y0 <- round(yy[l1])
+            x1 <- round(xx[l2])
+            y1 <- round(yy[l2])
+            ## compute all the slopes and intercepts:
+            beta <- (y1 - y0)/(x1 - x0)
+            if (any(is.na(beta))) return(Inf)
+            intp <- y0 - beta*x0
+            for (i in 1:(nlink - 1)) {
+                for (j in (i + 1):nlink) {
+                    ## in case they are parallel:
+                    if (beta[i] == beta[j]) next
+                    ## if both lines are vertical:
+                    if (abs(beta[i]) == Inf && abs(beta[j]) == Inf) next
+                    ## now find the point where both lines cross
+                    if (abs(beta[i]) == Inf) { # in case the 1st line is vertical...
+                        xi <- x0[i]
+                        yi <- beta[j]*xi + intp[j]
+                    } else if (abs(beta[j]) == Inf) { # ... or the 2nd one
+                        xi <- x0[j]
+                        yi <- beta[i]*xi + intp[i]
+                    } else {
+                        xi <- (intp[j] - intp[i])/(beta[i] - beta[j])
+                        yi <- beta[i]*xi + intp[i]
+                    }
+                    xi <- round(xi) # rounding as above
+                    yi <- round(yi)
+
+                    if (x0[i] < x1[i]) {
+                        if (xi <= x0[i] || xi >= x1[i]) next
+                    } else {
+                        if (xi >= x0[i] || xi <= x1[i]) next
+                    }
+
+                    if (y0[i] < y1[i]) {
+                        if (yi <= y0[i] || yi >= y1[i]) next
+                    } else {
+                        if (yi >= y0[i] || yi <= y1[i]) next
+                    }
+
+                    ## if we reach here, the intersection point is on
+                    ## the 1st segment, check if it is on the 2nd one
+                    if (x0[j] < x1[j]) {
+                        if (xi <= x0[j] || xi >= x1[j]) next
+                    } else {
+                        if (xi >= x0[j] || xi <= x1[j]) next
+                    }
+
+                    if (y0[i] < y1[j]) {
+                        if (yi <= y0[j] || yi >= y1[j]) next
+                    } else {
+                        if (yi >= y0[j] || yi <= y1[j]) next
+                    }
+                    return(Inf)
+                }
+            }
+            D <- dist(cbind(xx, yy))
+            sum(1/c(D)^2, na.rm = TRUE)
+        }
+
+        Rotation <- function(rot, i, beta) {
+            ## rot: indices of the nodes to rotate
+            ## i: index of the node connected to 'rot' (= fixed rotation point)
+            xx.rot <- xx[rot] - xx[i]
+            yy.rot <- yy[rot] - yy[i]
+            theta <- atan2(yy.rot, xx.rot) + beta
+            h <- sqrt(xx.rot^2 + yy.rot^2)
+            new.xx[rot] <<- h*cos(theta) + xx[i]
+            new.yy[rot] <<- h*sin(theta) + yy[i]
+        }
+
+        OptimizeRotation <- function(node, rot) {
+            ## test the direction 1st
+            inc <- pi/90
+            Rotation(rot, node, inc)
+            new.E <- energy(new.xx, new.yy)
+            if (new.E >= E) {
+                inc <- -inc
+                Rotation(rot, node, inc)
+                new.E <- energy(new.xx, new.yy)
+            }
+
+            while (new.E < E) {
+                xx <<- new.xx
+                yy <<- new.yy
+                E <<- new.E
+                Rotation(rot, node, inc)
+                new.E <- energy(new.xx, new.yy)
+            }
+        }
+
+        E <- energy(xx, yy)
+        new.xx <- xx
+        new.yy <- yy
+
+        nextOnes <- NULL
+        for (i in H[[central]][-1]) {
+            ## collect the nodes descending from 'i':
+            j <- NULL # j must be initialized before calling fCollect
+            fCollect(i)
+            rot <- c(i, j) # index of the nodes that will be moved
+            OptimizeRotation(central, rot)
+            nextOnes <- c(nextOnes, i)
+        }
+
+        while (!is.null(nextOnes)) {
+            newNodes <- nextOnes
+            nextOnes <- NULL
+            for (i in newNodes) {
+                if (is.null(H[[i]])) next
+                for (j in H[[i]]) {
+                    fCollect(j)
+                    rot <- j
+                    OptimizeRotation(i, rot)
+                    nextOnes <- c(nextOnes, rot)
+                }
+            }
+        }
+    }
+    # .setWindow4haploNet(xx, yy, size, asp)
+    setWindow4haploNet(xx, yy, size, asp, ...)
+
+    ## draw links
+    segments(xx[l1], yy[l1], xx[l2], yy[l2], lwd = lwd,
+             lty = lty, col = col.link)
+
+    # mark the mutants
+    if (show.mutation) {
+        if (show.mutation == 1 && all(x[, 3] < 1)) {
+            warning("link lengths < 1: cannot use the default for 'show.mutation' (changed to 3)")
+            show.mutation <- 2
+        }
+        labelSegmentsHaploNet(xx, yy, link, x[, 3], size, lwd, col.link,
+                              show.mutation, scale.ratio)
+    }
+
+    ## draw alternative links
+    altlink <- attr(x, "alter.links")
+    if (!is.null(altlink) && !identical(as.numeric(threshold), 0))
+        drawAlternativeLinks(xx, yy, altlink, threshold, show.mutation, scale.ratio)
+
+
+    ######Change this to plot circle and label one by one #####
+    drawSymbolsHaploNet(xx, yy, size, col, bg, shape, pie)
+    if (labels) {
+        labels <- attr(x, "labels") # for export below
+        ##### Add a function to judge the link angles and choose the position for label #####
+        for (i in seq_len(length(labels))){
+            # get the links
+            linki <- link[link[,1] == i, ]
+            linki <- rbind(linki, link[link[,2] == i, c(2,1)])
+
+            s <- altlink[, 3] >= threshold[1] & altlink[, 3] <= threshold[2]
+            linki <- rbind(linki, altlink[s,c(1,2)])
+
+            if(is.null(labels.adj[[labels[i]]])){
+                label.adj <- getAutoAdj(xx, yy, linki)
+                if(label.adj[1] == 0) 0 else label.adj[1]/abs(label.adj[1])
+                if(label.adj[2] == 0) 0 else label.adj[2]/abs(label.adj[2])
+                xxi <- xx[i] + (label.adj[1]) * size[i]/2 +
+                    strwidth(labels[i], cex = cex)/2 * is.p(label.adj[1])
+                yyi <- yy[i] + (label.adj[2]) * size[i]/2 +
+                    strheight(labels[i], cex = cex)/2 * is.p(label.adj[2])
+                text(xxi, yyi,
+                     labels[i], font = labels.font,
+                     cex = labels.cex, col = labels.col)
+            } else {
+                # if(length(labels.adj) != length(labels))
+                #     stop("length of 'labels.adj' should equal with ", length(labels))
+                text(xx[i], yy[i], labels[i], font = labels.font,
+                     cex = labels.cex, col = labels.col,
+                     adj = labels.adj[[labels[i]]])
+            }
+        }
+        ##### Add a function to judge the link angles and choose the position for label End #####
+    }
+    ######Change this to plot circle and label one by one End#####
+}
+
+
+drawSymbolsHaploNet <- function(xx, yy, size, col, bg, shape, pie)
+{
+    nopie <- is.null(pie)
+    if (identical(shape, "circles") && nopie) {
+        ## the only case with vectorised arguments
+        symbols(xx, yy, circles = size / 2, inches = FALSE,
+                add = TRUE, fg = col, bg = bg)
+    } else {
+        n <- length(xx) # nb of nodes
+        size <- rep(size, length.out = n)
+        col <- rep(col, length.out = n)
+        bg <- if (!nopie && is.function(bg)) bg(ncol(pie)) else rep(bg, length.out = ifelse(nopie, n, ncol(pie)))
+        ## 'bg' should always be a vector of colours
+        shape <- rep(shape, length.out = n)
+        for (i in 1:n)
+            switch(shape[i],
+                   "circles" = circle,
+                   "squares" = square,
+                   "diamonds" = diamond)(xx[i], yy[i], size[i], col[i], pie[i, ], if (nopie) bg[i] else bg)
+    }
+}
+
+drawAlternativeLinks <- function(xx, yy, altlink, threshold, show.mutation, scale.ratio)
+{
+    s <- altlink[, 3] >= threshold[1] & altlink[, 3] <= threshold[2]
+    if (!any(s)) return(NULL)
+    xa0 <- xx[altlink[s, 1]]
+    ya0 <- yy[altlink[s, 1]]
+    xa1 <- xx[altlink[s, 2]]
+    ya1 <- yy[altlink[s, 2]]
+    segments(xa0, ya0, xa1, ya1, col = "grey", lty = 2)
+    if (show.mutation) {
+        n <- length(xx)
+        labelSegmentsHaploNet(xx, yy, altlink[s, 1:2, drop = FALSE],
+                              altlink[s, 3, drop = FALSE], rep(1, n),
+                              1, "black", show.mutation, scale.ratio)
+    }
+}
+
+#' @importFrom ape floating.pie.asp
+circle <- function(x, y, size, col = "black", pie = NULL, bg = NULL)
+{
+    if (is.null(pie)) {
+        symbols(x, y, circles = size / 2, inches = FALSE,
+                add = TRUE, fg = col, bg = bg)
+    } else {
+        op <- par(fg = OPTS$pie.inner.segments.color)
+        floating.pie.asp(x, y, pie, radius = size / 2, col = bg)
+        par(op)
+    }
+}
+
+squarePegas <- function(x, y, size, pie = NULL)
+{
+    l <- size * sqrt(pi) / 4
+    left <- x - l
+    bottom <- y - l
+    right <- x + l
+    top <- y + l
+    res <- list(c(left, bottom, right, top))
+    if (is.null(pie)) return(res)
+    n <- length(pie)
+    pie <- pie / sum(pie)
+    m <- matrix(NA_real_, 4, n)
+    area <- l * l * 4
+    TOP <- TRUE
+    y2 <- top
+    x1 <- left
+    x2 <- right
+    for (i in 1:n) {
+        if (TOP) {
+            y1 <- y2 - pie[i] * area / (x2 - x1)
+        } else {
+            x2 <- pie[i] * area / (y2 - y1) + x1
+        }
+        m[, i] <- c(x1, y1, x2, y2)
+        if (TOP) {
+            y2 <- y1
+            y1 <- bottom
+        } else {
+            x1 <- x2
+            x2 <- right
+        }
+        TOP <- !TOP
+    }
+    c(res, list(m))
+}
+
+square <- function(x, y, size, col, pie = NULL, bg = NULL)
+{
+    XY <- squarePegas(x, y, size, pie = pie)
+    border <- OPTS$pie.inner.segments.color
+    if (!is.null(pie)) {
+        for (i in seq_along(pie)) {
+            s <- XY[[2]][, i]
+            rect(s[1], s[2], s[3], s[4], col = bg[i], border = border)
+        }
+        bg <- NULL # for the call to rect() below
+    }
+    s <- XY[[1]]
+    rect(s[1], s[2], s[3], s[4], col = bg, border = border)
+}
+
+rotateSquares <- function(XY)
+{
+    ROT <- pi / 4
+    foo <- function(rec) {
+        x <- rec[c(1, 3, 3, 1)] - x0
+        y <- rec[c(2, 2, 4, 4)] - y0
+        tmp <- rect2polar(x, y)
+        o <- polar2rect(tmp$r, tmp$angle + ROT)
+        o$x <- o$x + x0
+        o$y <- o$y + y0
+        o
+    }
+    rec <- XY[[1]]
+    x0 <- (rec[1] + rec[3]) / 2
+    y0 <- (rec[2] + rec[4]) / 2
+    res <- list(foo(rec))
+    if (length(XY) > 1)
+        res[[2]] <- apply(XY[[2]], 2, foo)
+    res
+}
+
+diamond <- function(x, y, size, col, pie = NULL, bg = NULL)
+{
+    XY <- squarePegas(x, y, size, pie = pie)
+    XY <- rotateSquares(XY)
+    border <- OPTS$pie.inner.segments.color
+    if (!is.null(pie)) {
+        for (i in seq_along(pie)) {
+            xy <- XY[[2]][[i]]
+            polygon(xy$x, xy$y, col = bg[i], border = border)
+        }
+        bg <- NULL # for the call to polygon() below
+    }
+    xy <- XY[[1]]
+    polygon(xy$x, xy$y, border = border, col = bg)
+}
+
+## set the (empty) graphic window before plotting the network
+setWindow4haploNet <- function(xx, yy, size, asp, ...)
+{
+    dots <- list(...)
+    noxlim <- noylim <- TRUE
+    if (length(dots)) {
+        ## find the bounding box unless xlim and/or ylim given
+        if ("xlim" %in% names(dots)) noxlim <- FALSE
+        if ("ylim" %in% names(dots)) noylim <- FALSE
+    }
+    half.size <- size / 2
+    if (noxlim) dots$xlim <- c(min(xx - half.size), max(xx + half.size))
+    if (noylim) dots$ylim <- c(min(yy - half.size), max(yy + half.size))
+    dots$x <- NA
+    dots$type <- dots$bty <- "n"
+    dots$ann <- dots$axes <- FALSE
+    dots$asp <- asp
+    do.call(plot, dots)
+}
+
+mutationRug <- function(x0, y0, x1, y1, n, deltaRadii, space = 0.05, length = 0.2)
+{
+    ## convert inches into user-coordinates:
+    l <- xinch(length)
+    sp <- xinch(space)
+    for (i in seq_along(x0)) {
+        xstart <- seq(-(sp*(n[i] - 1))/2, by = sp, length.out = n[i])
+        ystart <- rep(-l/2, n[i])
+        xstop <- xstart
+        ystop <- -ystart
+        ## rotation if the line is not horizontal
+        if (y0[i] != y1[i]) {
+            theta <- atan2(y1[i] - y0[i], x1[i] - x0[i])
+            tmpstart <- rect2polar(xstart, ystart)
+            tmpstop <- rect2polar(xstop, ystop)
+            Rstart <- tmpstart$r
+            Rstop <- tmpstop$r
+            THETAstart <- tmpstart$angle + theta
+            THETAstop <- tmpstop$angle + theta
+            xy.start <- polar2rect(Rstart, THETAstart)
+            xy.stop <- polar2rect(Rstop, THETAstop)
+            xstart <- xy.start$x
+            ystart <- xy.start$y
+            xstop <- xy.stop$x
+            ystop <- xy.stop$y
+        }
+        ## translation:
+        if (deltaRadii[i] == 0) {
+            xm <- (x0[i] + x1[i]) / 2
+            ym <- (y0[i] + y1[i]) / 2
+        } else {
+            ## see explanations below
+            li <- sqrt((x0[i] - x1[i])^2 + (y0[i] - y1[i])^2)
+            w0 <- 1 / (li - deltaRadii[i] / 2)
+            w1 <- 1 / (li + deltaRadii[i] / 2)
+            sumw <- w0 + w1
+            xm <- (x0[i] * w0 + x1[i] * w1) / sumw
+            ym <- (y0[i] * w0 + y1[i] * w1) / sumw
+        }
+        xstart <- xstart + xm
+        ystart <- ystart + ym
+        xstop <- xstop + xm
+        ystop <- ystop + ym
+        segments(xstart, ystart, xstop, ystop)
+    }
+}
+
+labelSegmentsHaploNet <- function(xx, yy, link, step, size, lwd, col.link, method, scale.ratio)
+{
+    ### method: the way the segments are labelled
+    ### 1: small segments
+    ### 2: Klaus's method
+    ### 3: show the number of mutations on each link
+
+    l1 <- link[, 1]
+    l2 <- link[, 2]
+    switch(method, {
+        mutationRug(xx[l1], yy[l1], xx[l2], yy[l2], step, size[l2] - size[l1])
+    }, {
+        ld1 <- step
+        ld2 <- step * scale.ratio
+        for (i in seq_along(ld1)) {
+            pc <- ((1:ld1[i]) / (ld1[i] + 1) * ld2[i] + size[l1[i]]/2) / (ld2[i] + (size[l1[i]] + size[l2[i]])/2)
+            xr <- pc * (xx[l2[i]] - xx[l1[i]]) +  xx[l1[i]]
+            yr <- pc * (yy[l2[i]] - yy[l1[i]]) +  yy[l1[i]]
+            symbols(xr, yr, circles = rep(lwd/15, length(xr)), inches = FALSE,
+                    add = TRUE, fg = col.link, bg = col.link)
+        }
+    }, {
+        x0 <- xx[l1]
+        x1 <- xx[l2]
+        y0 <- yy[l1]
+        y1 <- yy[l2]
+        x <- (x0 + x1) / 2
+        y <- (y0 + y1) / 2
+        deltaRadii <- size[l2] - size[l1]
+        if (any(s <- deltaRadii != 0)) {
+            ### if there are links between symbols of different size: need to place the
+            ### annotation in the middle of the "visible" part of the link. We do that
+            ### with a weighting mean of the coordinates (simpler to calculate than
+            ### trogonometric formulas). We do that only for the different sized symbols.
+            s <- which(s)
+            ## lengths between each pair of nodes:
+            l <- sqrt((x0[s] - x1[s])^2 + (y0[s] - y1[s])^2)
+            ## difference in radii (keep in mind that 'size' are diameters,
+            ## so we need to divide by 2):
+            deltaRadii <- deltaRadii[s] / 2
+            ## weights for the mean:
+            w0 <- 1 / (l - deltaRadii)
+            w1 <- 1 / (l + deltaRadii)
+            sumw <- w0 + w1
+            x[s] <- (x0[s] * w0 + x1[s] * w1) / sumw
+            y[s] <- (y0[s] * w0 + y1[s] * w1) / sumw
+        }
+        BOTHlabels(step, NULL, x, y, c(0.5, 0.5), "rect", NULL, NULL,
+                   NULL, NULL, "black", "lightgrey", FALSE, NULL, NULL)
+    })
+}
+
+is.p <- function(x) if(x == 0) 0 else x/abs(x)
+
+getAutoAdj <- function(xx, yy, linki){
+    quas <- c()
+    for(m in seq_len(nrow(linki))){
+        xyori <- c(xx[linki[m, 1]], yy[linki[m, 1]])
+        xytar <- c(xx[linki[m, 2]], yy[linki[m, 2]])
+
+
+        xyd <- xytar - xyori
+        # Quadrant
+        p.qua1 <- xyd[1] >= 0
+        p.qua2 <- xyd[2] >= 0
+        qua <- if(abs(xyd[1]) >= abs(xyd[2])) {
+            if(p.qua1 && p.qua2) 1 else
+                if(!p.qua1 && p.qua2) 4 else
+                    if(!p.qua1 && !p.qua2) 5 else
+                        if(p.qua1 && !p.qua2) 8
+        } else {    if(p.qua1 && p.qua2) 2 else
+            if(!p.qua1 && p.qua2) 3 else
+                if(!p.qua1 && !p.qua2) 6 else
+                    if(p.qua1 && !p.qua2) 7
+        }
+        quas <- c(quas, qua)
+    }
+    adjs <- list("1" = c(1/sqrt(2),1/sqrt(2)), "2" = c(0,1),
+                 "3" = c(-1/sqrt(2),1/sqrt(2)), "4" = c(-1,0),
+                 "5" = c(-1/sqrt(2),-1/sqrt(2)), "6" = c(0,-1),
+                 "7" = c(1/sqrt(2),-1/sqrt(2)), "8" = c(1,0))
+    res <- setdiff(c(1:8),quas)
+    res <- res[order(res)]
+    p <- if(1 %in% diff(res)) {
+        res[which(diff(res) == 1)[1]]
+    } else if(all(c(1,8) %in% res)) 8 else 1
+    adjs[[p]]
 }
 
