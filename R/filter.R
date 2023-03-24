@@ -42,6 +42,11 @@
 #'
 #' @return vcfR
 #' @export
+#' @none
+#' library(geneHapR)
+#' data(geneHapR_test)
+#' library(magrittr)
+#' vc <- filter_vcf(vcf, mode = "POS", start = 4200, end = 4303)
 filter_vcf <- function(vcf,
                        gff = gff,
                        mode = c("POS", "type", "both"),
@@ -69,10 +74,10 @@ filter_vcf <- function(vcf,
         } else if(nr == 1){
             nf <- colnames(vcf@fix)
             ng <- colnames(vcf@gt)
-            vcf@fix <- matrix(vcf@fix[probe,], byrow = TRUE,
-                              dimnames = nf, nrow = nr)
-            vcf@gt <- matrix(vcf@gt[probe,], byrow = TRUE,dimnames = ng,
-                             nrow = nr)
+            vcf@fix <- matrix(vcf@fix[probe,], byrow = TRUE, nrow = nr)
+            colnames(vcf@fix) <- nf
+            vcf@gt <- matrix(vcf@gt[probe,], byrow = TRUE, nrow = nr)
+            colnames(vcf@gt) <- ng
         } else stop(" No variants after filter by position")
     }
 
