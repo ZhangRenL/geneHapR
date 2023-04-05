@@ -28,7 +28,8 @@ print.hapResult <- function(x, ...) {
         cat(options[i])
     }
     cat("\n\n")
-    print(tibble::as_tibble(x))
+    print(tibble::as_tibble(x), n = if(nrow(x) > 7) 7 else nrow(x),
+          max_footer_lines = 0, max_extra_cols = 0)
 
 }
 
@@ -71,7 +72,16 @@ print.hapSummary <- function(x, ...) {
         cat(options[i])
     }
     cat("\n\n")
-    print(tibble::as_tibble(x))
+    hap2acc <- attr(x, "hap2acc")
+    haps <- names(hap2acc) %>% unique() %>% length()
+    x$Accession[1] <- "Haplotypes: "
+    x$freq[1] <- haps
+    x$Accession[2] <- "Individuals: "
+    x$freq[2] <- length(hap2acc)
+    x$Accession[3] <- "Variants: "
+    x$freq[3] <- ncol(x) - 3
+    print(tibble::as_tibble(x), n = if(nrow(x) > 7) 7 else nrow(x),
+          max_footer_lines = 0, max_extra_cols = 0)
 }
 
 

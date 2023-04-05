@@ -42,11 +42,6 @@
 #'
 #' @return vcfR
 #' @export
-#' @none
-#' library(geneHapR)
-#' data(geneHapR_test)
-#' library(magrittr)
-#' vc <- filter_vcf(vcf, mode = "POS", start = 4200, end = 4303)
 filter_vcf <- function(vcf,
                        gff = gff,
                        mode = c("POS", "type", "both"),

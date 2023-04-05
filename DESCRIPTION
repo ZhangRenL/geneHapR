@@ -45,11 +45,13 @@ Depends:
   ggplot2,
   R (>= 4.0.0)
 Suggests:
-  mapdata,
-  maptools,
-  muscle,
-  knitr,
-  rmarkdown
+    mapdata,
+    maptools,
+    muscle,
+    knitr,
+    rmarkdown,
+    testthat (>= 3.0.0)
 License: GPL-3
 VignetteBuilder: knitr
 Roxygen: list(markdown = TRUE)
+Config/testthat/edition: 3

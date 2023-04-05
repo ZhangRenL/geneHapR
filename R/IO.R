@@ -301,38 +301,67 @@ import_hap <- function(file, ...) {
     # get POS
     POS <-
         suppressWarnings(as.numeric(hap[hap[, 1] == "POS", ]))
-    POS <- na.omit(POS)
-    if (length(POS) == 1) {
+    if (length(na.omit(POS)) == 1) {
         warning("There is only one loci?")
     } else {
-        if (length(POS) < 1)
+        if (length(na.omit(POS)) < 1)
             stop("Please check your input file")
     }
 
-    # check columns
-    colnms <- c("Hap", POS)
-    if (ncol(hap) - length(POS) == 2) {
-        colnms <- c(colnms, "Accession")
-        class(hap) <- c('hapResult', "data.frame")
-    } else if (ncol(hap) - length(POS) == 3) {
-        if (is.numeric(hap[, ncol(hap)])) {
-            colnms <- c(colnms, "Accession", "freq")
-        } else if (is.numeric(hap[, ncol(hap) - 1])) {
-            colnms <- c(colnms, "freq", "Accession")
-        } else {
-            stop("Your file seems like 'hapSummary',
-the 'freq' column (ususlly the last column) contains nonnumeric data.")
-        }
+    # set data class
+    if(is.na(POS[length(POS)]) & is.na(POS[length(POS) - 1])){
+        # the last two vectors were not numeric
+        # hapSummary exported by old version
+        class(hap) <- c("hapSummary", "data.frame")
+    } else if(is.na(POS[length(POS)]) & !is.na(POS[length(POS) - 1])){
+        # the last one of POS is NA and the next to last is numeric
+        # hapResult
+        class(hap) <- c("hapResult", "data.frame")
+    } else if(!is.na(POS[length(POS)]) & is.na(POS[length(POS) - 1])){
+        # the last one of POS is numeric and the next to last is na
+        # hapSummary exported by new version
         class(hap) <- c("hapSummary", "data.frame")
     } else {
-        stop("Please check your input file.")
+        stop("")
     }
 
+    # set column names
+    POS[1] <- "Hap"
+    if(inherits(hap, "hapSummary")) {
+        POS[(length(POS) - 1) : length(POS)] <- c("Accession", "freq")
+        hap[1:4, ncol(hap)] <- NA
+        hap[1:4, ncol(hap) - 1] <- ""
+    }
+    if(inherits(hap, "hapResult")) {
+        POS[length(POS)] <- c("Accession")
+        hap[1:4, ncol(hap)] <- ""
+    }
     # set colnames
-    colnames(hap) <- colnms
+    colnames(hap) <- POS
 
 
     # set attr options
+    if(inherits(hap, "hapResult")){
+        accAll <- hap$Accession
+        attr(hap, "AccAll") <- accAll
+        hap2acc <- hap$Accession[-c(1:4)]
+        names(hap2acc) <- hap$Hap[-c(1:4)]
+        attr(hap, "hap2acc") <- hap2acc
+        attr(hap, "freq") <- table(hap$Hap[-c(1:4)])
+
+    } else {
+        accAll <- c()
+        for(i in seq_len(nrow(hap))){
+            if(i <= 4) next
+            accAlli <- strsplit(hap$Accession[i], ";") %>% unlist()
+            names(accAlli) <- rep(hap$Hap[i], length(accAlli))
+            accAll <- c(accAll, accAlli)
+        }
+        attr(hap, "hap2acc") <- accAll
+        names(accAll) <- NULL
+        attr(hap, "AccRemain") <- attr(hap, "AccAll") <- accAll
+        attr(hap, "freq") <- hap$freq[-c(1:4)]
+    }
     attr(hap, "options") <- c(Source = "Read from file")
     return(hap)
 }
@@ -364,6 +393,26 @@ the 'freq' column (ususlly the last column) contains nonnumeric data.")
 #' @return No return value
 #' @export
 write.hap <- function(x, file = file, sep = "\t") {
+    # add Summaries
+    hap2acc <- attr(x, "hap2acc")
+    haps <- names(hap2acc) %>% unique() %>% length()
+    if(inherits(x, "hapResult")){
+        x$Accession[1] <- paste0("Haplotypes: ", haps)
+        x$Accession[2] <- paste0("Individuals: ", length(hap2acc))
+        x$Accession[3] <- paste0("Variants: ", ncol(x) - 2)
+        x$Accession[4] <- "Accession"
+    }
+
+    if(inherits(x, "hapSummary")){
+        x$Accession[1] <- "Haplotypes: "
+        x$freq[1] <- haps
+        x$Accession[2] <- "Individuals: "
+        x$freq[2] <- length(hap2acc)
+        x$Accession[3] <- "Variants: "
+        x$freq[3] <- ncol(x) - 3
+        x$Accession[4] <- "Accession"
+        x$freq[4] <- "freq"
+    }
     nc <- ncol(x)
     nm <- names(x)
     # if ("Accession" %in% nm)
