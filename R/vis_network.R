@@ -138,6 +138,8 @@ get_hapNet <-
 #' link.type.alt = 2,
 #' link.width = 1,
 #' link.width.alt = 1,
+#' altlinks = TRUE,
+#' threshold = c(1,2),
 #' haplotype.inner.color = "white",
 #' haplotype.outer.color = "black",
 #' mutations.cex = 1,
@@ -155,6 +157,8 @@ get_hapNet <-
 #' pie.colors.function = rainbow,
 #' scale.ratio = 1,
 #' show.mutation = 2
+#'
+#' The alter links could be eliminated by set the 'threshold' to 0 or set 'altlinks' as FALSE.
 #' @param labels.col the labels color
 #' @param labels.adj a named list contains two length vectors defining the adjustment of labels.
 #' The names should be exactly matched with the haplotype names.
@@ -525,7 +529,7 @@ getHapGroup <- function(hapSummary,
 haploNetPloter <- function(x, size = 1, col, bg, col.link, lwd, lty,
                            # pie.lim = c(0.5, 2),
                            shape = "circles", pie = NULL, labels, font, cex,
-                           scale.ratio, asp = 1, fast = FALSE,
+                           scale.ratio, asp = 1, fast = FALSE, altlinks = TRUE,
                            show.mutation = 2, threshold = c(1, 2), xy = NULL,
                            labels.cex = labels.cex, labels.col = 2,
                            labels.adj = NULL,labels.font = 2, ...)
@@ -760,10 +764,11 @@ haploNetPloter <- function(x, size = 1, col, bg, col.link, lwd, lty,
     }
 
     ## draw alternative links
-    altlink <- attr(x, "alter.links")
-    if (!is.null(altlink) && !identical(as.numeric(threshold), 0))
-        drawAlternativeLinks(xx, yy, altlink, threshold, show.mutation, scale.ratio)
-
+    if(altlinks){
+        altlink <- attr(x, "alter.links")
+        if (!is.null(altlink) && !identical(as.numeric(threshold), 0))
+            drawAlternativeLinks(xx, yy, altlink, threshold, show.mutation, scale.ratio)
+    }
 
     ######Change this to plot circle and label one by one #####
     drawSymbolsHaploNet(xx, yy, size, col, bg, shape, pie)
@@ -775,10 +780,14 @@ haploNetPloter <- function(x, size = 1, col, bg, col.link, lwd, lty,
             linki <- link[link[,1] == i, ]
             linki <- rbind(linki, link[link[,2] == i, c(2,1)])
 
-            s <- altlink[, 3] >= threshold[1] & altlink[, 3] <= threshold[2]
-            linki <- rbind(linki, altlink[s,c(1,2)])
-
+            #
+            prob <- if(length(threshold) == 1 & threshold[1] != 0) TRUE else FALSE
+            if(prob | length(threshold) == 2 | altlinks){
+                s <- altlink[, 3] >= threshold[1] & altlink[, 3] <= threshold[2]
+                linki <- rbind(linki, altlink[s,c(1,2)])
+            }
             if(is.null(labels.adj[[labels[i]]])){
+
                 label.adj <- getAutoAdj(xx, yy, linki)
                 if(label.adj[1] == 0) 0 else label.adj[1]/abs(label.adj[1])
                 if(label.adj[2] == 0) 0 else label.adj[2]/abs(label.adj[2])

@@ -766,3 +766,25 @@ pscale <- function(x){
 }
 
 
+# comparison of all sites
+#' @title sites comparison
+#' @name sites_compar
+#' @description Used for all allele effect compare once
+#' @param hap object of hapResult class
+#' @param pheno a data.frame contains phenotypes
+#' @param phenoName the name of used phenotype
+#' @param hetero_remove removing the heter-sites or not, default as TRUE
+#' @param title the title of the figure
+#' @param file if provieds a file path the comparing results will saved to file.
+# @export
+compareAllSites <- function(hap, pheno, phenoName = names(pheno)[1],
+                            hetero_remove = TRUE, title = "", file = file){
+    if(! inherits(hap, "hapReult"))
+        stop("The haplotype result is provied in wrong format")
+    if(! inherits(pheno, "data.frame"))
+        warning("phenotype format warnning")
+    if(! missing(file))
+        if(file.exists(file))
+            warning("'", file,"' is already exist, it will be overwrited")
+
+}

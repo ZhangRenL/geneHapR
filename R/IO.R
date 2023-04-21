@@ -298,6 +298,24 @@ import_hap <- function(file, ...) {
         if (nrow(hap) < 5)
             stop("Please check your input file.")
 
+    # set data class
+    cfreq <- where_('freq', hap, 'c')
+    cAccession <- where_('Accession', hap, 'c')
+    if(cfreq == -1){
+        if(cAccession == -1){
+            stop("Accession and freq column wasn't found")
+        } else {
+            class(hap) <- c("hapResult", "data.frame")
+            hap <- hap[,seq_len(cAccession)]
+        }
+    } else {
+        if(cAccession == -1){
+            stop("Accession column wasn't found")
+        } else {
+            class(hap) <- c("hapSummary", "data.frame")
+        }
+    }
+
     # get POS
     POS <-
         suppressWarnings(as.numeric(hap[hap[, 1] == "POS", ]))
@@ -308,22 +326,21 @@ import_hap <- function(file, ...) {
             stop("Please check your input file")
     }
 
-    # set data class
-    if(is.na(POS[length(POS)]) & is.na(POS[length(POS) - 1])){
-        # the last two vectors were not numeric
-        # hapSummary exported by old version
-        class(hap) <- c("hapSummary", "data.frame")
-    } else if(is.na(POS[length(POS)]) & !is.na(POS[length(POS) - 1])){
-        # the last one of POS is NA and the next to last is numeric
-        # hapResult
-        class(hap) <- c("hapResult", "data.frame")
-    } else if(!is.na(POS[length(POS)]) & is.na(POS[length(POS) - 1])){
-        # the last one of POS is numeric and the next to last is na
-        # hapSummary exported by new version
-        class(hap) <- c("hapSummary", "data.frame")
-    } else {
-        stop("")
-    }
+    # if(is.na(POS[length(POS)]) & is.na(POS[length(POS) - 1])){
+    #     # the last two vectors were not numeric
+    #     # hapSummary exported by old version
+    #     class(hap) <- c("hapSummary", "data.frame")
+    # } else if(is.na(POS[length(POS)]) & !is.na(POS[length(POS) - 1])){
+    #     # the last one of POS is NA and the next to last is numeric
+    #     # hapResult
+    #     class(hap) <- c("hapResult", "data.frame")
+    # } else if(!is.na(POS[length(POS)]) & is.na(POS[length(POS) - 1])){
+    #     # the last one of POS is numeric and the next to last is na
+    #     # hapSummary exported by new version
+    #     class(hap) <- c("hapSummary", "data.frame")
+    # } else {
+    #     stop("")
+    # }
 
     # set column names
     POS[1] <- "Hap"
@@ -370,7 +387,6 @@ import_hap <- function(file, ...) {
 
 #' @title Save Haplotype Results to Disk
 #' @name write.hap
-#' @usage write.hap(x, file = file, sep = "\t")
 #' @description
 #' This function will write hap result into a txt file.
 #' @inherit import_hap details
@@ -390,9 +406,10 @@ import_hap <- function(file, ...) {
 #' @param file file path, where to save the hap result/summary
 #' @param sep the field separator string. Values within each row of x are separated by this string.
 #' Default as "`\t`"
+#' @param pheno,phenoName the phenotype data.frame, only used for export hapResult object.
 #' @return No return value
-#' @export
-write.hap <- function(x, file = file, sep = "\t") {
+#' @export write.hap
+write.hap <- function(x, file = file, sep = "\t", pheno = pheno, phenoName = phenoName) {
     # add Summaries
     hap2acc <- attr(x, "hap2acc")
     haps <- names(hap2acc) %>% unique() %>% length()
@@ -401,6 +418,24 @@ write.hap <- function(x, file = file, sep = "\t") {
         x$Accession[2] <- paste0("Individuals: ", length(hap2acc))
         x$Accession[3] <- paste0("Variants: ", ncol(x) - 2)
         x$Accession[4] <- "Accession"
+
+        # add phenotype
+        if(! missing(pheno)){
+            if("INFO" %in% row.names(pheno))
+                stop("There is a sample named as 'INFO', which is a reserved word")
+            if("CHR" %in% row.names(pheno))
+                stop("There is a sample named as 'CHR', which is a reserved word")
+            if("POS" %in% row.names(pheno))
+                stop("There is a sample named as 'POS', which is a reserved word")
+            if("ALLELE" %in% row.names(pheno))
+                stop("There is a sample named as 'ALLELE', which is a reserved word")
+            if(! missing(phenoName)){
+                if(! phenoName %in% names(pheno))
+                    stop("'", phenoName, "' was not found in `pheno`")
+                x <- cbind(x, pheno[row.names(x), phenoName])
+            }
+            x <- cbind(x, pheno[row.names(x), ])
+        }
     }
 
     if(inherits(x, "hapSummary")){
@@ -433,7 +468,23 @@ write.hap <- function(x, file = file, sep = "\t") {
     }
 }
 
-
+# find the position of `x` from m,
+# t: r, return the row number
+# t: c, return the column number
+# if not found, return -1
+where_ <- function(x, m, t = 'r'){
+    m <- as.matrix(m)
+    p <- x == m
+    p[is.na(p)] <- FALSE
+    if(any(p)){
+        switch (t,
+                'r' = which(p) %% nrow(m),
+                'c' = which(p) %/% nrow(m)
+        )
+    } else {
+        -1
+    }
+}
 #' @importFrom tidyr `%>%` unite pivot_wider matches chop
 #' @importFrom IRanges `%over%`
 `%>%` <- tidyr::`%>%`

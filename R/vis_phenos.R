@@ -43,11 +43,11 @@
 #' @inheritParams ggpubr::stat_compare_means
 #' @importFrom stats na.omit t.test
 #' @importFrom rlang .data
-#' @export
 #' @return list. A list contains a character vector with Haps were applied
 #' student test, a mattrix contains p-value of each compare of Haps and a
 #' ggplot2 object named as figs if mergeFigs set as `TRUE`, or two ggplot2
 #' objects names as fig_pvalue and fig_Violin
+#' @export
 hapVsPheno <- function(hap,
                        pheno,
                        phenoName,
@@ -513,7 +513,7 @@ hapVsPhenos <- function(hap,
 #' file type could be one of "png, tiff, jpg"
 #' @param freq.min miner allies frequency less than freq.min will not be skipped
 #' @param ... addtional params will be passed to plot saving function like `tiff()`, `png()`, `pdf()`
-#' @importFrom unitls askYesNo
+#' @importFrom utils askYesNo
 #' @examples
 #' data("geneHapR_test")
 #' hapVsPhenoPerSite(hapResult, pheno, sitePOS = "4300")
@@ -601,7 +601,7 @@ hapVsPhenoPerSite <- function(hap, pheno, phenoName, sitePOS,
 
 
 
-plotHapi <- function(hapi, pheno, freq.min, phenoName){
+plotHapi <- function(hapi, pheno, freq.min, phenoName, method = "t.test"){
     # pheno: a named vector
     hapi$pheno <- pheno[hapi$Accession]
     pos <- names(hapi)[1]
@@ -643,8 +643,76 @@ plotHapi <- function(hapi, pheno, freq.min, phenoName){
         add = "boxplot")
     fig2 + ggpubr::stat_compare_means(
         comparisons = unique(compares),
-        method = "t.test"
+        method = method
     )
 }
 
 
+# # 卡方检验数量性状（等级）
+# library(stringr)
+# library(magrittr)
+#
+# pheno = pheno[,str_detect(names(pheno),"tude")]
+# names(pheno)
+# freq.min = 5
+# ptest = pheno[,1]
+# names(ptest) = row.names(pheno)
+# acc2hap <- attr(hap,"hap2acc")
+# haps <- unique(hap$Hap[-c(1:4)])
+# ps <- matrix(nrow = length(haps), ncol = length(haps))
+# colnames(ps) <- rownames(ps) <- haps
+# plotHap <- c()
+# for(h1 in haps){
+#     for(h2 in haps){
+#         if(h1 == h2) ps[h1,h2] <- 1 else{
+#             phe1 <- ptest[acc2hap[names(acc2hap) == h1]] %>% na.omit()
+#             phe2 <- ptest[acc2hap[names(acc2hap) == h2]] %>% na.omit()
+#             if(length(phe1) > freq.min & length(phe2) > freq.min){
+#                 plotHap <- c(plotHap,h1,h2)
+#                 nms <- names(table(c(phe1,phe2)))
+#                 phe <- rbind(table(phe1)[nms],
+#                              table(phe2)[nms])
+#                 phe[is.na(phe)] <- 0
+#                 rownames(phe) = c(h1,h2)
+#                 res <- chisq.test(phe)
+#                 ps[h1,h2] = res$p.value
+#             }
+#         }
+#     }
+# }
+# plotHap <- unique(plotHap)
+# ps<- ps[plotHap,plotHap]
+# heatmap(ps)
+#
+#
+#
+#
+# nms <- names(table(ptest))
+# res <- data.frame()
+# for(h1 in haps){
+#     resh <- ptest[acc2hap[names(acc2hap) == h1]] %>% na.omit()
+#     if(length(resh) > freq.min){
+#         t <- table(resh)[nms]
+#         res <- rbind(res, t)
+#         row.names(res)[nrow(res)] <- h1
+#     }
+# }
+# names(res) <- nms
+# res[is.na(res)] <- 0
+# res$Hap <- row.names(res)
+# res <- reshape2::melt(res, id = "Hap")
+# library(reshape2)
+# p <- ggplot(data = res, mapping = aes(x = Hap, fill = variable, y = value))
+# p + geom_bar(stat = "identity", position = "fill")
+# table(res$Hap)
+# head(res)
+# p = ggpubr::ggbarplot(res, "Hap", "value",fill = "variable",position = position_fill(),
+#                       legend = "right")
+# topptx(p, file = "p.pptx", width = 8, height = 6)
+# topptx(p, file = "p.pptx", width = 4, height = 3, append = T)
+# hapVsPheno
+# attr(hap,"freq")
+# dev.off()
+# res
+# ps %>% data.frame() %>% na.omit()# %>% t() %>% na.omit()
+# a.omit(ps)

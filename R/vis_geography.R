@@ -126,7 +126,16 @@ hapDistribution <- function(hap,
             fun.aggregate = length
         )
 
-
+    # Check wether all hapnames in Accinfo
+    if( ! all(hapNames %in% names(dF))) {
+        n_names <- hapNames[! hapNames %in% names(dF)]
+        m = paste0("We could not found any individual belong to '",
+                  n_names, "' in your AccINFO, Procceed?")
+        proceed <- askYesNo(m, default = FALSE)
+        if(proceed) {
+            hapNames <- hapNames[hapNames %in% names(dF)]
+        } else return(NULL)
+    }
     maps::map(database = database, regions = regions, col = map.fill.color, ...)
     # maps::map(database = database, regions = regions)
     # scale the circle size using symbol.lim instead of symbolSize

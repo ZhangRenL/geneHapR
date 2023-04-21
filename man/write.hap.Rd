@@ -4,7 +4,7 @@
 \alias{write.hap}
 \title{Save Haplotype Results to Disk}
 \usage{
-write.hap(x, file = file, sep = "\t")
+write.hap(x, file = file, sep = "\\t", pheno = pheno, phenoName = phenoName)
 }
 \arguments{
 \item{x}{objec of hapResult or hapSummary class}
@@ -13,6 +13,8 @@ write.hap(x, file = file, sep = "\t")
 
 \item{sep}{the field separator string. Values within each row of x are separated by this string.
 Default as "\verb{\\t}"}
+
+\item{pheno, phenoName}{the phenotype data.frame, only used for export hapResult object.}
 }
 \value{
 No return value

@@ -113,6 +113,8 @@ link.type = 1,
 link.type.alt = 2,
 link.width = 1,
 link.width.alt = 1,
+altlinks = TRUE,
+threshold = c(1,2),
 haplotype.inner.color = "white",
 haplotype.outer.color = "black",
 mutations.cex = 1,
@@ -130,6 +132,8 @@ pie.inner.segments.color = "black",
 pie.colors.function = rainbow,
 scale.ratio = 1,
 show.mutation = 2
+
+The alter links could be eliminated by set the 'threshold' to 0 or set 'altlinks' as FALSE.
 }
 \examples{
 

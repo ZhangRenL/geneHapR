@@ -142,7 +142,7 @@ vcf2hap_data <- function(vcf,
                          ALLELE = ALLELE,
                          POS = POS) {
     # vcf2data.frame for analysis
-    gt <- vcfR::extract_gt_tidy(vcf)
+    gt <- vcfR::extract_gt_tidy(vcf, format_fields = "GT")
     hap <- tidyr::pivot_wider(
         data = gt,
         id_cols = .data$Key,

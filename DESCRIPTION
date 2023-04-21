@@ -15,7 +15,7 @@ Authors@R:
            family = "Guanqing",
            email = "jiaguanqing@caas.cn", 
            role = c("aut")))
-Version: 1.1.9
+Version: 1.2.0
 RoxygenNote: 7.2.3
 LazyData: True
 Imports: 
@@ -47,7 +47,6 @@ Depends:
 Suggests:
     mapdata,
     maptools,
-    muscle,
     knitr,
     rmarkdown,
     testthat (>= 3.0.0)

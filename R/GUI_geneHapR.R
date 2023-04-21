@@ -837,10 +837,10 @@ Click "Save" to save the result
         observeEvent(input$changelanguage,{
             if(input$changelanguage %% 2 == 1){
                 updateActionButton(session, "changelanguage",
-                                   label = "\u5207\u6362\u8BED\u8A00")
+                                   label = "Change Language")
             } else {
                 updateActionButton(session, "changelanguage",
-                                   label = "Change Language")
+                                   label = "\u5207\u6362\u8BED\u8A00")
             }
             toggle("help_en")
             toggle("help_ch")
@@ -874,7 +874,7 @@ Click "Save" to save the result
                 fluidRow(
                     column(width = 3,
                            actionButton("changewd", "Change Working Directory"),
-                           actionButton("changelanguage", "Change Language")),
+                           actionButton("changelanguage", "\u5207\u6362\u8BED\u8A00")), # change language
                     column(width = 7,
                            br(),
                            h1(id = "mainID", "Welcome to geneHapR-GUI"),
