@@ -220,7 +220,7 @@ plotHapNet <- function(hapNet,
 
     if (!is.null(hapGroup)) {
         if (missing(backGround))
-            backGround <- rainbow
+            backGround <- OPTS$pie.colors.function
 
         haploNetPloter(
             hapNet,
@@ -546,7 +546,7 @@ haploNetPloter <- function(x, size = 1, col, bg, col.link, lwd, lty,
     if (missing(cex)) cex <- OPTS$labels.cex
     if (missing(scale.ratio)) scale.ratio <- OPTS$scale.ratio
     if (missing(show.mutation)) show.mutation <- OPTS$show.mutation
-
+    if (threshold[1] == 0 & length(threshold) == 1) altlinks <- FALSE
     SHAPES <- c(c = "circles", s = "squares", d = "diamonds")
     shape <- SHAPES[substr(tolower(shape), 1L, 1L)]
     ## par(xpd = TRUE) # normalement plus utile...
@@ -768,7 +768,7 @@ haploNetPloter <- function(x, size = 1, col, bg, col.link, lwd, lty,
         altlink <- attr(x, "alter.links")
         if (!is.null(altlink) && !identical(as.numeric(threshold), 0))
             drawAlternativeLinks(xx, yy, altlink, threshold, show.mutation, scale.ratio)
-    }
+    } else altlink <- NULL
 
     ######Change this to plot circle and label one by one #####
     drawSymbolsHaploNet(xx, yy, size, col, bg, shape, pie)

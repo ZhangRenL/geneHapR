@@ -47,7 +47,7 @@ OPTS <- list(
     mutations.sequence.length = 0.3,
     mutations.sequence.width = 5,
     pie.inner.segments.color = "black",
-    pie.colors.function = rainbow,
+    pie.colors.function = function(x) hcl.colors(x, palette = "Dynamic"),
     scale.ratio = 1,
     show.mutation = 2)
 

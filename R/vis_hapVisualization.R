@@ -519,6 +519,14 @@ displayVarOnGeneModel <- function(hapSummary,
                                        start = min(startPOS, endPOS),
                                        end = max(startPOS, endPOS)
                                    ))
+    seq_names <- unique(as.vector(GenomicRanges::seqnames(gff)))
+    if (! Chr %in% seq_names) stop(Chr, " in 'hapSummary/hapResult' was not found in gff") else {
+        gff <- gff[as.vector(gff@seqnames) %in% Chr]
+        gff_s <- min(GenomicRanges::start(gff))
+        gff_e <- max(GenomicRanges::end(gff))
+        if (startPOS > gff_e | endPOS < gff_s) stop("There was no overlap between hapResult: ", startPOS, "-", endPOS,
+                                              " and gff: ", gff_s,"-",gff_e, ".")
+    }
 
     over <- gff[gff %over% gene]
     over$height[over$type == "CDS"] <- CDS_h
