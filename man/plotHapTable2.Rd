@@ -66,6 +66,8 @@ only useful when gff is provided,}
 
 \item{cell_fill}{a color vector or function or named vector specified cell fill color}
 
+\item{style}{see help(gpar)}
+
 \item{footbar}{the foot notes}
 }
 \description{

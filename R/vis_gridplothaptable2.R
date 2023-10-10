@@ -21,6 +21,7 @@
 #' @param show_INFO show annotation field or not, default as `FALSE`
 #' @param show_chr_name show chromosome name at left-top cell or not
 #' @param show_indel_size the Indel length longer will be replaced by "i1,i2,i3,..."
+#' @param style see help(gpar)
 #' @param Chr,start,end which range should be plotted in gene model
 #' @param gene_model_height,table_height,space_height the plotting range height of gene model, table and spacer
 #' @export
