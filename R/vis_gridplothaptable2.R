@@ -8,11 +8,13 @@
 #' plotHapTable2(hapResult, gff = gff)
 #' @param hapSummary the hapSummary or hapResult object
 #' @param gff gff or bed annotation
+#' @param title title of plot
 #' @param CDS_height a numeric vector specified the height of CDS, and the height of utr is half of that,
 #'  only useful when gff is provided,
 #' @param equal_col_width a bool or numeric vector specified whether column with should be equal
 #' @param annot_fill,head_fill,labels_fill the fill color of annotation, head and label row or columns
 #' @param footbar the foot notes
+#' @param gene_model_fill fill color of CDS ad UTR
 #' @param cell_fill a color vector or function or named vector specified cell fill color
 #' @param replaceMultiAllele replace multi-allele title by 'T1,T2,...' or not
 #' @param col_annots,head_anno,headrows,row_annots,row_labels the column or row number of annotation or labels or heads
@@ -22,16 +24,16 @@
 #' @param Chr,start,end which range should be plotted in gene model
 #' @param gene_model_height,table_height,space_height the plotting range height of gene model, table and spacer
 #' @export
-plotHapTable2 <- function(hapSummary, show_indel_size = 2,replaceMultiAllele = TRUE,
-                          show_INFO = FALSE,
+plotHapTable2 <- function(hapSummary, show_indel_size = 1,replaceMultiAllele = TRUE,
+                          show_INFO = FALSE,title = "",
                           gff = NULL,show_chr_name = TRUE,
-                          Chr = NULL, start = NULL, end = NULL,
+                          Chr = NULL, start = NULL, end = NULL,gene_model_fill = "white",
                           gene_model_height = 0.2, space_height = 0.1, table_height = NULL, CDS_height = 0.1,
                           headrows = 1, equal_col_width = FALSE,
                           head_anno = 1, col_annots = 0,
                           row_labels = 1, row_annots = 1,
                           labels_fill = "white", annot_fill = "grey90", head_fill = NULL,
-                          cell_fill = NULL,
+                          cell_fill = NULL, style = gpar(fontfamily = "sans", fontface = 1, cex = 0.7),
                           footbar = ""){
     # function start
     if(is.null(cell_fill)) cell_fill <- OPTS$pie.colors.function
@@ -160,9 +162,10 @@ plotHapTable2 <- function(hapSummary, show_indel_size = 2,replaceMultiAllele = T
             vpTOP <- viewport(x = 0.5, y = 0.5, width = 0.9, height = 0.9,
                               default.units = "npc",
                               layout = gmlayout,
+                              gp = style,
                               name = "TOP")
             pushViewport(vpTOP)
-            vpm <- viewport(layout.pos.row = 1, name = "model")
+            vpm <- viewport(layout.pos.row = 1, name = "model", gp = gpar(fill = gene_model_fill))
             pushViewport(vpm)
             # geneModel.plot()
             # 表格内容
@@ -180,6 +183,7 @@ plotHapTable2 <- function(hapSummary, show_indel_size = 2,replaceMultiAllele = T
             vps <- viewport(x = 0.5, y = 0.5, width = 0.9, height = 0.9,
                             default.units = "npc",
                             layout = vpslayout,
+                            gp = style,
                             name = 'table')
             pushViewport(vps)
         }
@@ -233,7 +237,10 @@ plotHapTable2 <- function(hapSummary, show_indel_size = 2,replaceMultiAllele = T
             ps <- rep(ps_,3)
             ps <- ps[order(ps)]
             ps <- (ps - start)/abs(start - end)
-            grid.lines(x = ps, y = rep(c(y_ - 2 * CDS_height, y_, NA), length(ps)/2), vp = vpm)
+            grid.lines(x = ps,
+                       y = rep(c(1 - gene_model_height,
+                                 1 - gene_model_height + (y_) * gene_model_height,
+                                 NA), length(ps)/2))
             psm <- ps
 
             # 变异位点与表头连线
@@ -245,7 +252,7 @@ plotHapTable2 <- function(hapSummary, show_indel_size = 2,replaceMultiAllele = T
             psm[3*seq_len(sites(hapSummary)) - 2] <- tps_m[seq_len(sites(hapSummary)) + 1]
             grid.lines(x = psm,
                        y = rep(c(table_height,
-                                 1 - gene_model_height + (y_ - 2 * CDS_height) * gene_model_height,
+                                 1 - gene_model_height,
                                  NA),
                                length(ps)/2))
         }
@@ -267,7 +274,7 @@ plotHapTable2 <- function(hapSummary, show_indel_size = 2,replaceMultiAllele = T
             ys <- y_ * as.numeric(as.factor(p_$Parent))
             grid.rect(x = xs, y = ys, width = ws, height = hs, default.units = "npc", vp = vpm)
 
-            grid.text(unique(p_$Parent), x = rep(0.1, np), y = y_ * seq_len(np) + CDS_height, vjust = 0, vp = vpm)
+            # grid.text(unique(p_$Parent), x = rep(0.1, np), y = y_ * seq_len(np) + CDS_height, vjust = 0, vp = vpm)
         }
 
     }
@@ -288,7 +295,7 @@ plotHapTable2 <- function(hapSummary, show_indel_size = 2,replaceMultiAllele = T
                       default.units = "npc",just = "centre",
                       gp = gpar(fill = fill_table[i,j], lty = 1, col = "white"),
                       vp = get(vp_name_ij))
-            grid.text(x = 0.5, y = 0.5, just = "centre",table[i,j], vp = get(vp_name_ij), gpar(cex = 0.5))
+            grid.text(x = 0.5, y = 0.5, just = "centre",table[i,j], vp = get(vp_name_ij))
 
         }
     }
@@ -307,6 +314,9 @@ plotHapTable2 <- function(hapSummary, show_indel_size = 2,replaceMultiAllele = T
 
         grid.text(paste(ft_i, ft_t, footbar, sep = "\n"),x = 1, y = 0.9, default.units = "npc",
                   hjust = 1, vjust = 1,
-                  vp = get(vp_name_ij), gpar(fontfamily = 2))
+                  vp = get(vp_name_ij))
     }
+    upViewport(0)
+    grid.text(title,x = 0.5, y = 0.99, just = "top", gp = gpar(fontsize = 20))
 }
+
