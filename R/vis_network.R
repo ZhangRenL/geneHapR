@@ -215,7 +215,7 @@ plotHapNet <- function(hapNet,
         min.Size.sc <- min(size.sc)
         size.sc.lim <- (size.sc - min.Size.sc) / difSize.sc *
             abs(diff(pie.lim)) + min(pie.lim)
-    }
+    } else size.sc.lim <- pie.lim
 
 
     if (!is.null(hapGroup)) {

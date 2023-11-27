@@ -28,6 +28,7 @@
 #' @param na_drop whether drop sequeces contain "N"
 #' Default as `TRUE`.
 #' @param pad The number length in haplotype names should be extend to.
+#' @param chrName the Name should be used for haplotype
 #' @param ... Parameters not used.
 #' @inherit hap_summary examples
 #' @return
@@ -38,6 +39,7 @@ seqs2hap <- function(seqs,
                      hetero_remove = TRUE, na_drop = TRUE,
                      maxGapsPerSeq = 0.25,
                      hapPrefix = "H", pad = 3,
+                     chrName = "Chr0",
                      ...) {
     seqs <- as(seqs, "DNAStringSet")
     options <- c(hapPrefix = hapPrefix)
@@ -85,7 +87,8 @@ seqs2hap <- function(seqs,
         apply(hap, 2, function(x)
             paste(unique(x), collapse = ","))
     ALLELE <- stringr::str_replace(ALLELE, ",", "/")
-    INFO <- CHR <- rep(NA, ncol(hap))
+    INFO <- rep(NA, ncol(hap))
+    CHR <- rep(chrName, ncol(hap))
 
     # assign hapID
     hap <- assign_hapID(hap, hapPrefix, pad)

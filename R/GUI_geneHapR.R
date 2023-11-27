@@ -464,7 +464,8 @@ Click "Save" to save the result
                                 "Fasta" = geneHapR::seqs2hap(fasta(),
                                                              hapPrefix = input$happrefix,
                                                              hetero_remove = input$hyb_remove,
-                                                             na_drop = input$na_drop),
+                                                             na_drop = input$na_drop,
+                                                             chrName = input$chrName),
                                 "p.link" = geneHapR::plink.pedmap2hap(fplink(),
                                                                       hapPrefix = input$happrefix,
                                                                       hetero_remove = input$hyb_remove,
@@ -620,30 +621,32 @@ Click "Save" to save the result
             m <- round(par("usr"))
             dev.off()
             unlink(f)
-            # updateSliderInput(session, "plothapnet_xlim",
-            #                   min = m[1]*3,
-            #                   max = m[2]*3,
-            #                   value = c(m[1],m[2]))
-            # updateSliderInput(session, "plothapnet_ylim",
-            #                   min = m[3]*3,
-            #                   max = m[4]*3,
-            #                   value = c(m[3],m[4]))
-            # updateSliderInput(session, "plothapnet_x",
-            #                   min = m[1]*3,
-            #                   max = m[2]*3,
-            #                   value = m[1] + m[2])
-            # updateSliderInput(session, "plothapnet_y",
-            #                   min = m[3]*3,
-            #                   max = m[4]*3,
-            #                   value = m[3] + m[4])
+            updateSliderInput(session, "plothapnet_xlim",
+                              min = m[1]*3,
+                              max = m[2]*3,
+                              value = c(m[1],m[2]))
+            updateSliderInput(session, "plothapnet_ylim",
+                              min = m[3]*3,
+                              max = m[4]*3,
+                              value = c(m[3],m[4]))
+            updateSliderInput(session, "plothapnet_x",
+                              min = m[1]*3,
+                              max = m[2]*3,
+                              value = m[1] + m[2])
+            updateSliderInput(session, "plothapnet_y",
+                              min = m[3]*3,
+                              max = m[4]*3,
+                              value = m[3] + m[4])
 
 
-
+            message("start render")
             output$plothaplonet <- renderPlot({
+                pie_lim <- input$plothapnet_pie.lim * (10 ^ input$plothapnet_pie.lim.folder)
                 geneHapR::plotHapNet(hapNet, scale = input$plothapnet_scale,
                                      show.mutation = input$plothapnet_showmutation,
-                                     cex = input$plothapnet_cex,
-                                     label = input$plothapnet_labels,
+                                     labels.cex = input$plothapnet_cex,
+                                     labels = input$plothapnet_labels,
+                                     pie.lim = pie_lim,
                                      cex.legend = input$plothapnet_cexlegend,
                                      col.link = input$plothapnet_collink,
                                      link.width = input$plothapnat_linkwidth,
@@ -1061,6 +1064,16 @@ Click "Save" to save the result
                        sliderInput("plothapnet_ylim", "Y limit range",
                                    min = -200, max = 200, value =c(-1,1))
                 )),
+            fluidRow(
+                column(width = 6,
+                       sliderInput("plothapnet_pie.lim", "pie size range",
+                                   min = 0, max = 1, value =c(0.1,1), step = 0.01)
+                ),
+                column(width = 6,
+                       sliderInput("plothapnet_pie.lim.folder", "10^x",
+                                   min = 0, max = 4, value = 0, step = 1)
+                )),
+
             h4("Legend options"),
             fluidRow(
                 column(width = 6,
@@ -1234,8 +1247,11 @@ Click "Save" to save the result
                                 actionButton("seq_bt",width = "100%", label = "Choose Fasta File")),
                          column(width = 6,
                                 actionButton("seq_im",width = "95%", label = "Import"))),
+                fluidRow(column(width = 6,
+                                textInput("chrName", "Chromosome Name", value = "Chr0", width = "80%"))),
                 fluidRow(column(width = 12,
                                 tableOutput("seq_data")))))
+
         import_vcf <- tabPanel(
             "VCF file",
             tabPanelBody(
@@ -1439,7 +1455,7 @@ Click "Save" to save the result
 
     }
     ffilter <- matrix(ncol = 2, byrow = TRUE,
-                      c("fasta \u6587\u4EF6 (*.fa, *.fasta)","*.fa;*.fatsa",
+                      c("fasta \u6587\u4EF6 (*.fa, *.fasta)","*.fa;*.fasta",
                         "vcf \u6587\u4EF6 (*.vcf, *.vcf.gz)", "*.vcf;*.vcf.gz",
                         "p.link \u6587\u4EF6 (ped & map)","*.map;*.ped",
                         "hapmap \u6587\u4EF6 (*.hmp)"," *.hmp",

@@ -13,6 +13,7 @@ seqs2hap(
   maxGapsPerSeq = 0.25,
   hapPrefix = "H",
   pad = 3,
+  chrName = "Chr0",
   ...
 )
 
@@ -38,6 +39,8 @@ Seqs with gap percent exceed that will be dropped}
 \item{hapPrefix}{prefix of hap names. Default as "H"}
 
 \item{pad}{The number length in haplotype names should be extend to.}
+
+\item{chrName}{the Name should be used for haplotype}
 
 \item{...}{Parameters not used.}
 
