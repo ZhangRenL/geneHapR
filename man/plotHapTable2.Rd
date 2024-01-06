@@ -8,6 +8,7 @@ plotHapTable2(
   hapSummary,
   show_indel_size = 1,
   replaceMultiAllele = TRUE,
+  angle = 0,
   show_INFO = FALSE,
   title = "",
   gff = NULL,
@@ -49,6 +50,8 @@ plotHapTable2(
 \item{show_indel_size}{the Indel length longer will be replaced by "i1,i2,i3,..."}
 
 \item{replaceMultiAllele}{replace multi-allele title by 'T1,T2,...' or not}
+
+\item{angle}{the angle of number positions}
 
 \item{show_INFO}{show annotation field or not, default as \code{FALSE}}
 
