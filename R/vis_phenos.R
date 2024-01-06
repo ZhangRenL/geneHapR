@@ -84,10 +84,10 @@ hapVsPheno <- function(hap,
 
     pheno$Hap <- haps[row.names(pheno)]
     phenop <- pheno[, c("Hap", phenoName)]
-
+    names(phenop)[2] <- "Cur_p"
     # remove outliers
     if(outlier.rm)
-        phenop[, phenoName] <- removeOutlier(phenop[, phenoName])
+        phenop[, "Cur_p"] <- removeOutlier(phenop[, "Cur_p"])
 
     phenop <- na.omit(phenop)
     if (nrow(phenop) == 0)
@@ -125,8 +125,8 @@ hapVsPheno <- function(hap,
         for (n in nr:m) {
             i <- hpsnm[m]
             j <- hpsnm[n]
-            hapi <- phenop[phenop$Hap == i, phenoName]
-            hapj <- phenop[phenop$Hap == j, phenoName]
+            hapi <- phenop[phenop$Hap == i, "Cur_p"]
+            hapj <- phenop[phenop$Hap == j, "Cur_p"]
             if (length(hapi) >= minAcc & length(hapj) >= minAcc) {
                 pvalue <- try(t.test(hapi, hapj)$p.value, silent = TRUE)
 
@@ -216,7 +216,7 @@ hapVsPheno <- function(hap,
         fig2 <- ggpubr::ggviolin(
             data,
             x = "Hap",
-            y = phenoName,
+            y = "Cur_p",
             color = "Hap",
             legend = "right",
             legend.title = "",
@@ -227,7 +227,7 @@ hapVsPheno <- function(hap,
         fig2 <- ggpubr::ggviolin(
             data,
             x = "Hap",
-            y = phenoName,
+            y = "Cur_p",
             color = "Hap",
             caption = capt,
             legend = "right",

@@ -178,6 +178,7 @@ if(tools:::.OStype() == "windows"){
     importFrom(shiny, updateSelectInput)
     importFrom(shiny, updateTextInput)
     importFrom(shiny, verbatimTextOutput)
+    importFrom(shiny, updateSliderInput)
     importFrom(utils,choose.dir)
     importFrom(utils,choose.files)
     importFrom(utils,read.csv)

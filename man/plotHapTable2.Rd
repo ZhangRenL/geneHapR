@@ -15,17 +15,26 @@ plotHapTable2(
   Chr = NULL,
   start = NULL,
   end = NULL,
-  gene_model_fill = "white",
+  model_rect_col = "black",
+  model_rect_fill = "grey80",
+  model_line_col = "black",
+  model_anno_txt = NULL,
+  model_anno_col = "black",
+  model_anno_cex = 1,
+  model_anno_pos = c(0, 1),
+  model_anno_adj = c(0, 1),
   gene_model_height = 0.2,
   space_height = 0.1,
   table_height = NULL,
-  CDS_height = 0.1,
+  CDS_height = 0.3,
+  link_line_type = 3,
   headrows = 1,
   equal_col_width = FALSE,
   head_anno = 1,
   col_annots = 0,
   row_labels = 1,
   row_annots = 1,
+  table_line_col = "white",
   labels_fill = "white",
   annot_fill = "grey90",
   head_fill = NULL,
@@ -51,16 +60,22 @@ plotHapTable2(
 
 \item{Chr, start, end}{which range should be plotted in gene model}
 
-\item{gene_model_fill}{fill color of CDS ad UTR}
+\item{model_rect_col, model_rect_fill, model_line_col}{a string specified the color for line/rectangle in gene model}
+
+\item{model_anno_pos, model_anno_adj, model_anno_cex, model_anno_col, model_anno_txt}{the position (x,y), just (hjust, vjust), color, size and content of annotation text in gene model}
 
 \item{gene_model_height, table_height, space_height}{the plotting range height of gene model, table and spacer}
 
 \item{CDS_height}{a numeric vector specified the height of CDS, and the height of utr is half of that,
 only useful when gff is provided,}
 
+\item{link_line_type}{the type of link lines for mutations in gene model and genotype table}
+
 \item{equal_col_width}{a bool or numeric vector specified whether column with should be equal}
 
 \item{col_annots, head_anno, headrows, row_annots, row_labels}{the column or row number of annotation or labels or heads}
+
+\item{table_line_col}{the line color in genotype table}
 
 \item{annot_fill, head_fill, labels_fill}{the fill color of annotation, head and label row or columns}
 
