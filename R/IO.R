@@ -123,7 +123,11 @@ import_AccINFO <- function(file, comment.char = "#",
 #' @export
 #' @return GRange object
 import_gff <- function(gffFile, format = "gff") {
-    rtracklayer::import(gffFile, format = format)
+    gff <- rtracklayer::import(gffFile, format = format)
+    gff$Parent <- lapply(gff$Parent,
+                          function(x) if(identical(x, character(0))) "" else x)
+    gff$Parent <- unlist(gff$Parent)
+    return(gff)
 }
 
 
@@ -193,7 +197,11 @@ import_bed <- function(con, quite = FALSE){
 	type <- sapply(bed$name, function(x) strsplit(x, " ")[[1]][2]) %>% unlist()
     bed$Parent <- bed$Name <- name
     bed$type <- type
-    return(bed)
+    gff <- bed
+    gff$Parent <- lapply(gff$Parent,
+                         function(x) if(identical(x, character(0))) "" else x)
+    gff$Parent <- unlist(gff$Parent)
+    return(gff)
 }
 
 
@@ -258,7 +266,6 @@ import_MultipleAlignment <- function(filepath,
 
 #' @name import_hap
 #' @title Import hapResult/hapSummary
-#' @usage import_hap(file, ...)
 #' @description
 #' This function could be used for import hap result or hap summary result.
 #' The type of returned object is decided by input file, see details.
@@ -284,11 +291,13 @@ import_MultipleAlignment <- function(filepath,
 #' hap
 #' setwd(oldDir)
 #'
-#' @param file hapSummary or hapResult file path
+#' @param file hapSummary or hapResult file path.
+#' @param type file type, if not auto, should be one of hapSummary or hapResult
+#' @param type the content type of imported file, should be one of c("hapResult", "hapSummary")
 #' @param ... extras will pass to `read.delim()`
 #' @export
 #' @return hapSummary or hapResult
-import_hap <- function(file, ...) {
+import_hap <- function(file, type = "auto", ...) {
     hap <- read.delim(file, header = F, ...)
 
     # check rows format
@@ -299,24 +308,30 @@ import_hap <- function(file, ...) {
             stop("Please check your input file.")
 
     # set data class
-    cfreq <- where_('freq', hap, 'c')
-    cAccession <- where_('Accession', hap, 'c')
-    if(cfreq == -1){
-        if(cAccession == -1){
-            stop("Accession and freq column wasn't found")
+    if (tolower(type) == "auto"){
+        cfreq <- where_('freq', hap, 'c')
+        cAccession <- where_('Accession', hap, 'c')
+        if(cfreq == -1){
+            if(cAccession == -1){
+                stop("Accession and freq column wasn't found")
+            } else {
+                class(hap) <- c("hapResult", "data.frame")
+                hap <- hap[,seq_len(cAccession)]
+            }
         } else {
-            class(hap) <- c("hapResult", "data.frame")
-            hap <- hap[,seq_len(cAccession)]
+            if(cAccession == -1){
+                stop("Accession column wasn't found")
+            } else {
+                class(hap) <- c("hapSummary", "data.frame")
+            }
         }
-    } else {
-        if(cAccession == -1){
-            stop("Accession column wasn't found")
-        } else {
-            class(hap) <- c("hapSummary", "data.frame")
-        }
-    }
+    } else if (tolower(type == "hapsummary")){
+        class(hap) <- c("hapSummary", "data.frame")
+    } else if (tolower(type == "hapresult")){
+        class(hap) <- c("hapResult", "data.frame")
+    } else stop("type should be one of 'auto', 'hapSummary', 'hapResult'")
 
-    # get POS
+     # get POS
     POS <-
         suppressWarnings(as.numeric(hap[hap[, 1] == "POS", ]))
     if (length(na.omit(POS)) == 1) {
@@ -479,7 +494,7 @@ where_ <- function(x, m, t = 'r'){
     if(any(p)){
         switch (t,
                 'r' = which(p) %% nrow(m),
-                'c' = which(p) %/% nrow(m)
+                'c' = which(p) %/% nrow(m) + 1
         )
     } else {
         -1

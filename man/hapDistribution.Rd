@@ -122,6 +122,7 @@ show distribution of intereted haplotypes on maps
 \examples{
 \donttest{
 data("geneHapR_test")
+data(china)
 hapDistribution(hapResult,
                 AccINFO = AccINFO,
                 LON.col = "longitude",

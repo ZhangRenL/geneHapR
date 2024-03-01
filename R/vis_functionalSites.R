@@ -227,17 +227,17 @@ siteEFF <- function(hap, pheno, phenoNames, quality = FALSE, method = "auto",
                     )
                     if(min(sha.p, na.rm = TRUE) >= 0.05){
                         # all sub data set fit normal distribution
-                        res.ps <- t.test.ps(phenos)
+                        res.ps <- t_test_for_ps(phenos)
                     } else {
                         # not all sub data set fit normal distribution
-                        res.ps <- wilcox.test.ps(phenos)
+                        res.ps <- wilcox_test_for_ps(phenos)
                     }
                 }
             } else {
                 res.ps <- switch (method,
                                   "chisq.test" = chisq.test.ps(phenos),
-                                  "t.test" = t.test.ps(phenos),
-                                  "wilcox.test" = wilcox.test.ps(phenos)
+                                  "t.test" = t_test_for_ps(phenos),
+                                  "wilcox.test" = wilcox_test_for_ps(phenos)
                 )
             }
 
@@ -273,7 +273,7 @@ siteEFF <- function(hap, pheno, phenoNames, quality = FALSE, method = "auto",
 }
 
 
-t.test.ps <- function(phenos){
+t_test_for_ps <- function(phenos){
     p <- c()
     d <- c()
     l = length(phenos)
@@ -333,7 +333,7 @@ chisq.test.ps <- function(phenos){
 }
 
 
-wilcox.test.ps <- function(phenos){
+wilcox_test_for_ps <- function(phenos){
     p <- c()
     d <- c()
     l = length(phenos)

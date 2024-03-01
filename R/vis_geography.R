@@ -7,6 +7,7 @@
 #' @examples
 #' \donttest{
 #' data("geneHapR_test")
+#' data(china)
 #' hapDistribution(hapResult,
 #'                 AccINFO = AccINFO,
 #'                 LON.col = "longitude",
@@ -89,7 +90,7 @@ hapDistribution <- function(hap,
 
     if (inherits(hap, 'hapResult')) {
         acc2hap <- hap[, "Hap"]
-        names(acc2hap) = hap[, "Accession"]
+        names(acc2hap) <- hap[, "Accession"]
     } else if (inherits(hap, "hapSummary")) {
         acc2hap <- rep(hap[, "Hap"], hap[, "freq"])
         names(acc2hap) <- unlist(strsplit(hap[, "Accession"], ";"))
@@ -125,18 +126,23 @@ hapDistribution <- function(hap,
             value.var = "value",
             fun.aggregate = length
         )
-
     # Check wether all hapnames in Accinfo
     if( ! all(hapNames %in% names(dF))) {
         n_names <- hapNames[! hapNames %in% names(dF)]
-        m = paste0("We could not found any individual belong to '",
+        n_names <- paste0(n_names, collapse = ",", sep = "")
+        m <- paste0("We could not find any individual belong to '",
                   n_names, "' in your AccINFO, Procceed?")
         proceed <- askYesNo(m, default = FALSE)
         if(proceed) {
             hapNames <- hapNames[hapNames %in% names(dF)]
         } else return(NULL)
     }
-    maps::map(database = database, regions = regions, col = map.fill.color, ...)
+    if (any(tolower(database) == "china", tolower(regions) == "china" )){
+        # usethis::use_data(china, internal = F)
+        requireNamespace("sf")
+        data("china")
+        plot(china, border = map.fill.color,...)
+    } else maps::map(database = database, regions = regions, col = map.fill.color, ...)
     # maps::map(database = database, regions = regions)
     # scale the circle size using symbol.lim instead of symbolSize
     symbolSize <- 1
