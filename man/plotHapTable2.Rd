@@ -10,6 +10,10 @@ plotHapTable2(
   replaceMultiAllele = TRUE,
   angle = 0,
   show_INFO = FALSE,
+  INFO_split = c(";", ",", "\\\\|"),
+  INFO_tag = "ANN",
+  geneID = NA,
+  tag_field = -1,
   title = "",
   gff = NULL,
   show_chr_name = TRUE,
@@ -22,7 +26,9 @@ plotHapTable2(
   model_anno_txt = NULL,
   model_anno_col = "black",
   model_anno_cex = 1,
-  model_anno_pos = c(0, 1),
+  table_txt_col = "black",
+  table_txt_cex = 1,
+  model_anno_pos = c(-1, -1),
   model_anno_adj = c(0, 1),
   gene_model_height = 0.2,
   space_height = 0.1,
@@ -36,12 +42,14 @@ plotHapTable2(
   row_labels = 1,
   row_annots = 1,
   table_line_col = "white",
+  annot_for_each_transcrips = TRUE,
   labels_fill = "white",
   annot_fill = "grey90",
   head_fill = NULL,
   cell_fill = NULL,
   style = gpar(fontfamily = "sans", fontface = 1, cex = 0.7),
-  footbar = ""
+  footbar = "",
+  ...
 )
 }
 \arguments{
@@ -55,6 +63,9 @@ plotHapTable2(
 
 \item{show_INFO}{show annotation field or not, default as \code{FALSE}}
 
+\item{INFO_split, INFO_tag, geneID, tag_field}{used to set annotation in haplotype table.
+And the geneID was used to fileter annotation in INFO field.}
+
 \item{title}{title of plot}
 
 \item{gff}{gff or bed annotation}
@@ -64,6 +75,8 @@ plotHapTable2(
 \item{Chr, start, end}{which range should be plotted in gene model}
 
 \item{model_rect_col, model_rect_fill, model_line_col}{a string specified the color for line/rectangle in gene model}
+
+\item{table_txt_col, table_txt_cex}{controls the color and size of texts in genotype table}
 
 \item{model_anno_pos, model_anno_adj, model_anno_cex, model_anno_col, model_anno_txt}{the position (x,y), just (hjust, vjust), color, size and content of annotation text in gene model}
 
@@ -80,6 +93,8 @@ only useful when gff is provided,}
 
 \item{table_line_col}{the line color in genotype table}
 
+\item{annot_for_each_transcrips}{mark the strand and trancripts name for each gene modle}
+
 \item{annot_fill, head_fill, labels_fill}{the fill color of annotation, head and label row or columns}
 
 \item{cell_fill}{a color vector or function or named vector specified cell fill color}
@@ -87,9 +102,13 @@ only useful when gff is provided,}
 \item{style}{see help(gpar)}
 
 \item{footbar}{the foot notes}
+
+\item{...}{param not used}
 }
 \description{
 plot the hapResult in table like style using grid system.
+This function is under development and may not stable.
+Some parameters may deleted or renamed in future.
 }
 \examples{
 #

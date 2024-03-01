@@ -15,7 +15,7 @@ Authors@R:
            family = "Guanqing",
            email = "jiaguanqing@caas.cn", 
            role = c("aut")))
-Version: 1.2.2
+Version: 1.2.4
 RoxygenNote: 7.2.3
 LazyData: True
 Imports: 
@@ -38,6 +38,7 @@ Imports:
   stringdist,
   stringr, 
   tibble,
+  sf,
   tidyr,
   utils,
   vcfR

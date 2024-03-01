@@ -7,6 +7,7 @@
 \alias{seqs}
 \alias{hapResult}
 \alias{gt.geno}
+\alias{china}
 \alias{pheno}
 \alias{vcf}
 \alias{AccINFO}

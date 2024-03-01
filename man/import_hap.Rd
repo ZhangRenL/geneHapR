@@ -4,10 +4,12 @@
 \alias{import_hap}
 \title{Import hapResult/hapSummary}
 \usage{
-import_hap(file, ...)
+import_hap(file, type = "auto", ...)
 }
 \arguments{
-\item{file}{hapSummary or hapResult file path}
+\item{file}{hapSummary or hapResult file path.}
+
+\item{type}{the content type of imported file, should be one of c("hapResult", "hapSummary")}
 
 \item{...}{extras will pass to \code{read.delim()}}
 }

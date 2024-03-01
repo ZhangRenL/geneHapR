@@ -1,3 +1,5 @@
+# The geneHapR is a program focus on biological problem: gene haplotype. The geneHapR is not support GUI, yet. I am working on new GUI interface using PyQT and will rewtrite in python for large bio-data in future. Would you provide me a active code for pycharm-pro version? Thanks a lot!
+
 if(tools:::.OStype() == "windows"){
     build_app_geneHapR <- function(...) {
         shinyApp(ui = ui(), server = server)

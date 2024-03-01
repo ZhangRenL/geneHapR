@@ -42,6 +42,16 @@ NULL
 #' @keywords datasets
 NULL
 
+#' Datasets
+#' `china` contains china map
+#'
+#'
+#' @name DataSet
+#' @aliases china
+#' @docType data
+#' @keywords datasets
+NULL
+
 
 #' Datasets
 #'
