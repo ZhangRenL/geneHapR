@@ -353,6 +353,7 @@ plotHapTable2 <- function(hapSummary, show_indel_size = 1, replaceMultiAllele = 
 
 
 
+
         # 基础绘图参数(gene model)
         p_ <- over
         np <- length(unique(over$Parent))
