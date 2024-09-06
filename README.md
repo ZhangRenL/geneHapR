@@ -10,7 +10,8 @@ if(! require(BiocManager))
     install.packages("BiocManager")
 BiocManager::install(c("Biostrings", "GenomicRanges", "muscle", "IRanges", "rtracklayer", "trackViewer"))
 install.packages("geneHapR")
-
+if(! require(devtools)) 
+    install.packages("devtools")
 devtools::install_git("https://gitee.com/zhangrenl/genehapr")  # need devtools package and git software
 ```
 
